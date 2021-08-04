@@ -172,21 +172,34 @@ button:hover {
 
 input[type=range] {
     -webkit-appearance: none;
-    width: 100%;
     height: 5px;
     background: #3e4f51;
     outline: none;
     transition: 0.1s;
+    left: calc( 6.25% - 12.5px);
+    position: relative;
+    width: calc( 87.5% + 25px);
+}
+
+option {
+    color: rgb(232, 230, 227);
+    font-weight: bold;
+    text-align: center;
+    flex-basis: 12.5%;
 }
 
 datalist {
     display: flex;
+    font-family: Arial;
+    font-weight: bold;
+    flex-flow: row;
+    margin-top: 10px;
+    align-content: center;
+    align-items: center;
+    align-self: center;
+    position: relative;
     width: 100%;
-    justify-content: space-between;
-    margin-top: -23px;
-    padding-top: 0px;
 }
-
 
 input[type=range]:hover {
     background: #6d8a8d;
@@ -222,18 +235,6 @@ select {
     font-weight: bold;
     width: 100px;
     text-align: center;
-}
-datalist {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-    margin-top: -23px;
-    padding-top: 0px;
-}
-
-option {
-    color: rgb(232, 230, 227) !important;
-    font-weight: bold !important;
 }
 
 input[type=radio] {
@@ -284,6 +285,10 @@ input[type=radio]:before {
 
 .mediumtopmargin {
     margin-top: 20px;
+}
+
+.mediummargin {
+    margin: 20px;
 }
 
 .red {
