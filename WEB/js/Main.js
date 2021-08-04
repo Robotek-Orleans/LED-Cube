@@ -128,7 +128,8 @@ function addframebefore() {
     if (index <= (selectedFrame - 1)) {
         selectedFrame++;
     }
-
+    const framerange = document.getElementById("frameRange")
+    //const frameinput = 
 }
 
 function addframeafter() {
