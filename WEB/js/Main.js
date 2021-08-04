@@ -89,8 +89,8 @@ function SelectLED(LED) {
 
 function SelectPlan() {
     selectedPlanDirection = getRadioSelectedValue("axe")
-    let select = document.getElementById("planNumber")
-    selectedPlanNumber = parseInt(select.options[select.selectedIndex].value)
+    const range = document.getElementById("planNumber")
+    selectedPlanNumber = parseInt(range.value)
     displaySelectedPlan(selectedPlanDirection, selectedPlanNumber)
     Draw2DMatrix()
 }
@@ -127,8 +127,8 @@ function addframebefore() {
     addframe(index)
     if (index <= (selectedFrame - 1)) {
         selectedFrame++;
-
     }
+
 }
 
 function addframeafter() {
