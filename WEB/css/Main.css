@@ -172,14 +172,18 @@ button:hover {
 
 input[type=range] {
     -webkit-appearance: none;
-    height: 5px;
+    border-radius: 25px;
     background: #3e4f51;
     outline: none;
     transition: 0.1s;
-    left: calc( 6.25% - 12.5px);
+}
+
+.legendedRange{
+    left: calc( 6.25% - 15px);
     position: relative;
     width: calc( 87.5% + 25px);
 }
+
 
 option {
     color: rgb(232, 230, 227);
