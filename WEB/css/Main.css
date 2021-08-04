@@ -179,6 +179,15 @@ input[type=range] {
     transition: 0.1s;
 }
 
+datalist {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    margin-top: -23px;
+    padding-top: 0px;
+}
+
+
 input[type=range]:hover {
     background: #6d8a8d;
 }
@@ -214,11 +223,16 @@ select {
     width: 100px;
     text-align: center;
 }
+datalist {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    margin-top: -23px;
+    padding-top: 0px;
+}
 
 option {
-    background-color: #3e4f51 !important;
     color: rgb(232, 230, 227) !important;
-    font-size: 18px !important;
     font-weight: bold !important;
 }
 
