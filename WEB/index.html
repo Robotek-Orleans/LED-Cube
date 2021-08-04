@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <title>LED cube IHM</title>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="css/Main.css">
+    <script src="js/three.min.js"></script>
+    <script src="js/Detector.js"></script>
+    <script src="js/OrbitControls.js"></script>
+    <script src="js/Viewerscript.js"></script>
+    <script src="js/Main.js"></script>
+</head>
+
+<body onload="init()">
+
+    <div class="header">
+        <h1 style="text-align: left;">LED CUBE</h1>
+    </div>
+    <div class="content">
+
+
+        <div class="contentviewer">
+            <h1 class="title">Gestion du fichier</h1>
+            <button class="hugemargin">Ouvrir</button>
+            <button class="hugemargin mediumtopmargin">Enregistrer</button>
+            <button class="hugemargin red mediumtopmargin">Reset</button>
+        </div>
+
+        <div class="contentviewer fixedwidth">
+            <h1 class="title">Gestion des frames</h1>
+            <div class="flexRow">
+                <p>Nombre de frames:</p>
+                <p id="frameNumber">1</p>
+            </div>
+            <div class="flexRow">
+                <p>Temps d'une frame (en ms)</p>
+                <input min="1" value="500" type="number">
+            </div>
+            <div class="flexRow">
+                <button>Ajouter une frame avant</button>
+                <input min="1" max="1" id="numframebefore" value="1" type="number">
+            </div>
+            <div class="flexRow">
+                <button>Ajouter une frame après</button>
+                <input min="1" max="1" id="numframeafter" value="1" type="number">
+            </div>
+            <p>Aller à la frame</p>
+            <div class="flexRow">
+
+                <button>&lt;</button>
+                <input onchange="console.log(this.value)" type="range" min="1" max="8" value="1">
+                <button>&gt;</button>
+                <input class="inputnumfixedwidth" type="number" min="1" value="1">
+            </div>
+            <div class="flexRow">
+                <button class="mediumtopmargin red">Supprimer la frame</button>
+                <button class="mediumtopmargin">Copier</button>
+                <button class="mediumtopmargin">Coller</button>
+            </div>
+        </div>
+        <div class="contentviewer">
+            <h1 class="title">Viewer 3D</h1>
+
+            <div id="container"></div>
+        </div>
+
+        <div class="contentviewer fixedwidth">
+            <h1 class="title">Choix de la matrice 2D</h1>
+            <p class="hugetopmargin">Axe:</p>
+            <div class="flexRow">
+                <input type="radio" id="X" name="axe" value="X" checked><label for="X">X</label>
+                <input type="radio" id="Y" name="axe" value="Y"> <label for="Y">Y</label>
+                <input type="radio" id="Z" name="axe" value="Z"><label for="Z">Z</label>
+            </div>
+            <div class="flexRow hugetopmargin">
+                <p>Plan:</p>
+                <select id="planNumber" onchange="SelectPlan()">
+                    <option value="1" selected>1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                </select>
+            </div>
+            <button class="hugemargin" onclick="clear3DViewPlan()">Effacer le marquage sur le viewer 3D</button>
+        </div>
+
+        <div class="contentviewer fixedwidth black">
+            <h1 class='title'>Matrice 2D</h1>
+            <table id="matrix">
+
+            </table>
+        </div>
+
+        <div class="contentviewer fixedwidth">
+            <h1 class="title">Choix de la couleur</h1>
+            <div class="flexRow hugetopmargin">
+                <p>Choisissez votre couleur: </p>
+                <input type="color" id="pickColor">
+            </div>
+            <button class="hugemargin" onclick="setColor()">Appliquer</button>
+        </div>
+    </div>
+
+</body>
+
+
+</html>
