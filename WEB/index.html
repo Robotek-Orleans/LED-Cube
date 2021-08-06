@@ -23,9 +23,9 @@
 
         <div class="contentviewer">
             <h1 class="title">Gestion du fichier</h1>
-            <button class="hugemargin">Ouvrir</button>
-            <button class="hugemargin mediumtopmargin">Enregistrer</button>
-            <button class="hugemargin red mediumtopmargin">Reset</button>
+            <button class="hugemargin" disabled>Ouvrir</button>
+            <button class="hugemargin mediumtopmargin" disabled>Enregistrer</button>
+            <button class="hugemargin red mediumtopmargin" disabled>Reset</button>
         </div>
 
         <div class="contentviewer fixedwidth">
@@ -39,25 +39,25 @@
                 <input min="1" value="500" type="number">
             </div>
             <div class="flexRow">
-                <button>Ajouter une frame avant</button>
+                <button onclick="addframebefore()">Ajouter une frame avant</button>
                 <input min="1" max="1" id="numframebefore" value="1" type="number">
             </div>
             <div class="flexRow">
-                <button>Ajouter une frame après</button>
+                <button onclick="addframeafter()">Ajouter une frame après</button>
                 <input min="1" max="1" id="numframeafter" value="1" type="number">
             </div>
             <p>Aller à la frame</p>
             <div class="flexRow">
 
-                <button>&lt;</button>
-                <input id="frameRange" type="range" min="1" max="1" value="1">
-                <button>&gt;</button>
-                <input class="inputnumfixedwidth" type="number" min="1" value="1">
+                <button onclick="previousframe()">&lt;</button>
+                <input id="frameRange" onchange="gotoframe()" oninput="document.getElementById('frameInput').value = this.value" type="range" min="1" max="1" value="1">
+                <button onclick="nextframe()">&gt;</button>
+                <input class="inputnumfixedwidth" id="frameInput" type="number" min="1" value="1">
             </div>
             <div class="flexRow">
-                <button class="mediumtopmargin red">Supprimer la frame</button>
-                <button class="mediumtopmargin">Copier</button>
-                <button class="mediumtopmargin">Coller</button>
+                <button class="mediumtopmargin red" disabled>Supprimer la frame</button>
+                <button class="mediumtopmargin purple" disabled>Copier</button>
+                <button class="mediumtopmargin purple" disabled>Coller</button>
             </div>
         </div>
         <div class="contentviewer">
@@ -104,6 +104,10 @@
                 <input type="color" id="pickColor">
             </div>
             <button class="hugemargin" onclick="setColor()">Appliquer</button>
+            <div class="flexRow">
+                <button class="mediummargin purple" onclick="copy2D()">Copier la matrice</button>
+                <button class="mediummargin purple" id="paste2D" onclick="paste2D()" disabled>Coller la matrice</button>
+            </div>
         </div>
     </div>
 

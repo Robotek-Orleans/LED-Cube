@@ -6,27 +6,95 @@ let shiftpressed = false
 
 let framecontent = []
 
+let copied2D = []
+
+
+function paste2D() {
+    if (!copied2D.length) return;
+    switch (selectedPlanDirection) {
+        case "X":
+            for (let y = 0; y < 8; y++) {
+                for (let z = 0; z < 8; z++) {
+                    framecontent[selectedFrame - 1][selectedPlanNumber - 1][y][z] = copied2D[y][z]
+                }
+            }
+            break;
+        case "Y":
+            for (let x = 0; x < 8; x++) {
+                for (let z = 0; z < 8; z++) {
+                    framecontent[selectedFrame - 1][x][selectedPlanNumber - 1][z] = copied2D[x][z]
+                }
+            }
+            break;
+        default:
+            for (let x = 0; x < 8; x++) {
+                for (let y = 0; y < 8; y++) {
+                    framecontent[selectedFrame - 1][x][y][selectedPlanNumber - 1] = copied2D[x][y]
+                }
+            }
+            break;
+    }
+    refresh2D()
+}
+
+function copy2D() {
+    document.getElementById("paste2D").disabled = false
+    copied2D = []
+    switch (selectedPlanDirection) {
+        case "X":
+            for (let y = 0; y < 8; y++) {
+                copied2D.push([])
+                for (let z = 0; z < 8; z++) {
+                    copied2D[y].push(framecontent[selectedFrame - 1][selectedPlanNumber - 1][y][z])
+                }
+            }
+            break;
+        case "Y":
+            for (let x = 0; x < 8; x++) {
+                copied2D.push([])
+                for (let z = 0; z < 8; z++) {
+                    copied2D[x].push(framecontent[selectedFrame - 1][x][selectedPlanNumber - 1][z])
+                }
+            }
+            break;
+        default:
+            for (let x = 0; x < 8; x++) {
+                copied2D.push([])
+                for (let y = 0; y < 8; y++) {
+                    copied2D[x].push(framecontent[selectedFrame - 1][x][y][selectedPlanNumber - 1])
+                }
+            }
+            break;
+    }
+}
+
+
+
 function Draw2DMatrix() {
     const matrix = document.getElementById("matrix");
     matrix.innerHTML = "";
-    if (selectedPlanDirection === "X") {
-        for (let z = 0; z < 8; z++) {
+    switch (selectedPlanDirection) {
+        case "X":
+            for (let z = 0; z < 8; z++) {
+                for (let y = 0; y < 8; y++) {
+                    matrix.innerHTML += "<svg onclick=\'SelectLED(" + (y + z * 8) + ")\'><circle stroke-width=\'3\' stroke=\'#3e4f51\' fill=\'" + framecontent[selectedFrame - 1][selectedPlanNumber - 1][y][z] + "\' cx=\'50%\' cy=\'50%\' r=\'20\'></circle></svg>";
+                }
+            }
+            break;
+        case "Y":
+            for (let z = 0; z < 8; z++) {
+                for (let x = 0; x < 8; x++) {
+                    matrix.innerHTML += "<svg onclick=\'SelectLED(" + (x + z * 8) + ")\'><circle stroke-width=\'3\' stroke=\'#3e4f51\' fill=\'" + framecontent[selectedFrame - 1][x][selectedPlanNumber - 1][z] + "\' cx=\'50%\' cy=\'50%\' r=\'20\'></circle></svg>";
+                }
+            }
+            break;
+        default:
             for (let y = 0; y < 8; y++) {
-                matrix.innerHTML += "<svg onclick=\'SelectLED(" + (y + z * 8) + ")\'><circle stroke-width=\'3\' stroke=\'#3e4f51\' fill=\'" + framecontent[selectedFrame - 1][selectedPlanNumber - 1][y][z] + "\' cx=\'50%\' cy=\'50%\' r=\'20\'></circle></svg>";
+                for (let x = 0; x < 8; x++) {
+                    matrix.innerHTML += "<svg onclick=\'SelectLED(" + (x + y * 8) + ")\'><circle stroke-width=\'3\' stroke=\'#3e4f51\' fill=\'" + framecontent[selectedFrame - 1][x][y][selectedPlanNumber - 1] + "\' cx=\'50%\' cy=\'50%\' r=\'20\'></circle></svg>";
+                }
             }
-        }
-    } else if (selectedPlanDirection === "Y") {
-        for (let z = 0; z < 8; z++) {
-            for (let x = 0; x < 8; x++) {
-                matrix.innerHTML += "<svg onclick=\'SelectLED(" + (x + z * 8) + ")\'><circle stroke-width=\'3\' stroke=\'#3e4f51\' fill=\'" + framecontent[selectedFrame - 1][x][selectedPlanNumber - 1][z] + "\' cx=\'50%\' cy=\'50%\' r=\'20\'></circle></svg>";
-            }
-        }
-    } else {
-        for (let y = 0; y < 8; y++) {
-            for (let x = 0; x < 8; x++) {
-                matrix.innerHTML += "<svg onclick=\'SelectLED(" + (x + y * 8) + ")\'><circle stroke-width=\'3\' stroke=\'#3e4f51\' fill=\'" + framecontent[selectedFrame - 1][x][y][selectedPlanNumber - 1] + "\' cx=\'50%\' cy=\'50%\' r=\'20\'></circle></svg>";
-            }
-        }
+            break;
     }
     selected2D = []
     document.getElementById("pickColor").value = "#000000"
@@ -41,21 +109,55 @@ function setColor() {
         LEDelement.setAttribute("fill", color)
         if (selectedPlanDirection === "X") {
             framecontent[selectedFrame - 1][selectedPlanNumber - 1][selected2D[i][0]][selected2D[i][1]] = color
-            cube_set_color(selectedPlanNumber - 1, selected2D[i][0], selected2D[i][1], color.replace('#', '0x'))
+            cube_set_color(selectedPlanNumber - 1, selected2D[i][0], selected2D[i][1], color.replace('#', '0x'),false)
         } else if (selectedPlanDirection === "Y") {
             framecontent[selectedFrame - 1][selected2D[i][0]][selectedPlanNumber - 1][selected2D[i][1]] = color
-            cube_set_color(selected2D[i][0], selectedPlanNumber - 1, selected2D[i][1], color.replace('#', '0x'))
+            cube_set_color(selected2D[i][0], selectedPlanNumber - 1, selected2D[i][1], color.replace('#', '0x'),false)
         } else {
             framecontent[selectedFrame - 1][selected2D[i][0]][selected2D[i][1]][selectedPlanNumber - 1] = color
-            cube_set_color(selected2D[i][0], selected2D[i][1], selectedPlanNumber - 1, color.replace('#', '0x'))
+            cube_set_color(selected2D[i][0], selected2D[i][1], selectedPlanNumber - 1, color.replace('#', '0x'),false)
         }
     }
+    renderer.render(scene, camera);
 }
 
-function ckeckIndexselected2D(findArray){
+function refresh2D() {
+    for (let i = 0; i < framecontent[selectedFrame - 1].length; i++) {
+        for (let j = 0; j < framecontent[selectedFrame - 1][0].length; j++) {
+            switch (selectedPlanDirection) {
+                case "X":
+                    cube_set_color(selectedPlanNumber - 1, i, j, framecontent[selectedFrame - 1][selectedPlanNumber - 1][i][j].replace('#', '0x'),false)
+                    break
+                case "Y":
+                    cube_set_color(i, selectedPlanNumber - 1, j, framecontent[selectedFrame - 1][i][selectedPlanNumber - 1][j].replace('#', '0x'),false)
+                    break
+                default:
+                    cube_set_color(i, j, selectedPlanNumber - 1, framecontent[selectedFrame - 1][i][j][selectedPlanNumber - 1].replace('#', '0x'),false)
+            }
+        }
+    }
+    Draw2DMatrix()
+    renderer.render(scene, camera);
+}
+
+function refresh3D() {
+    const indexframe = selectedFrame - 1
+
+    for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
+            for (let k = 0; k < 8; k++) {
+                cube_set_color(i, j, k, framecontent[indexframe][i][j][k].replace('#', '0x'),false)
+            }
+        }
+    }
+    Draw2DMatrix()
+    renderer.render(scene, camera)
+}
+
+function ckeckIndexselected2D(findArray) {
     let index = -1
-    for(let i =0; i< selected2D.length; i++){
-        if(selected2D[i][0] === findArray[0] && selected2D[i][1] === findArray[1]){
+    for (let i = 0; i < selected2D.length; i++) {
+        if (selected2D[i][0] === findArray[0] && selected2D[i][1] === findArray[1]) {
             index = i
             break
         }
@@ -68,19 +170,19 @@ function SelectLED(LED) {
     const LEDelement = LEDelements[LED]
     const x = LED % 8
     const y = (LED - x) / 8
-    const index = ckeckIndexselected2D([x,y])
-    if(index >= 0){
-        selected2D.splice(index,1)
+    const index = ckeckIndexselected2D([x, y])
+    if (index >= 0) {
+        selected2D.splice(index, 1)
         LEDelement.setAttribute("stroke", "#3e4f51")
         return
     }
     if (shiftpressed) {
-        selected2D.push([x,y])
+        selected2D.push([x, y])
     } else {
         for (var i = 0; i < 64; i++) {
             LEDelements[i].setAttribute("stroke", "#3e4f51")
         }
-        selected2D = [ [x,y] ]
+        selected2D = [[x, y]]
     }
     LEDelement.setAttribute("stroke", "#3aaa96")
 
@@ -109,43 +211,99 @@ function getRadioSelectedValue(radioName) {
     return null
 }
 
-function nextframe() {
-
-}
-
-function previousframe() {
-
-}
-
-function slidertoframe() {
-
-}
 
 function addframebefore() {
-    //index
-    index = parseInt(document.getElementById("numframebefore").value) - 1
+
+    const contentnum = document.getElementById("numframebefore")
+    const contentnumaf = document.getElementById("numframeafter")
+    index = parseInt(contentnum.value) - 1
+
+    if (index >= framecontent.length) {
+        index = framecontent.length - 1
+    }
+
+    if (index < 0) {
+        index = 0
+    }
+
+    contentnum.value = index + 1
+
     addframe(index)
+    const framerange = document.getElementById("frameRange")
+    const frameinput = document.getElementById("frameInput")
     if (index <= (selectedFrame - 1)) {
         selectedFrame++;
+        framerange.value = selectedFrame
+        frameinput.value = selectedFrame
     }
-    const framerange = document.getElementById("frameRange")
-    //const frameinput = 
+    framerange.max = framecontent.length
+    frameinput.max = framecontent.length
+    contentnumaf.max = framecontent.length
+    contentnum.max = framecontent.length
+    document.getElementById("frameNumber").value = framecontent.length
+
+
 }
 
 function addframeafter() {
-    //index +1
+    const contentnum = document.getElementById("numframebefore")
+    const contentnumaf = document.getElementById("numframeafter")
+    index = parseInt(contentnumaf.value)
+
+    if (index > framecontent.length) {
+        index = framecontent.length - 1
+    }
+
+    if (index <= 0) {
+        index = 1
+    }
+
+    if(index === framecontent.length){
+        console.log("test")
+        contentnumaf.value = index + 1
+    }else{
+        contentnumaf.value = index 
+    }
+
+    addframe(index)
+    const framerange = document.getElementById("frameRange")
+    const frameinput = document.getElementById("frameInput")
+    if (index <= (selectedFrame - 1)) {
+        selectedFrame++;
+        framerange.value = selectedFrame
+        frameinput.value = selectedFrame
+    }
+    framerange.max = framecontent.length
+    frameinput.max = framecontent.length
+    contentnumaf.max = framecontent.length
+    contentnum.max = framecontent.length
+    document.getElementById("frameNumber").value = framecontent.length
 }
 
 function gotoframe() {
-
-}
-
-function loadframe() {
-
+    const framerange = document.getElementById("frameRange")
+    const frameinput = document.getElementById("frameInput")
+    if(framerange.value < 1) framerange.value = 1
+    if(framerange.value > framecontent.length) framerange.value = framecontent.length
+    selectedFrame = framerange.value
+    frameinput.value = framerange.value
+    refresh3D()
 }
 
 function removeframe() {
 
+}
+
+function nextframe() {
+    const framerange = document.getElementById("frameRange")
+    framerange.value++
+    gotoframe()
+}
+
+function previousframe() {
+    const framerange = document.getElementById("frameRange")
+    framerange.value--
+    gotoframe()
 }
 
 function addframe(index) {
@@ -155,7 +313,7 @@ function addframe(index) {
         for (let j = 0; j < RES; j++) {
             framecontent[index][i].push([])
             for (let k = 0; k < RES; k++) {
-                framecontent[index][i][j].push(0)
+                framecontent[index][i][j].push("#000000")
             }
         }
     }
@@ -171,34 +329,38 @@ async function init() {
     })
     selectedPlanDirection = getRadioSelectedValue("axe")
     document.getElementById("planNumber").value = 1
+    document.getElementById("paste2D").disabled = true
+    document.getElementById("frameInput").value = framecontent.length
+    document.getElementById("frameRange").value = framecontent.length
+    document.getElementById("frameInput").value = framecontent.length
 }
 
 
-function nextplan(){
+function nextplan() {
 
 }
 
-function previousplan(){
+function previousplan() {
 
 }
 
-function nextaxe(){
+function nextaxe() {
 
 }
 
-function previousaxe(){
+function previousaxe() {
 
-    
+
 }
 
 
 document.addEventListener('keydown', (e) => {
-    switch(e.key){
+    switch (e.key) {
         case "Shift":
             shiftpressed = true;
             break;
     }
-    console.log(e.key)
+    //console.log(e.key)
 });
 
 document.addEventListener('keyup', (e) => {

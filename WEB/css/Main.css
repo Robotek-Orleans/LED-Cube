@@ -303,6 +303,18 @@ input[type=radio]:before {
     background: linear-gradient(45deg, #ac7340, #d2c340);
 }
 
+.purple{
+    background: linear-gradient(45deg, #4047ac, #a63aaa);
+}
+
+.purple:hover{
+    background: linear-gradient(45deg, #ac4096, #aa3a3a);
+}
+
+button:disabled{
+    opacity: 0.2;
+}
+
 @media only screen and (min-width: 450px) {
     .fixedwidth {
         flex-basis: 440px;

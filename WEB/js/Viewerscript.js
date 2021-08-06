@@ -167,7 +167,7 @@ function get_scene_offset(x, y, z) {
     return 1 + x + y * RES + z * RES * RES;
 }
 
-function cube_set_color(x, y, z, color) {
+function cube_set_color(x, y, z, color,refresh = true) {
 
     const s = 40;
     const s2 = 15;
@@ -189,7 +189,7 @@ function cube_set_color(x, y, z, color) {
         scene.children[i].scale.set(s, s, s);
     }
 
-    renderer.render(scene, camera);
+    if(refresh) renderer.render(scene, camera);
 }
 
 function cube_clear(color) {
