@@ -15,6 +15,7 @@ let container, scene, camera, renderer, controls, stats;
 const RES = 8;
 const distanceLED = 40;
 let materialGlow, materialPoint, materialOff, wireFrame;
+let paused = true;
 
 var colorOn = 1;
 
@@ -42,32 +43,16 @@ function initGL() {
     // controls
     controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.maxPolarAngle = Math.PI / 2;
-    controls.autoRotate = true;
-
 
 
     var d = distanceLED;
     var offset_x = -d * (RES - 1) / 2, offset_y = -d * (RES - 1) / 2 + 30, offset_z = -150;
-    var s = 40;
-    var s2 = 15;
+    const s2 = 15;
 
-    // floor
-    var floorMaterial = new THREE.MeshPhongMaterial({
-        color: 0,
-        shininess: 2
-    });
-    var floorGeometry = new THREE.PlaneGeometry(2000, 2000, 10, 10);
-    var floor = new THREE.Mesh(floorGeometry, floorMaterial);
-    floor.position.y = offset_y - 30;
-    floor.rotation.x = -Math.PI / 2;
-    scene.add(floor);
-
-    var textureGlow = THREE.ImageUtils.loadTexture('images/textures/led1.png');
-    var texturePoint = THREE.ImageUtils.loadTexture('images/textures/led4.png');
-    var textureOff = THREE.ImageUtils.loadTexture('images/textures/ledoff.png');
+    var textureGlow = THREE.ImageUtils.loadTexture('images/textures/ledon.svg');
+    var textureOff = THREE.ImageUtils.loadTexture('images/textures/ledoff.svg');
 
     materialGlow = new THREE.SpriteMaterial({ map: textureGlow, color: 0x0, transparent: true });
-    materialPoint = new THREE.SpriteMaterial({ map: texturePoint, color: 0x0, transparent: true });
     materialOff = new THREE.SpriteMaterial({ map: textureOff, color: 0xffffff, transparent: true, opacity: 0.5 });
 
     for (var z = 0; z < RES; z++) {
@@ -77,30 +62,18 @@ function initGL() {
                 sprite.position.set(offset_x + d * x, offset_y + d * y, offset_z + d * z);
                 sprite.scale.set(s2, s2, s2);
                 scene.add(sprite);
-
-                var sprite = new THREE.Sprite(materialGlow.clone());
-                sprite.material.opacity = 0;
-                sprite.position.set(offset_x + d * x, offset_y + d * y, offset_z + d * z);
-                sprite.scale.set(s, s, s);
-                scene.add(sprite);
             }
         }
     }
 
-    for (var z = 0; z < RES; z++) {
-        for (var x = 0; x < RES; x++) {
-            var light = new THREE.PointLight(0x0000ff, 0.0, 700);
-            light.position.set(offset_x + d * x, offset_y, offset_z + d * z);
-
-            scene.add(light);
-        }
-    }
-
     window.addEventListener('resize', onWindowResize, false);
+
+
+    renderer.render(scene, camera);
 }
 
 function displaySelectedPlan(plan, nb) {
-    /*DEBUT TEST WIREFRAME*/
+    //DRAW WIREFRAME
     var geometry = new THREE.Geometry();
 
     plan = plan.toUpperCase()
@@ -116,35 +89,39 @@ function displaySelectedPlan(plan, nb) {
     const fvp = [0,0,1,1,0] // First Vertex Patern
     const lvp = [0,1,1,0,0] // Last Vertex Patern
 
-    if (plan === "Y") {
-        for(let i=0; i < fvp.length; i++){
-            geometry.vertices.push(new THREE.Vector3( x[fvp[i]], y[0]+nb, z[lvp[i]] ))
-        }
-        for(let i=0; i < fvp.length; i++){
-            geometry.vertices.push(new THREE.Vector3( x[fvp[i]], y[0]+nb+pw, z[lvp[i]] ))
-        }
-        geometry.vertices.push(new THREE.Vector3(x[1], y[0]+nb, z[0]))
-    }else if(plan === "X"){
-        for(let i=0; i < fvp.length; i++){
-            geometry.vertices.push(new THREE.Vector3( x[0]+nb, y[fvp[i]], z[lvp[i]] ))
-        }
-        for(let i=0; i < fvp.length; i++){
-            geometry.vertices.push(new THREE.Vector3( x[0]+nb+pw, y[fvp[i]], z[lvp[i]] ))
-        }
-        geometry.vertices.push(new THREE.Vector3(x[0]+nb, y[1], z[0]))
-    }else if(plan === "Z"){
-        for(let i=0; i < fvp.length; i++){
-            geometry.vertices.push(new THREE.Vector3( x[fvp[i]], y[lvp[i]], z[0]+nb ))
-        }
-        for(let i=0; i < fvp.length; i++){
-            geometry.vertices.push(new THREE.Vector3( x[fvp[i]], y[lvp[i]], z[0]+nb+pw ))
-        }
-        geometry.vertices.push(new THREE.Vector3(x[1], y[0], z[0]+nb))
+    switch(plan){
+        case "X":
+            for(let i=0; i < fvp.length; i++){
+                geometry.vertices.push(new THREE.Vector3( x[0]+nb, y[fvp[i]], z[lvp[i]] ))
+            }
+            for(let i=0; i < fvp.length; i++){
+                geometry.vertices.push(new THREE.Vector3( x[0]+nb+pw, y[fvp[i]], z[lvp[i]] ))
+            }
+            geometry.vertices.push(new THREE.Vector3(x[0]+nb, y[1], z[0]))
+            break;
+        case "Y":
+            for(let i=0; i < fvp.length; i++){
+                geometry.vertices.push(new THREE.Vector3( x[fvp[i]], y[0]+nb, z[lvp[i]] ))
+            }
+            for(let i=0; i < fvp.length; i++){
+                geometry.vertices.push(new THREE.Vector3( x[fvp[i]], y[0]+nb+pw, z[lvp[i]] ))
+            }
+            geometry.vertices.push(new THREE.Vector3(x[1], y[0]+nb, z[0]))
+            break;
+        case "Z":
+            for(let i=0; i < fvp.length; i++){
+                geometry.vertices.push(new THREE.Vector3( x[fvp[i]], y[lvp[i]], z[0]+nb ))
+            }
+            for(let i=0; i < fvp.length; i++){
+                geometry.vertices.push(new THREE.Vector3( x[fvp[i]], y[lvp[i]], z[0]+nb+pw ))
+            }
+            geometry.vertices.push(new THREE.Vector3(x[1], y[0], z[0]+nb))
+            break;
     }
 
     wireFrame = new THREE.Line(geometry, new THREE.LineBasicMaterial({ color: 0xff0000 }));
     scene.add(wireFrame);
-    /*FIN TEST WIREFRAME*/
+    renderer.render(scene, camera);
 }
 
 function onWindowResize() {
@@ -152,10 +129,17 @@ function onWindowResize() {
     camera.updateProjectionMatrix();
 
     renderer.setSize(container.offsetWidth, container.offsetHeight);
+
+    renderer.render(scene, camera);
 }
 
+
+//  Set fps to 50 (20 ms) 
 function animate() {
-    requestAnimationFrame(animate);
+    if(paused) return;
+    setTimeout( function() {
+        requestAnimationFrame(animate);
+    } , 20 );
     renderer.render(scene, camera);
 }
 
@@ -169,15 +153,18 @@ function cube_get_color(x, y, z) {
         return -1;
     }
 
-    var i = 2 + (x + y * RES + z * RES * RES) * 2;
+    var i = 1 + (x + y * RES + z * RES * RES) * 2;
     return scene.children[i + 1].material.color.getHex();
 }
 
 function get_scene_offset(x, y, z) {
-    return 2 + (x + y * RES + z * RES * RES) * 2;
+    return 1 + (x + y * RES + z * RES * RES);
 }
 
 function cube_set_color(x, y, z, color) {
+
+    const s = 40;
+    const s2 = 15;
     
     if (!cube_check_coords(x, y, z)) {
         return;
@@ -188,42 +175,15 @@ function cube_set_color(x, y, z, color) {
     if (color == 0x0) {
         // turn off the LED
         scene.children[i].material = materialOff;
-        scene.children[i + 1].material.opacity = 0;
-        scene.children[i + 1].material.color.setHex(color);
+        scene.children[i].scale.set(s2, s2, s2);
     } else {
         // turn on the LED
-        scene.children[i].material = materialPoint.clone();
+        scene.children[i].material = materialGlow.clone();
         scene.children[i].material.color.setHex(color);
-        var hsl = scene.children[i].material.color.getHSL();
-        scene.children[i].material.color.setHSL(hsl.h, hsl.s, 0.7);
-
-        scene.children[i + 1].material.opacity = 1;
-        scene.children[i + 1].material.color.setHex(color);
+        scene.children[i].scale.set(s, s, s);
     }
 
-    // update the light
-    var light = scene.children[2 + RES * RES * RES * 2 + x + z * RES];
-    var lightOff = true;
-
-    for (var yy = 0; yy < RES; yy++) {
-        var ledGlow = scene.children[get_scene_offset(x, yy, z) + 1];
-        if (ledGlow.material.opacity == 1) {
-            if (lightOff) {
-                light.intensity = 1.0;
-                light.color.setHex(ledGlow.material.color.getHex());
-                light.position.y = yy * distanceLED;
-
-                lightOff = false;
-            } else {
-                var mixinColor = ledGlow.material.color.clone();
-                light.color.lerp(mixinColor, 1 / yy);
-            }
-        }
-    }
-
-    if (lightOff) {
-        light.intensity = 0;
-    }
+    renderer.render(scene, camera);
 }
 
 function cube_clear(color) {
@@ -239,3 +199,4 @@ function cube_clear(color) {
         }
     }
 }
+

@@ -162,17 +162,15 @@ function addframe(index) {
     document.getElementById("frameNumber").innerHTML = framecontent.length.toString()
 }
 
-function init() {
+async function init() {
     addframe(0)
     Draw2DMatrix()
-    initGL()
-    animate()
+    await initGL()
     document.getElementsByName("axe").forEach(item => {
         item.addEventListener("click", SelectPlan)
     })
     selectedPlanDirection = getRadioSelectedValue("axe")
-    let select = document.getElementById("planNumber")
-    selectedPlanNumber = parseInt(select.options[select.selectedIndex].value)
+    document.getElementById("planNumber").value = 1
 }
 
 
