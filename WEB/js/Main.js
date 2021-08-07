@@ -7,6 +7,7 @@ let shiftpressed = false
 let framecontent = []
 
 let copied2D = []
+let copied3D = []
 
 
 function paste2D() {
@@ -69,6 +70,30 @@ function copy2D() {
 }
 
 
+function copy3D() {
+    document.getElementById("paste3D").disabled = false
+    copied3D = []
+    for (let x = 0; x < 8; x++) {
+        copied3D.push([])
+        for (let y = 0; y < 8; y++) {
+            copied3D[x].push([])
+            for (let z = 0; z < 8; z++) {
+                copied3D[x][y].push(framecontent[selectedFrame - 1][x][y][z])
+            }
+        }
+    }
+}
+
+function paste3D() {
+    for (let x = 0; x < 8; x++) {
+        for (let y = 0; y < 8; y++) {
+            for (let z = 0; z < 8; z++) {
+                framecontent[selectedFrame - 1][x][y][z] = copied3D[x][y][z]
+            }
+        }
+    }
+    refresh3D()
+}
 
 function Draw2DMatrix() {
     const matrix = document.getElementById("matrix");
@@ -109,13 +134,13 @@ function setColor() {
         LEDelement.setAttribute("fill", color)
         if (selectedPlanDirection === "X") {
             framecontent[selectedFrame - 1][selectedPlanNumber - 1][selected2D[i][0]][selected2D[i][1]] = color
-            cube_set_color(selectedPlanNumber - 1, selected2D[i][0], selected2D[i][1], color.replace('#', '0x'),false)
+            cube_set_color(selectedPlanNumber - 1, selected2D[i][0], selected2D[i][1], color.replace('#', '0x'), false)
         } else if (selectedPlanDirection === "Y") {
             framecontent[selectedFrame - 1][selected2D[i][0]][selectedPlanNumber - 1][selected2D[i][1]] = color
-            cube_set_color(selected2D[i][0], selectedPlanNumber - 1, selected2D[i][1], color.replace('#', '0x'),false)
+            cube_set_color(selected2D[i][0], selectedPlanNumber - 1, selected2D[i][1], color.replace('#', '0x'), false)
         } else {
             framecontent[selectedFrame - 1][selected2D[i][0]][selected2D[i][1]][selectedPlanNumber - 1] = color
-            cube_set_color(selected2D[i][0], selected2D[i][1], selectedPlanNumber - 1, color.replace('#', '0x'),false)
+            cube_set_color(selected2D[i][0], selected2D[i][1], selectedPlanNumber - 1, color.replace('#', '0x'), false)
         }
     }
     renderer.render(scene, camera);
@@ -126,13 +151,13 @@ function refresh2D() {
         for (let j = 0; j < framecontent[selectedFrame - 1][0].length; j++) {
             switch (selectedPlanDirection) {
                 case "X":
-                    cube_set_color(selectedPlanNumber - 1, i, j, framecontent[selectedFrame - 1][selectedPlanNumber - 1][i][j].replace('#', '0x'),false)
+                    cube_set_color(selectedPlanNumber - 1, i, j, framecontent[selectedFrame - 1][selectedPlanNumber - 1][i][j].replace('#', '0x'), false)
                     break
                 case "Y":
-                    cube_set_color(i, selectedPlanNumber - 1, j, framecontent[selectedFrame - 1][i][selectedPlanNumber - 1][j].replace('#', '0x'),false)
+                    cube_set_color(i, selectedPlanNumber - 1, j, framecontent[selectedFrame - 1][i][selectedPlanNumber - 1][j].replace('#', '0x'), false)
                     break
                 default:
-                    cube_set_color(i, j, selectedPlanNumber - 1, framecontent[selectedFrame - 1][i][j][selectedPlanNumber - 1].replace('#', '0x'),false)
+                    cube_set_color(i, j, selectedPlanNumber - 1, framecontent[selectedFrame - 1][i][j][selectedPlanNumber - 1].replace('#', '0x'), false)
             }
         }
     }
@@ -146,7 +171,7 @@ function refresh3D() {
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
             for (let k = 0; k < 8; k++) {
-                cube_set_color(i, j, k, framecontent[indexframe][i][j][k].replace('#', '0x'),false)
+                cube_set_color(i, j, k, framecontent[indexframe][i][j][k].replace('#', '0x'), false)
             }
         }
     }
@@ -240,8 +265,6 @@ function addframebefore() {
     frameinput.max = framecontent.length
     contentnumaf.max = framecontent.length
     contentnum.max = framecontent.length
-    document.getElementById("frameNumber").value = framecontent.length
-
 
 }
 
@@ -258,11 +281,11 @@ function addframeafter() {
         index = 1
     }
 
-    if(index === framecontent.length){
+    if (index === framecontent.length) {
         console.log("test")
         contentnumaf.value = index + 1
-    }else{
-        contentnumaf.value = index 
+    } else {
+        contentnumaf.value = index
     }
 
     addframe(index)
@@ -277,21 +300,46 @@ function addframeafter() {
     frameinput.max = framecontent.length
     contentnumaf.max = framecontent.length
     contentnum.max = framecontent.length
-    document.getElementById("frameNumber").value = framecontent.length
 }
 
 function gotoframe() {
     const framerange = document.getElementById("frameRange")
     const frameinput = document.getElementById("frameInput")
-    if(framerange.value < 1) framerange.value = 1
-    if(framerange.value > framecontent.length) framerange.value = framecontent.length
+    if (framerange.value < 1) framerange.value = 1
+    if (framerange.value > framecontent.length) framerange.value = framecontent.length
     selectedFrame = framerange.value
     frameinput.value = framerange.value
     refresh3D()
 }
 
 function removeframe() {
-
+    const framerange = document.getElementById("frameRange")
+    const frameinput = document.getElementById("frameInput")
+    const frame = framerange.value
+    let confirmremove = confirm('Voulez-vous supprimer la frame numéro ' + frame + ' ?')
+    if (confirmremove && framecontent.length > 1) {
+        framecontent.splice(frame - 1, 1)
+        if (frame > framecontent.length) {
+            framerange.value = framecontent.length
+            frameinput.value = framecontent.length
+            selectedFrame = framecontent.length
+        }
+        const contentnum = document.getElementById("numframebefore")
+        const contentnumaf = document.getElementById("numframeafter")
+        framerange.max = framecontent.length
+        frameinput.max = framecontent.length
+        contentnumaf.max = framecontent.length
+        contentnum.max = framecontent.length
+        document.getElementById("frameNumber").innerHTML = framecontent.length.toString()
+        if (contentnum.value > framecontent.length) {
+            contentnum.value = framecontent.length
+        }
+        if (contentnumaf.value > framecontent.length) {
+            contentnumaf.value = framecontent.length
+        }
+        refresh3D()
+    }
+    if (framecontent.length <= 1) alert('Erreur: vous devez avoir au moins une frame')
 }
 
 function nextframe() {
@@ -330,11 +378,31 @@ async function init() {
     selectedPlanDirection = getRadioSelectedValue("axe")
     document.getElementById("planNumber").value = 1
     document.getElementById("paste2D").disabled = true
+    document.getElementById("paste3D").disabled = true
     document.getElementById("frameInput").value = framecontent.length
     document.getElementById("frameRange").value = framecontent.length
-    document.getElementById("frameInput").value = framecontent.length
 }
 
+
+function reset() {
+    if(!confirm('Voulez-vous vraiment tout effacer?')) return;
+    const contentnum = document.getElementById("numframebefore")
+    const contentnumaf = document.getElementById("numframeafter")
+    const framerange = document.getElementById("frameRange")
+    const frameinput = document.getElementById("frameInput")
+    framecontent = []
+    addframe(0)
+    selectedFrame=1;
+    framerange.value = selectedFrame
+    frameinput.value = selectedFrame
+    contentnumaf.value = selectedFrame
+    contentnum.value = selectedFrame
+    framerange.max = framecontent.length
+    frameinput.max = framecontent.length
+    contentnumaf.max = framecontent.length
+    contentnum.max = framecontent.length
+    refresh3D()
+}
 
 function nextplan() {
 

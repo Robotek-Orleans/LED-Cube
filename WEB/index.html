@@ -25,7 +25,7 @@
             <h1 class="title">Gestion du fichier</h1>
             <button class="hugemargin" disabled>Ouvrir</button>
             <button class="hugemargin mediumtopmargin" disabled>Enregistrer</button>
-            <button class="hugemargin red mediumtopmargin" disabled>Reset</button>
+            <button class="hugemargin red mediumtopmargin" onclick="reset()">Reset</button>
         </div>
 
         <div class="contentviewer fixedwidth">
@@ -55,9 +55,9 @@
                 <input class="inputnumfixedwidth" id="frameInput" type="number" min="1" value="1">
             </div>
             <div class="flexRow">
-                <button class="mediumtopmargin red" disabled>Supprimer la frame</button>
-                <button class="mediumtopmargin purple" disabled>Copier</button>
-                <button class="mediumtopmargin purple" disabled>Coller</button>
+                <button class="mediumtopmargin red" onclick="removeframe()">Supprimer la frame</button>
+                <button class="mediumtopmargin purple" onclick="copy3D()">Copier</button>
+                <button class="mediumtopmargin purple" onclick="paste3D()" id="paste3D" disabled>Coller</button>
             </div>
         </div>
         <div class="contentviewer">
