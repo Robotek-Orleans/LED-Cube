@@ -258,6 +258,9 @@ input[type=color] {
     background-color: #3e4f51;
     border: 2px solid #3e4f51;
     overflow: hidden;
+    align-self: center;
+    width: 120px;
+    height: 80px;
 }
 
 input[type=radio]:checked {
@@ -300,7 +303,31 @@ input[type=radio]:before {
 }
 
 .red:hover {
-    background: linear-gradient(45deg, #ac7340, #d2c340);
+    background: linear-gradient(45deg, #ac4040, #d2a740);
+}
+
+.green:hover {
+    background: linear-gradient(45deg, #48ce57, #58dd9e);
+}
+
+.green {
+    background: linear-gradient(45deg, #62ac40, #3aaa6b);
+}
+
+.blue:hover {
+    background: linear-gradient(45deg, #4089ac, #4080d2)
+}
+
+.blue {
+    background: linear-gradient(45deg, #405bac, #583aaa);
+}
+
+.grey{
+    background: linear-gradient(45deg, #3a484a, #485956);
+}
+
+.grey:hover{
+    background: linear-gradient(45deg, #58756e, #495b58);
 }
 
 .purple{
@@ -322,3 +349,8 @@ button:disabled{
         flex-shrink: 0;
     }
 }
+
+.colorButton{
+    width: 80px;
+}
+

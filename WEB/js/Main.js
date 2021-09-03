@@ -146,6 +146,41 @@ function setColor() {
     renderer.render(scene, camera);
 }
 
+function changeColor(element,color){
+    let colorPicker = document.getElementById("pickColor")
+    let actualColor = colorPicker.value.replace('#', '').match(/.{1,2}/g)
+    console.log(actualColor)
+    if(element.className === "colorButton grey"){
+        element.className = "colorButton " + color
+        switch(color){
+            case 'red':
+                actualColor[0] = "FF"
+                break
+            case 'green':
+                actualColor[1] = "FF"
+                break
+            case 'blue':
+                actualColor[2] = "FF"
+                break
+        }
+    }else{
+        element.className = "colorButton grey"
+        switch(color){
+            case 'red':
+                actualColor[0] = "00"
+                break
+            case 'green':
+                actualColor[1] = "00"
+                break
+            case 'blue':
+                actualColor[2] = "00"
+                break
+        }
+    }
+    console.log(actualColor)
+    colorPicker.value = "#" + actualColor[0] + actualColor[1] + actualColor[2]
+}
+
 function refresh2D() {
     for (let i = 0; i < framecontent[selectedFrame - 1].length; i++) {
         for (let j = 0; j < framecontent[selectedFrame - 1][0].length; j++) {
@@ -210,8 +245,26 @@ function SelectLED(LED) {
         selected2D = [[x, y]]
     }
     LEDelement.setAttribute("stroke", "#3aaa96")
+    let colorPicker = document.getElementById("pickColor")
+    colorPicker.value = LEDelement.getAttribute("fill")
+    let actualColor = LEDelement.getAttribute("fill").replace('#', '').match(/.{1,2}/g)
+    console.log(actualColor)
+    if(actualColor[0].toUpperCase() === "FF"){
+        document.getElementById("redButton").className = "colorButton red"
+    }else{
+        document.getElementById("redButton").className = "colorButton grey"
+    }
+    if(actualColor[1].toUpperCase() === "FF"){
+        document.getElementById("greenButton").className = "colorButton green"
+    }else{
+        document.getElementById("greenButton").className = "colorButton grey"
+    }
+    if(actualColor[2].toUpperCase() === "FF"){
+        document.getElementById("blueButton").className = "colorButton blue"
+    }else{
+        document.getElementById("blueButton").className = "colorButton grey"
+    }
 
-    document.getElementById("pickColor").value = LEDelement.getAttribute("fill");
 }
 
 function SelectPlan() {
@@ -220,10 +273,6 @@ function SelectPlan() {
     selectedPlanNumber = parseInt(range.value)
     displaySelectedPlan(selectedPlanDirection, selectedPlanNumber)
     Draw2DMatrix()
-}
-
-function clear3DViewPlan() {
-    scene.remove(wireFrame)
 }
 
 function getRadioSelectedValue(radioName) {
