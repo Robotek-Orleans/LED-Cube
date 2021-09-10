@@ -6,6 +6,11 @@ void sleepms(int duration)
 	std::this_thread::sleep_for(std::chrono::milliseconds(duration));
 }
 
+int getLocalTimeMS()
+{
+	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
+}
+
 PatternThread::PatternThread()
 {
 	ask_to_stop = false;
@@ -83,7 +88,9 @@ void PatternThread::process()
 
 		while (!ask_to_stop)
 		{
-			if (choix == "1" || choix == "iplusplus")
+			if (choix == "0" || choix == "auto_sapin")
+				pattern_auto_sapin();
+			else if (choix == "1" || choix == "iplusplus")
 				pattern_iplusplus();
 			else if (choix == "2" || choix == "test_set_led_color")
 				pattern_test_set_led_color();
@@ -141,24 +148,27 @@ void PatternThread::set_color(uint16_t x, uint16_t y, uint16_t r, uint16_t g, ui
 	bool overrided = false;
 	/**
 	 * Exceptions :
-	 * 	En (0,4) le rouge se barre en (4,5)
-	 *  En (4,5) le rouge se barre en (partout)
+	 * En (0,4) le rouge allume le (4,5) => le rouge (4,5) est controlé par le rouge (0,4)
+	 * En (1,4) le rouge allume le (5,5)
+	 * En (4,5) le rouge allume le (partout)
+	 * En (5,5) le rouge allume le (partout)
+	 * 
 	 **/
 	if (y == 4)
 	{
 		if (x == 0 || x == 1)
 		{
-			colors[i] = r;
+			colors[i + 4] = r;
 			colors[i + LED_GROUP_ONE_COLOR] = g;
 			colors[i + LED_GROUP_TWO_COLOR] = b;
 			overrided = true;
 		}
 	}
-	else if (y == 6)
+	else if (y == 4)
 	{
-		if (x == 5 || x == 6)
+		if (x == 4 || x == 5)
 		{
-			colors[i] = r;
+			colors[i - 4] = r;
 			colors[i + LED_GROUP_ONE_COLOR] = g;
 			colors[i + LED_GROUP_TWO_COLOR] = b;
 			overrided = true;
@@ -181,32 +191,34 @@ void PatternThread::fill_color_off()
 	is_updated = false;
 }
 
+void PatternThread::pattern_auto_sapin()
+{
+	for (int pattern = 0; pattern < 2 && !ask_to_stop; pattern++)
+	{
+		int start = getLocalTimeMS();
+		loop = 0;
+		do
+		{
+			if (pattern == 0)
+				pattern_guirlande();
+			else if (pattern == 1)
+				pattern_ligne_balai_alterne();
+
+			loop++;
+
+		} while (getLocalTimeMS() - start < 10000 && !ask_to_stop);
+	}
+}
+
 void PatternThread::pattern_iplusplus()
 {
-	if (!reverse)
-	{
-		biton++;
-	}
-	else
-	{
-		biton--;
-	}
+	int biton = loop % LEDS;
 
-	if (biton == 0)
-	{
-		reverse = false;
-	}
-	else if ((biton & (biton >= LEDS - 1)) != 0)
-	{
-		reverse = true;
-	}
-	std::cout << biton << std::endl;
+	std::cout << "i = " << biton << std::endl;
 
 	is_updated = true;
-	for (int i = 0; i < LEDS; i++)
-	{
-		colors[i] = (i == biton) ? HIGH : 0;
-	}
+	fill_color_off();
+	colors[biton] = HIGH;
 	is_updated = false;
 
 	getchar();
@@ -216,16 +228,20 @@ void PatternThread::pattern_test_set_led_color()
 {
 	is_updated = true;
 	// Test de set_color
+	std::cout << "Test set_color" << std::endl;
 	for (int y = 0; y < 8; y++)
 	{
 		for (int x = 0; x < 8; x++)
 		{
-
+			std::cout << "Test set_color (" << x << "," << y << ")" << std::endl;
 			set_color(x, y, HIGH, 0, 0);
+			is_updated = false;
 			getchar();
 			set_color(x, y, 0, HIGH, 0);
+			is_updated = false;
 			getchar();
 			set_color(x, y, 0, 0, HIGH);
+			is_updated = false;
 			getchar();
 			set_color(x, y, 0, 0, 0);
 

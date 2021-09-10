@@ -12,6 +12,7 @@
 #define LOW 0
 
 void sleepms(int duration);
+int getLocalTimeMS();
 
 class PatternThread
 {
@@ -45,6 +46,7 @@ private:
 	void set_color(uint16_t x, uint16_t y, uint16_t r, uint16_t g, uint16_t b);
 	void fill_color_off();
 
+	void pattern_auto_sapin();			// Alterne entre plusieurs patterns
 	void pattern_iplusplus();			// Chromosomes, 2 lignes rouge, puis vert, bleu...
 	void pattern_test_set_led_color();	// R, G, B puis blanc, à la suite
 	void pattern_guirlande();			// Random (avec 10 % d'allumé)
