@@ -32,9 +32,10 @@
 #define RASPBERRY_GPIO_H
 
 #include "base-gpio.h"
-#include "pigpio-master/pigpio.h"
+#include "../include/pigpio/pigpio.h"
+#include "../include/pigpio/pigpiod_if2.h"
 
-typedef std::uint8_t PinNum;
+typedef uint8_t PinNum;
 
 
 /**
@@ -43,7 +44,7 @@ typedef std::uint8_t PinNum;
 *
 * @see https://github.com/joan2937/pigpio
 */
-class RaspberryGPIOPin : public BaseGPIOPin, public PigpiodPin
+class RaspberryGPIOPin : public BaseGPIOPin
 {
 public:
 	/**
@@ -55,14 +56,15 @@ public:
 	~RaspberryGPIOPin() { close(); }
 
 	virtual void close();
+	virtual bool is_open() { return true; }
 
 	virtual void setMode(PinMode pin_mode);
 
-	virtual PinValue getValue() const { return gpioRead(pin_num); }
+	virtual PinValue getValue() { return (PinValue)gpioRead((unsigned)pin_num); }
 	virtual int setValue(PinValue value) { return gpioWrite(pin_num, value); }
 	virtual inline void pulse() { setHigh(); setLow(); }
 	
-private:
+protected:
 	PinNum pin_num;
 };
 
@@ -81,7 +83,7 @@ public:
 
 	int start();
 	int start(int frequency);
-	void stop();
+	int stop();
 
 	int getFrequency() const { return frequency; }
 

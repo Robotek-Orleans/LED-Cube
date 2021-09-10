@@ -46,7 +46,7 @@ void RaspberryGPIOPin::setMode(PinMode pin_mode)
 
 
 
-RaspberryClockPin(PinNum pin_num, int frequency) : RaspberryGPIOPin(pin_num)
+RaspberryClockPin::RaspberryClockPin(PinNum pin_num, int frequency) : RaspberryGPIOPin(pin_num)
 {
 	this->frequency = frequency;
 	setOutput();// TODO: peut-être gpioSetMode(pin_num, PI_ALT0);

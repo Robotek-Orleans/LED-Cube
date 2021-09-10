@@ -1,14 +1,14 @@
 #include "tlc5940-controller.h"
 
 template<unsigned int NUM>
-TLCController<NUM>::TLCController(int pi, PinNum sin_pin, PinNum sclk_pin, PinNum blank_pin, PinNum dcprg_pin, PinNum vprg_pin, PinNum xlat_pin, PinNum gsclk_pin) :
-	sin(sin_pin), sclk_pin(sclk_pin), blank_pin(blank_pin), dcprg_pin(dcprg_pin), vprg_pin(vprg_pin), xlat_pin(xlat_pin), gsclk_pin(gsclk)))
+TLCController<NUM>::TLCController(PinNum sin_pin, PinNum sclk_pin, PinNum blank_pin, PinNum dcprg_pin, PinNum vprg_pin, PinNum xlat_pin, PinNum gsclk_pin) :
+	sin_p(sin_pin), sclk(sclk_pin), blank(blank_pin), dcprg(dcprg_pin), vprg(vprg_pin), xlat(xlat_pin), gsclk(gsclk)
 {
 	// envoi d'un paquet d'informations à la mémoire du TLC
-	sin.setOutput();// pin de valeur
-	sin.setLow();
+	sin_p.setOutput();// pin de valeur
+	sin_p.setLow();
 
-	sclk.setOutput();// tick pour le sin
+	sclk.setOutput();// tick pour le sin_pin
 	sclk.setLow();
 
 	xlat.setOutput();// passe le paquet de l'input shift register vers le registre de stockage
@@ -51,7 +51,7 @@ void TLCController<NUM>::clear()
 template<unsigned int NUM>
 TLCController<NUM>::~TLCController()
 {
-	sin.close();
+	sin_p.close();
 	sclk.close();
 	xlat.close();
 	dcprg.close();
@@ -78,10 +78,10 @@ void TLCController<NUM>::update()
 			{
 				PinValue value = getPinValueForChannel(channel_counter, i);
 
-				sin_pin.setValue(value);
-				sclk_pin.pulse();
+				sin_p.setValue(value);
+				sclk.pulse();
 
-				gsclk_pin.pulse();
+				gsclk.pulse();
 				gsclk_counter++;
 			}
 
@@ -89,7 +89,7 @@ void TLCController<NUM>::update()
 		}
 		else
 		{
-			sin_pin.setLow();
+			sin_p.setLow();
 
 			gsclk.pulse();
 			gsclk_counter++;
@@ -117,27 +117,27 @@ void TLCController<NUM>::metronome()
 
 
 template<unsigned int NUM>
-void TLCController<NUM>::doFirstCycle()
-{
-	vprg.pulse();
-	updateInit();
-	update();
-	updatePost();
-	sclk.pulse();
-}
-
-template<unsigned int NUM>
 void TLCController<NUM>::startClock()
 {
-	blank.resume();
-	gsclk.resume();
+	blank.start();
+	gsclk.start();
 }
 
 template<unsigned int NUM>
 void TLCController<NUM>::stopClock()
 {
-	blank.pause();
-	gsclk.pause();
+	blank.stop();
+	gsclk.stop();
+}
+
+template<unsigned int NUM>
+void TLCController<NUM>::doFirstCycle()
+{
+	vprg.pulse();
+	TLCController<NUM>::updateInit();
+	update();
+	TLCController<NUM>::updatePost();
+	sclk.pulse();
 }
 
 template<unsigned int NUM>

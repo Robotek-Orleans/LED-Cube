@@ -48,7 +48,7 @@ template <unsigned int NUM>
 class TLCController
 {
 public:
-	TLCController(int pi, PinNum sin_pin, PinNum sclk_pin, PinNum blank_pin, PinNum dcprg_pin, PinNum vprg_pin, PinNum xlat_pin, PinNum gsclk_pin);
+	TLCController(PinNum sin_pin, PinNum sclk_pin, PinNum blank_pin, PinNum dcprg_pin, PinNum vprg_pin, PinNum xlat_pin, PinNum gsclk_pin);
 	virtual ~TLCController();
 
 	virtual void setChannel(unsigned int channel, color_t value);
@@ -58,13 +58,14 @@ public:
 	virtual void update();
 	virtual void metronome();
 
-protected:
-	virtual void doFirstCycle();
 	virtual void startClock();
 	virtual void stopClock();
+
+protected:
+	virtual void doFirstCycle();
 	virtual PinValue getPinValueForChannel(unsigned int channel, unsigned int bit);
 
-	RaspberryGPIOPin sin;
+	RaspberryGPIOPin sin_p;
 	RaspberryGPIOPin sclk;
 	RaspberryGPIOPin xlat;
 	RaspberryGPIOPin dcprg;

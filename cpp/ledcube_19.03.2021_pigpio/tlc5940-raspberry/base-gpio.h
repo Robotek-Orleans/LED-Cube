@@ -76,7 +76,7 @@ public:
 
 	inline void pulse() { setHigh(); setLow(); }
 
-private:
+protected:
 	PinMode pin_mode;
 };
 

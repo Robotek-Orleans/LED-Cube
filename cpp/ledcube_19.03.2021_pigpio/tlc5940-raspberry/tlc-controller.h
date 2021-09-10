@@ -32,6 +32,7 @@
 #include <array>
 
 #include "gpio.h"
+#include "raspberry-gpio.h"
 
 #ifndef TLC_CONTROLLER_H_
 #define	TLC_CONTROLLER_H_
