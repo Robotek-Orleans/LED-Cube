@@ -31,20 +31,19 @@
 #include "tlc5940-raspberry/tlc-controller.h"
 #include "tlc5940-raspberry/raspberry-gpio.h"
 
-#include <wiringPi.h>
-#include <iostream>
 #include <thread>
-#include <chrono>
+#include <cstdlib>
+#include <signal.h>
+#include "PatternThread.h"
 
-//uint64_t bitpattern;
-uint16_t biton;
-const uint16_t LEDS = 192;
+bool update_thread_running;
+bool update_thread_stop;
+PatternThread *pattern_thread;
 
-
-void update_thread()
+void update_thread(uint16_t *colors, bool *colors_is_updated)
 {
-
-	std::cout << "update_thread" << std::endl;
+	update_thread_running = true;
+	std::cout << "[update_thread] : starting..." << std::endl;
 
 	RaspberryGPIOPin tlc_sin(23);
 	RaspberryGPIOPin tlc_sclk(24);
@@ -53,7 +52,7 @@ void update_thread()
 	RaspberryGPIOPin tlc_vprg(6); // Not used in this example
 	RaspberryGPIOPin tlc_xlat(17);
 	RaspberryGPIOPin tlc_gsclk(18);
-	
+
 	tlc_sin.setOutput();
 	tlc_sclk.setOutput();
 	tlc_blank.setOutput();
@@ -61,80 +60,81 @@ void update_thread()
 	tlc_vprg.setOutput();
 	tlc_xlat.setOutput();
 	tlc_gsclk.setOutput();
-	
+
 	_12TLCController tlc_controller(&tlc_sin, &tlc_sclk, &tlc_blank, &tlc_dcprg, &tlc_vprg, &tlc_xlat, &tlc_gsclk);
-	
 
-	std::cout << "update_thread : start" << std::endl;
-	while(true)
+	int last_check = 0;
+
+	std::cout << "[update_thread] : start" << std::endl;
+
+	while (!update_thread_stop)
 	{
-		for(int i = 0; i < LEDS; i++)
+		if (!*colors_is_updated)
 		{
-			//tlc_controller.setChannel(i, (bitpattern & (1 << i)) ? 0xFF : 0);
-			//tlc_controller.setChannel(i, 4095);
-			if(i == biton)
-				tlc_controller.setChannel(i, 4095);
-			else
-				tlc_controller.setChannel(i, 0);
+			for (int i = 0; i < LEDS; i++)
+			{
+				tlc_controller.setChannel(i, colors[i]);
+			}
+			tlc_controller.update();
+			*colors_is_updated = true;
 		}
-		tlc_controller.update();
+		tlc_controller.metronome(); // ligther than update
 	}
+
+	for (int i = 0; i < LEDS; i++)
+	{
+		tlc_controller.setChannel(i, 0);
+	}
+	tlc_controller.update();
+
+	update_thread_running = false;
 }
 
-void pattern_thread()
+void signal_callback_handler(int signum)
 {
-	bool reverse = false;
-	biton = -1;
-	std::cout << "pattern_thread" << std::endl;
-	while(true)
-	{
-		
-		if(!reverse)
-		{
-			biton++;
-		}
-		else
-		{
-			biton--;
-		}
+	std::cout << "Caught signal " << signum << std::endl;
 
-		if(biton == 0)
-		{
-			reverse = false;
-		}
-		else if((biton & (biton>=LEDS-1)) != 0)
-		{
-			reverse = true;
-		}
-		std::cout << biton << std::endl;
-		//std::chrono::milliseconds duration(1000);
-		//std::this_thread::sleep_for(duration);
-		getchar();
-	}
+	update_thread_stop = true;
+
+	pattern_thread->close();
+
+	while (update_thread_running)
+		sleepms(10);
+
+	// Terminate program
+	exit(signum);
 }
 
-int main()
+int main(int argc, char *argv[])
 {
 	std::cout << "initialisation" << std::endl;
 	// Initialize GPIO Pins
 
-	
-
-	if(wiringPiSetupGpio() == -1)
+	if (wiringPiSetupGpio() == -1)
 	{
 		throw std::runtime_error("Could not setup wiringPi, running as root?");
 	}
 
-	biton = 0;
+	std::cout << "initialized" << std::endl;
 
-	std::cout << "initialise" << std::endl;
+	update_thread_running = true;
+	update_thread_stop = false;
+	pattern_thread = new PatternThread();
+	std::thread thread1(update_thread, pattern_thread->getPatternColors(), pattern_thread->isUpdated());
+	signal(SIGINT, signal_callback_handler);
 
-	std::thread thread1(update_thread);
-	std::thread thread2(pattern_thread);
-
-	std::cout << "demarre" << std::endl;
+	sleepms(1);
+	if (argc > 1)
+	{
+		std::string default_pattern(argv[1], strlen(argv[1]));
+		pattern_thread->setDefaultPattern(default_pattern);
+	}
+	pattern_thread->start();
+	std::cout << "started" << std::endl;
 
 	thread1.join();
-	thread2.join();
-}
+	pattern_thread->close();
+	pattern_thread->join();
 
+	std::cout << "done" << std::endl;
+}
