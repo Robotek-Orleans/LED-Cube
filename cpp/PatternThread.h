@@ -7,7 +7,6 @@
 #include <thread>
 #include <string.h>
 
-#define LEDS 192
 #define HIGH 4095
 #define LOW 0
 
@@ -30,11 +29,15 @@ public:
 
 	void setDefaultPattern(std::string default_pattern);
 
+	static const int WIDTH = 8;
+	static const int HEIGHT = 8;
+	static const int LEDS = 64;	   // 8*8
+	static const int COLORS = 192; // 64*3
+
 private:
 	uint16_t *colors;
 	std::thread *thread;
 	int loop;
-	uint16_t biton;
 	bool reverse;
 	bool is_running = false;
 	bool ask_to_stop = false; // demande d'arret
@@ -55,4 +58,5 @@ private:
 	void pattern_set_led_value();		// Control manuel
 	void pattern_ligne_balai();			// Une ligne va de la gauche vers la droite et inversement
 	void pattern_ligne_balai_alterne(); // Une ligne va de la gauche vers la droite et inversement (en alterné)
+	void pattern_serpentin();			// Un serpentin qui part du centre
 };

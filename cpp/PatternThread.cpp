@@ -14,8 +14,8 @@ int getLocalTimeMS()
 PatternThread::PatternThread()
 {
 	ask_to_stop = false;
-	colors = new uint16_t[LEDS];
-	for (int i = 0; i < LEDS; i++)
+	colors = new uint16_t[COLORS];
+	for (int i = 0; i < COLORS; i++)
 		colors[i] = 0;
 	is_updated = false;
 	default_pattern = "";
@@ -56,7 +56,6 @@ void PatternThread::setDefaultPattern(std::string default_pattern)
 void PatternThread::process()
 {
 	reverse = false;
-	biton = -1;
 
 	std::string choix;
 
@@ -186,7 +185,7 @@ void PatternThread::set_color(uint16_t x, uint16_t y, uint16_t r, uint16_t g, ui
 void PatternThread::fill_color_off()
 {
 	is_updated = true;
-	for (int i = 0; i < LEDS; i++)
+	for (int i = 0; i < COLORS; i++)
 		colors[i] = 0;
 	is_updated = false;
 }
@@ -212,7 +211,7 @@ void PatternThread::pattern_auto_sapin()
 
 void PatternThread::pattern_iplusplus()
 {
-	int biton = loop % LEDS;
+	int biton = loop % COLORS;
 
 	std::cout << "i = " << biton << std::endl;
 
@@ -229,9 +228,9 @@ void PatternThread::pattern_test_set_led_color()
 	is_updated = true;
 	// Test de set_color
 	std::cout << "Test set_color" << std::endl;
-	for (int y = 0; y < 8; y++)
+	for (int y = 0; y < HEIGHT; y++)
 	{
-		for (int x = 0; x < 8; x++)
+		for (int x = 0; x < WIDTH; x++)
 		{
 			std::cout << "Test set_color (" << x << "," << y << ")" << std::endl;
 			set_color(x, y, HIGH, 0, 0);
@@ -259,9 +258,9 @@ void PatternThread::pattern_test_set_led_color()
 void PatternThread::pattern_guirlande()
 {
 	is_updated = true;
-	for (int y = 0; y < 8; y++)
+	for (int y = 0; y < HEIGHT; y++)
 	{
-		for (int x = 0; x < 8; x++)
+		for (int x = 0; x < WIDTH; x++)
 		{
 
 			if (rand() < RAND_MAX * 0.1)
@@ -289,9 +288,9 @@ void PatternThread::pattern_carre_plein()
 	int phase = loop % 5;
 
 	is_updated = true;
-	for (int y = 0; y < 8; y++)
+	for (int y = 0; y < HEIGHT; y++)
 	{
-		for (int x = 0; x < 8; x++)
+		for (int x = 0; x < WIDTH; x++)
 		{
 
 			// Circle
@@ -325,9 +324,9 @@ void PatternThread::pattern_carre_bord()
 	uint16_t b = phase_color & 0b001 ? HIGH : 0;
 
 	is_updated = true;
-	for (int y = 0; y < 8; y++)
+	for (int y = 0; y < HEIGHT; y++)
 	{
-		for (int x = 0; x < 8; x++)
+		for (int x = 0; x < WIDTH; x++)
 		{
 			// Circle
 			//distance = std::sqrt((x0 - x)*(x0 - x) + (y0 - y)*(y0 - y));
@@ -358,7 +357,7 @@ void PatternThread::pattern_set_led_value()
 	std::cout << "y = ";
 	std::cin >> y;
 
-	if (x < 0 || y < 0 || 7 < x || 7 < y)
+	if (x < 0 || y < 0 || WIDTH <= x || HEIGHT <= y)
 	{
 		std::cout << "ERROR: Position en dehors du cube" << std::endl;
 		return;
@@ -416,7 +415,7 @@ void PatternThread::pattern_ligne_balai_alterne()
 	set_color(phase_x2, 5, HIGH, LOW, HIGH);
 	set_color(phase_x, 6, LOW, HIGH, HIGH);
 	set_color(phase_x2, 7, HIGH, HIGH, HIGH);
-	// for (int y = 0; y < 8; y++)
+	// for (int y = 0; y < HEIGHT; y++)
 	// {
 	// 	if (y % 2 == 0)
 	// 		set_color(phase_x, y, HIGH, HIGH, HIGH);

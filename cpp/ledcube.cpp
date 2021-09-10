@@ -71,7 +71,7 @@ void update_thread(uint16_t *colors, bool *colors_is_updated)
 	{
 		if (!*colors_is_updated)
 		{
-			for (int i = 0; i < LEDS; i++)
+			for (int i = 0; i < PatternThread::COLORS; i++)
 			{
 				tlc_controller.setChannel(i, colors[i]);
 			}
@@ -81,7 +81,7 @@ void update_thread(uint16_t *colors, bool *colors_is_updated)
 		tlc_controller.metronome(); // ligther than update
 	}
 
-	for (int i = 0; i < LEDS; i++)
+	for (int i = 0; i < PatternThread::COLORS; i++)
 	{
 		tlc_controller.setChannel(i, 0);
 	}
