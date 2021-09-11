@@ -7,6 +7,7 @@
 #include <thread>
 #include <string.h>
 
+#define PI 3.1415926535
 #define HIGH 4095
 #define LOW 0
 
@@ -59,4 +60,5 @@ private:
 	void pattern_ligne_balai();			// Une ligne va de la gauche vers la droite et inversement
 	void pattern_ligne_balai_alterne(); // Une ligne va de la gauche vers la droite et inversement (en alterné)
 	void pattern_serpentin();			// Un serpentin qui part du centre
+	void pattern_radar();				// Une aiguille qui tourne dans le sens horaire
 };

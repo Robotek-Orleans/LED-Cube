@@ -11,6 +11,11 @@ int getLocalTimeMS()
 	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
 }
 
+double modulo(double a, double b)
+{
+	return a - ((int)(a / b)) * b;
+}
+
 PatternThread::PatternThread()
 {
 	ask_to_stop = false;
@@ -64,14 +69,17 @@ void PatternThread::process()
 
 		std::cout << std::endl
 				  << "Choix du pattern :" << std::endl
-				  << " 1 - i++ (alterne)" << std::endl
-				  << " 2 - test set_led_color (R,G,B a la suite)" << std::endl
-				  << " 3 - Guirlande" << std::endl
-				  << " 4 - Carre plein" << std::endl
-				  << " 5 - Carre bord" << std::endl
-				  << " 6 - Set LED Value" << std::endl
-				  << " 7 - Ligne Balai" << std::endl
-				  << " 8 - Ligne Balai (Alterne)" << std::endl
+				  << " 0  - Auto-sapin (plusieurs patterns)" << std::endl
+				  << " 1  - i++ (alterne)" << std::endl
+				  << " 2  - test set_led_color (R,G,B a la suite)" << std::endl
+				  << " 3  - Guirlande" << std::endl
+				  << " 4  - Carre plein" << std::endl
+				  << " 5  - Carre bord" << std::endl
+				  << " 6  - Set LED Value" << std::endl
+				  << " 7  - Ligne Balai" << std::endl
+				  << " 8  - Ligne Balai (Alterne)" << std::endl
+				  << " 9  - Serpentin" << std::endl
+				  << " 10 - Radar" << std::endl
 				  << ">> ";
 
 		if (default_pattern != "")
@@ -105,6 +113,10 @@ void PatternThread::process()
 				pattern_ligne_balai();
 			else if (choix == "8" || choix == "ligne_balai_alterne")
 				pattern_ligne_balai_alterne();
+			else if (choix == "9" || choix == "serpentin")
+				pattern_serpentin();
+			else if (choix == "10" || choix == "radar")
+				pattern_radar();
 			else
 			{
 				std::cout << "ERROR: Choice Unknown \"" << choix << "\"" << std::endl;
@@ -192,9 +204,10 @@ void PatternThread::fill_color_off()
 
 void PatternThread::pattern_auto_sapin()
 {
-	for (int pattern = 0; pattern < 2 && !ask_to_stop; pattern++)
+	for (int pattern = 0; pattern < 4 && !ask_to_stop; pattern++)
 	{
 		int start = getLocalTimeMS();
+		fill_color_off();
 		loop = 0;
 		do
 		{
@@ -202,6 +215,10 @@ void PatternThread::pattern_auto_sapin()
 				pattern_guirlande();
 			else if (pattern == 1)
 				pattern_ligne_balai_alterne();
+			else if (pattern == 2)
+				pattern_serpentin();
+			else if (pattern == 3)
+				pattern_radar();
 
 			loop++;
 
@@ -424,4 +441,93 @@ void PatternThread::pattern_ligne_balai_alterne()
 	// }
 	is_updated = false;
 	sleepms(100);
+}
+
+void PatternThread::pattern_serpentin()
+{
+	int phase_led = loop % LEDS;
+
+	int carre = sqrt(phase_led) / 2;
+
+	int led_par_bord = (carre + 1) * 2;
+
+	int first_led_du_carre = (led_par_bord - 2) * (led_par_bord - 2);
+	int phase_led_du_carre = phase_led - first_led_du_carre;
+
+	int phase_bord_du_carre = phase_led_du_carre / (led_par_bord - 1);
+	int phase_led_du_bord = phase_led_du_carre % (led_par_bord - 1);
+
+	int x, y;
+	if (phase_bord_du_carre == 0)
+	{
+		x = 3 - carre;
+		y = 3 + carre - phase_led_du_bord;
+	}
+	else if (phase_bord_du_carre == 1)
+	{
+		x = 4 - carre + phase_led_du_bord;
+		y = 3 - carre;
+	}
+	else if (phase_bord_du_carre == 2)
+	{
+		x = 4 + carre;
+		y = 4 - carre + phase_led_du_bord;
+	}
+	else if (phase_bord_du_carre == 3)
+	{
+		x = 3 + carre - phase_led_du_bord;
+		y = 4 + carre;
+	}
+
+	int phase_color = (loop / LEDS) % 2;
+	if (phase_color == 0)
+	{
+		set_color(x, y, 0, HIGH, HIGH);
+	}
+	else if (phase_color == 1)
+	{
+		set_color(x, y, 0, 0, 0);
+	}
+
+	is_updated = false;
+	sleepms(74); // 10000 ms / 128 - 4 ms
+}
+
+void PatternThread::pattern_radar()
+{
+	float phase_theta = (loop % 100) / 100.0 * 2 * PI;
+	float theta, theta_diff, facteur;
+	float distance;
+	float x0 = 3.5, y0 = 3.5;
+
+	for (int y = 0; y < HEIGHT; y++)
+	{
+		for (int x = 0; x < WIDTH; x++)
+		{
+			// Circle
+			// distance = std::sqrt((x0 - x) * (x0 - x) + (y0 - y) * (y0 - y));
+			theta = atan((y - y0) / (x - x0));
+			if ((x - x0) < 0)
+				theta += PI;
+			theta = modulo(theta, 2 * PI);
+
+			theta_diff = abs(modulo(abs(theta - phase_theta), 2 * PI) - PI);
+
+			facteur = 1 - theta_diff / PI;
+			facteur *= facteur * facteur * facteur;
+			if (facteur < 0)
+			{
+				facteur = 0;
+			}
+			else if (facteur > 1.0)
+			{
+				facteur = 1;
+			}
+
+			set_color(x, y, 0, 4095 * facteur, 4095 * facteur);
+		}
+	}
+
+	is_updated = false;
+	sleepms(50);
 }
