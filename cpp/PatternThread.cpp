@@ -175,7 +175,9 @@ void PatternThread::set_color(uint16_t x, uint16_t y, uint16_t r, uint16_t g, ui
 	}
 
 	// Exceptions (pb de cablages)
-	bool overrided = false;
+	bool overrideRed = false;
+	bool overrideGreen = false;
+	bool overrideBlue = false;
 	/**
 	 * Exceptions :
 	 * En (0,4) le rouge allume le (4,5) => le rouge (4,5) est controlé par le rouge (0,4)
@@ -204,13 +206,81 @@ void PatternThread::set_color(uint16_t x, uint16_t y, uint16_t r, uint16_t g, ui
 	// 		overrided = true;
 	// 	}
 	// }
-
-	if (!overrided)
+	if (x == 0 && y == 2)
 	{
-		colors[i] = r;
-		colors[i + LED_GROUP_ONE_COLOR] = g;
-		colors[i + LED_GROUP_TWO_COLOR] = b;
+		// rouge affiche rien...
+		// overrideRed = true;
 	}
+	else if (x == 6 && y == 2)
+	{
+		// Vert affiche rien... (faux contact dans les fils)
+		// overrideGreen = true;
+	}
+	else if (x == 0 && y == 4)
+	{
+		// Rouge affiche le rouge en (4,5)
+		overrideRed = true;
+	}
+	else if (x == 1 && y == 4)
+	{
+		// Rouge affiche le rouge en (5,5)
+		overrideRed = true;
+	}
+	else if (x == 2 && y == 4)
+	{
+		// Rouge affiche rien... (maix un rouge clignote comme le 6,2 vert)
+		colors[102] = r; // Valeur pour (6,5)
+		overrideRed = true;
+	}
+	else if (x == 3 && y == 4)
+	{
+		// Rouge affiche rien...
+		colors[103] = r; // Valeur pour (7,5)
+		overrideRed = true;
+	}
+	else if (x == 6 && y == 4)
+	{
+		// Vert affiche rien... mais un vert clignote en (5,4)
+	}
+	else if (x == 7 && y == 4)
+	{
+		// Vert affiche rien... mais un vert clignote en (4,4)
+		overrideGreen = true;
+	}
+	else if (x == 4 && y == 5)
+	{
+		// Rouge affiche rien...
+		colors[96] = r; // Valeur pour (0,4)
+		overrideRed = true;
+	}
+	else if (x == 5 && y == 5)
+	{
+		// Rouge affiche rien...
+		colors[97] = r; // Valeur pour (1,4)
+		overrideRed = true;
+	}
+	else if (x == 6 && y == 5)
+	{
+		// Rouge affiche le rouge en (2,4)
+		overrideRed = true;
+	}
+	else if (x == 7 && y == 5)
+	{
+		// Rouge affiche le rouge en (3,4)
+		overrideRed = true;
+	}
+	else if (x == 3 && y == 6)
+	{
+		// Rouge affiche rien
+		// overrideRed = true;
+	}
+
+	if (!overrideRed)
+		colors[i] = r;
+	if (!overrideGreen)
+		colors[i + LED_GROUP_ONE_COLOR] = g;
+	if (!overrideBlue)
+		colors[i + LED_GROUP_TWO_COLOR] = b;
 }
 
 void PatternThread::fill_color_off()
