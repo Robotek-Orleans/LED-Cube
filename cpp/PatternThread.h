@@ -23,6 +23,8 @@ public:
 	void start();
 	void close() { ask_to_stop = true; };
 	void join();
+	void terminate();
+	void forcequit();
 	bool isRunning() const { return is_running; };
 	bool *isUpdated() { return &is_updated; };
 
@@ -39,7 +41,6 @@ private:
 	uint16_t *colors;
 	std::thread *thread;
 	int loop;
-	bool reverse;
 	bool is_running = false;
 	bool ask_to_stop = false; // demande d'arret
 	bool is_updated;

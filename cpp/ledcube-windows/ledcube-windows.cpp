@@ -168,5 +168,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		DispatchMessage(&msg);
 	}
 
-	return 0;
+	pattern_thread.forcequit();
+
+	return msg.wParam;
 }

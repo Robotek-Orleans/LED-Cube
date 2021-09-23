@@ -50,6 +50,7 @@ class TLCController
 		virtual void clear();
 
 		virtual void update();
+		virtual void metronome();
 
 	protected:
 		virtual void updateInit();
@@ -173,6 +174,17 @@ void TLCController<NUM>::update()
 	// and pulse the XLAT signal, so all data is latched in
 	this->updatePost();
 }
+
+template<unsigned int NUM>
+void TLCController<NUM>::metronome()
+{
+	blank.pulse();
+	for (int i = 0; i < 4096; i++) {
+		gsclk.pulse();
+	}
+	blank.pulse();
+}
+
 
 template<unsigned int NUM>
 void TLCController<NUM>::updateInit()

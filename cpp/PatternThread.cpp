@@ -53,6 +53,23 @@ void PatternThread::join()
 		thread->join();
 }
 
+void PatternThread::terminate()
+{
+	if (thread)
+		delete thread;
+	thread = nullptr;
+	is_running = false;
+}
+
+void PatternThread::forcequit()
+{
+	close();
+	sleepms(50);
+	if (is_running)
+		terminate();
+	join();
+}
+
 void PatternThread::setDefaultPattern(std::string default_pattern)
 {
 	this->default_pattern = default_pattern;
@@ -60,7 +77,7 @@ void PatternThread::setDefaultPattern(std::string default_pattern)
 
 void PatternThread::process()
 {
-	reverse = false;
+	is_running = true;
 
 	std::string choix;
 
@@ -125,6 +142,8 @@ void PatternThread::process()
 			loop++;
 		}
 	} while (!ask_to_stop);
+
+	is_running = false;
 }
 
 #define LED_WIDTH 8			   // One line with 1 color
@@ -165,26 +184,26 @@ void PatternThread::set_color(uint16_t x, uint16_t y, uint16_t r, uint16_t g, ui
 	 * En (5,5) le rouge allume le (partout)
 	 * 
 	 **/
-	if (y == 4)
-	{
-		if (x == 0 || x == 1)
-		{
-			colors[i + 4] = r;
-			colors[i + LED_GROUP_ONE_COLOR] = g;
-			colors[i + LED_GROUP_TWO_COLOR] = b;
-			overrided = true;
-		}
-	}
-	else if (y == 4)
-	{
-		if (x == 4 || x == 5)
-		{
-			colors[i - 4] = r;
-			colors[i + LED_GROUP_ONE_COLOR] = g;
-			colors[i + LED_GROUP_TWO_COLOR] = b;
-			overrided = true;
-		}
-	}
+	// if (y == 4)
+	// {
+	// 	if (x == 0 || x == 1)
+	// 	{
+	// 		colors[i + 4] = r;
+	// 		colors[i + LED_GROUP_ONE_COLOR] = g;
+	// 		colors[i + LED_GROUP_TWO_COLOR] = b;
+	// 		overrided = true;
+	// 	}
+	// }
+	// else if (y == 4)
+	// {
+	// 	if (x == 4 || x == 5)
+	// 	{
+	// 		colors[i - 4] = r;
+	// 		colors[i + LED_GROUP_ONE_COLOR] = g;
+	// 		colors[i + LED_GROUP_TWO_COLOR] = b;
+	// 		overrided = true;
+	// 	}
+	// }
 
 	if (!overrided)
 	{
