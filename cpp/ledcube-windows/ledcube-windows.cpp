@@ -33,7 +33,7 @@ int getIColorPos(int x, int y)
 
 void PaintWindow(HDC hdc, RECT rcMaxPaint)
 {
-	int i_color;
+	int i_color, red, green, blue;
 	HBRUSH hBrush;
 	int left, top, right, bottom;
 
@@ -49,14 +49,67 @@ void PaintWindow(HDC hdc, RECT rcMaxPaint)
 
 			i_color = getIColorPos(x, y);
 
-			// TODO : Ajouter les exceptions sur certains rouges
+			red = colors[i_color] * 255 / 4095;
+			green = colors[i_color + 16] * 255 / 4095;
+			blue = colors[i_color + 32] * 255 / 4095;
 
-			hBrush = CreateSolidBrush(RGB(colors[i_color] * 255 / 4095,
-										  colors[i_color + 16] * 255 / 4095,
-										  colors[i_color + 32] * 255 / 4095));
+			if (x == 0 && y == 2)
+			{
+				// Rouge affiche rien...
+			}
+			else if (x == 6 && y == 2)
+			{
+				// Vert affiche rien... (faux contact dans les fils)
+			}
+			else if (x == 0 && y == 4)
+			{
+				// Rouge affiche le rouge en (4,5)
+			}
+			else if (x == 1 && y == 4)
+			{
+				// Rouge affiche le rouge en (5,5)
+			}
+			else if (x == 2 && y == 4)
+			{
+				// Rouge affiche rien...
+				red = colors[102]; // Valeur en (6,5)
+			}
+			else if (x == 3 && y == 4)
+			{
+				// Rouge affiche rien...
+				red = colors[103]; // Valeur en (7,5)
+			}
+			else if (x == 7 && y == 4)
+			{
+				// Vert affiche rien...
+			}
+			else if (x == 4 && y == 5)
+			{
+				// Rouge affiche rien...
+				red = colors[96]; // Valeur en (0,4)
+			}
+			else if (x == 5 && y == 5)
+			{
+				// Rouge affiche rien...
+				red = colors[97]; // Valeur en (1,4)
+			}
+			else if (x == 6 && y == 5)
+			{
+				// Rouge affiche le rouge en (2,4)
+			}
+			else if (x == 7 && y == 5)
+			{
+				// Rouge affiche le rouge en (3,4)
+			}
+			else if (x == 3 && y == 6)
+			{
+				// Rouge affiche rien
+			}
+
+			hBrush = CreateSolidBrush(RGB(red, green, blue));
 			if (hBrush == NULL)
 			{
-				std::cout << "[PaintWindow] CreateSolidBrush failed : " << RGB(colors[i_color] * 255 / 4095, colors[i_color + 16] * 255 / 4095, colors[i_color + 32] * 255 / 4095) << std::endl;
+				std::cout << "[PaintWindow] CreateSolidBrush failed : " << RGB(red, green, blue) << std::endl;
 			}
 			SelectObject(hdc, hBrush);
 			Rectangle(hdc, left, top, right, bottom);
