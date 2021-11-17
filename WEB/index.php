@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 
+
 <head>
     <title>LED cube IHM</title>
     <meta http-equiv="content-type" content="text/html;charset=utf-8" />
@@ -23,7 +24,7 @@
 
         <div class="contentviewer">
             <h1 class="title">Gestion du fichier</h1>
-            <button class="hugemargin" disabled>Ouvrir</button>
+            <input class="hugemargin" type="text" placeholder="Nom du fichier">
             <button class="hugemargin mediumtopmargin" disabled>Enregistrer</button>
             <button class="hugemargin red mediumtopmargin" onclick="reset()">Reset</button>
         </div>
