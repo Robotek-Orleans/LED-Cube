@@ -206,3 +206,8 @@ function cube_clear(color) {
     }
 }
 
+function clear3DViewPlan() {
+    scene.remove(wireFrame);
+    renderer.render(scene, camera);
+}
+

@@ -100,10 +100,11 @@
         <div class="contentviewer fixedwidth">
             <h1 class="title">Choix de la couleur</h1>
             <div class="flexRow hugetopmargin">
-                <p>Choisissez votre couleur: </p>
-                <input type="color" id="pickColor">
+                <button id="redButton" class="colorButton grey" onclick="changeColor(this,'red');setColor()">Rouge</button>
+                <button id="greenButton" class="colorButton grey" onclick="changeColor(this,'green');setColor()">Vert</button>
+                <button id="blueButton" class="colorButton grey" onclick="changeColor(this,'blue');setColor()">Bleu</button>
             </div>
-            <button class="hugemargin" onclick="setColor()">Appliquer</button>
+            <input class="hugemargin" type="color" id="pickColor" disabled>
             <div class="flexRow">
                 <button class="mediummargin purple" onclick="copy2D()">Copier la matrice</button>
                 <button class="mediummargin purple" id="paste2D" onclick="paste2D()" disabled>Coller la matrice</button>
