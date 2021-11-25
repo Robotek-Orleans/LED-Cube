@@ -29,6 +29,22 @@ table {
     width: 100%;
 }
 
+.message{
+    width: 250px;
+    height: auto;
+    margin: 0;
+    opacity: 1;
+    transition-duration: 0.2s;
+    min-height: 50px;
+    align-content: center;
+    display: flex;
+    flex-flow: column;
+    border-radius: 10px;
+  }
+  .message:hover{
+    opacity:0.7;
+  }
+
 .header {
     position: relative;
     width: 100%;
@@ -373,3 +389,51 @@ button:disabled{
     width: 80px;
 }
 
+
+.done {
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiIHdpZHRoPSIxOHB4IiBoZWlnaHQ9IjE4cHgiPjxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz48cGF0aCBkPSJNOSAxNi4yTDQuOCAxMmwtMS40IDEuNEw5IDE5IDIxIDdsLTEuNC0xLjRMOSAxNi4yeiIvPjwvc3ZnPg==");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position-x: left;
+    background-position-y: center;
+  }
+  
+  .error {
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiIHdpZHRoPSIxOHB4IiBoZWlnaHQ9IjE4cHgiPjxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz48cGF0aCBkPSJNMTIgMkM2LjQ4IDIgMiA2LjQ4IDIgMTJzNC40OCAxMCAxMCAxMCAxMC00LjQ4IDEwLTEwUzE3LjUyIDIgMTIgMnptMSAxNWgtMnYtMmgydjJ6bTAtNGgtMlY3aDJ2NnoiLz48L3N2Zz4=");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position-x: left;
+    background-position-y: center;
+  }
+  
+  .warning {
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiIHdpZHRoPSIxOHB4IiBoZWlnaHQ9IjE4cHgiPjxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz48cGF0aCBkPSJNMSAyMWgyMkwxMiAyIDEgMjF6bTEyLTNoLTJ2LTJoMnYyem0wLTRoLTJ2LTRoMnY0eiIvPjwvc3ZnPg==");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position-x: left;
+    background-position-y: center;
+  }
+
+  .rouge{
+    background: linear-gradient(45deg, #c10000b5, #ff6969c9);
+  }
+  .orange{
+    background: linear-gradient(45deg, #d09c01d6, #ffd32bd9);
+  }
+  .vert{
+    background: linear-gradient(45deg, #1c970ade, #55c146d6);
+  }
+
+  #servstats{
+    bottom: 0px;
+    right:5px;
+    position: fixed;
+    height: auto;
+    max-width: 250px;
+    width: 100%;
+    z-index: 1;
+  }
+
+  .contentmessage{
+      margin: auto;
+  }

@@ -12,6 +12,7 @@
     <script src="js/OrbitControls.js"></script>
     <script src="js/Viewerscript.js"></script>
     <script src="js/Main.js"></script>
+    <script src="js/Request.js"></script>
 </head>
 
 <body onload="init()">
@@ -112,7 +113,7 @@
             </div>
         </div>
     </div>
-
+    <table id="servstats"></table>
 </body>
 
 
