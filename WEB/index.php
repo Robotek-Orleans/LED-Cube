@@ -44,14 +44,21 @@ $dataArray = array();
     <meta http-equiv="content-type" content="text/html;charset=utf-8" />
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <link rel="stylesheet" href="css/Main.css">
+
+    <script src="js/three.min.js"></script>
+    <script src="js/Detector.js"></script>
+    <script src="js/OrbitControls.js"></script>
+    <script src="js/Viewerscript.js"></script>
+    <script src="js/Main.js"></script>
+    <script src="js/Request.js"></script>
     <script>
-        var selectedPlanDirection = "X" // X , Y ou Z
-        var selectedPlanNumber = 1 // entre 1 et 8
-        var selectedFrame = 1 // entre 1 et N frame
-        var selected2D = [] // tableau en 2D avec des valeurs entre 0 et 7
-        var shiftpressed = false
-        var copied2D = []
-        var copied3D = []
+        var selectedPlanDirection = "X"; // X , Y ou Z
+        var selectedPlanNumber = 1; // entre 1 et 8
+        var selectedFrame = 1; // entre 1 et N frame
+        var selected2D = []; // tableau en 2D avec des valeurs entre 0 et 7
+        var shiftpressed = false;
+        var copied2D = [];
+        var copied3D = [];
         <?php
             if(isset($_GET['f'])){
                 echo "var framecontent = ".json_encode($dataArray).";";
@@ -61,12 +68,6 @@ $dataArray = array();
             }
         ?>
     </script>
-    <script src="js/three.min.js"></script>
-    <script src="js/Detector.js"></script>
-    <script src="js/OrbitControls.js"></script>
-    <script src="js/Viewerscript.js"></script>
-    <script src="js/Main.js"></script>
-    <script src="js/Request.js"></script>
 </head>
 
 <body onload="init()">
