@@ -45,16 +45,15 @@ $dataArray = array();
     <meta http-equiv="content-type" content="text/html;charset=utf-8" />
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <link rel="stylesheet" href="css/Main.css">
+    <script>
+        let framecontent = <?php echo json_decode($dataArray); ?> // contenu des frames
+    </script>
     <script src="js/three.min.js"></script>
     <script src="js/Detector.js"></script>
     <script src="js/OrbitControls.js"></script>
     <script src="js/Viewerscript.js"></script>
     <script src="js/Main.js"></script>
     <script src="js/Request.js"></script>
-
-    <script>
-        let framecontent = <?php echo json_decode($dataArray); ?> // contenu des frames
-    </script>
 </head>
 
 <body onload="init()">
