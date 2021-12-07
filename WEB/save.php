@@ -18,9 +18,12 @@ if(isset($data['stat']) && isset($data['fileName'])){
             for($j=0;$j<count($data['data'][$i]);$j++){
                 for($k=0;$k<count($data['data'][$i][$j]);$k++){
                     for($l=0;$l<count($data['data'][$i][$j][$k]);$l++){
-                        fwrite($file, substr($data['data'][$i][$j][$k][$l],1,2)."\n"); // rouge
-                        fwrite($file, substr($data['data'][$i][$j][$k][$l],3,2)."\n"); // vert
-                        fwrite($file, substr($data['data'][$i][$j][$k][$l],5,2)."\n"); // bleu
+                        $red = strval(hexdec(substr($data['data'][$i][$j][$k][$l],1,2)));
+                        $green = strval(hexdec(substr($data['data'][$i][$j][$k][$l],3,2)));
+                        $blue = strval(hexdec(substr($data['data'][$i][$j][$k][$l],5,2)));
+                        fwrite($file, $red."\n"); // rouge
+                        fwrite($file, $green."\n"); // vert
+                        fwrite($file, $blue."\n"); // bleu
                     }
                 }
             }   
