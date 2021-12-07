@@ -46,7 +46,7 @@ $dataArray = array();
     <script>
         <?php
             if(isset($_GET['f'])){
-                echo "var framecontent = ".json_decode($dataArray).";";
+                echo "var framecontent = ".json_encode($dataArray).";";
             }else{
                 echo "var framecontent = [];";
             }
