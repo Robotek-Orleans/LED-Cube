@@ -10,7 +10,7 @@ $dataArray = array();
  if(isset($_GET['f'])){
     $file = fopen($path.$data['f'], "r") or die("Unable to open file!");
 
-    $frames = intval(fgets($file));
+    $frames = fgets($file);
     print_r($frames);
     $time = fgets($file);
 
