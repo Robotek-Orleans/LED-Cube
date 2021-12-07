@@ -16,8 +16,8 @@ function sendAnimation( ) {
     };
     let data = {};
     data["data"] = framecontent;
-    data["fileName"] = "test";
-    data["time"] = 100;
+    data["fileName"] = document.getElementById("fileName").value;
+    data["time"] = document.getElementById("frameTime").value;
     data["stat"] = "save";
 
     xhr.send(JSON.stringify(data));
