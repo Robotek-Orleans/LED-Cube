@@ -1,13 +1,4 @@
-let selectedPlanDirection = "X" // X , Y ou Z
-let selectedPlanNumber = 1 // entre 1 et 8
-let selectedFrame = 1 // entre 1 et N frame
-let selected2D = [] // tableau en 2D avec des valeurs entre 0 et 7
-let shiftpressed = false
 
-//var framecontent = [];
-
-let copied2D = []
-let copied3D = []
 
 
 function paste2D() {

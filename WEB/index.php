@@ -45,6 +45,13 @@ $dataArray = array();
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <link rel="stylesheet" href="css/Main.css">
     <script>
+        var selectedPlanDirection = "X" // X , Y ou Z
+        var selectedPlanNumber = 1 // entre 1 et 8
+        var selectedFrame = 1 // entre 1 et N frame
+        var selected2D = [] // tableau en 2D avec des valeurs entre 0 et 7
+        var shiftpressed = false
+        var copied2D = []
+        var copied3D = []
         <?php
             if(isset($_GET['f'])){
                 echo "var framecontent = ".json_encode($dataArray).";";
