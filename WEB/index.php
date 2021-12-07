@@ -87,7 +87,7 @@ $dataArray = array();
 
         <div class="contentviewer">
             <h1 class="title">Gestion du fichier</h1>
-            <input onchange="isSavable()" id="fileName" class="hugemargin" type="text" placeholder="Nom du fichier">
+            <input onchange="isSavable()" id="fileName" class="hugemargin" type="text" placeholder="Nom du fichier" value=<?php echo "\"".$_GET['f']."\"" ?>>
             <button class="hugemargin mediumtopmargin" id="saveButton" onclick="sendAnimation()" disabled>Enregistrer</button>
             <button class="hugemargin red mediumtopmargin" onclick="reset()">Reset</button>
         </div>
