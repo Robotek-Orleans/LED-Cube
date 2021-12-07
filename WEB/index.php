@@ -2,6 +2,9 @@
 <html lang="fr">
 
 <?php
+
+$path = "./animations/";
+
  if(isset($_GET['f'])){
     $file = fopen($path.$data['f'], "r") or die("Unable to open file!");
     print_r(fread($file));
