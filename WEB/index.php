@@ -26,7 +26,7 @@
         <div class="contentviewer">
             <h1 class="title">Gestion du fichier</h1>
             <input class="hugemargin" type="text" placeholder="Nom du fichier">
-            <button class="hugemargin mediumtopmargin" disabled>Enregistrer</button>
+            <button class="hugemargin mediumtopmargin" onclick="sendAnimation()" disabled>Enregistrer</button>
             <button class="hugemargin red mediumtopmargin" onclick="reset()">Reset</button>
         </div>
 
@@ -113,7 +113,7 @@
             </div>
         </div>
     </div>
-    <table id="servstats"></table>
+    <table id="contentnotifs"></table>
 </body>
 
 

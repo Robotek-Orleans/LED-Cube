@@ -4,7 +4,7 @@ let selectedFrame = 1 // entre 1 et N frame
 let selected2D = [] // tableau en 2D avec des valeurs entre 0 et 7
 let shiftpressed = false
 
-let framecontent = []
+let framecontent = [] // contenu des frames
 
 let copied2D = []
 let copied3D = []
@@ -469,7 +469,6 @@ function previousaxe() {
 
 
 }
-
 
 document.addEventListener('keydown', (e) => {
     switch (e.key) {

@@ -424,7 +424,7 @@ button:disabled{
     background: linear-gradient(45deg, #1c970ade, #55c146d6);
   }
 
-  #servstats{
+  #contentnotifs{
     bottom: 0px;
     right:5px;
     position: fixed;
@@ -436,4 +436,5 @@ button:disabled{
 
   .contentmessage{
       margin: auto;
+      padding: 10px;
   }

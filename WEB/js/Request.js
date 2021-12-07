@@ -1,23 +1,29 @@
-function send( StringData ) {
+function sendAnimation( ) {
 
-    var xhr = new XMLHttpRequest();
-    var url = "save.php";
+    /* file_name , data , time , stat (=save) */
+
+    let xhr = new XMLHttpRequest();
+    let url = "save.php";
     xhr.open("POST", url, true);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             var json = JSON.parse(xhr.responseText);
-            console.log(json.email + ", " + json.password);
+            console.log("ok :" + xhr.responseText);
+        }else{
+
         }
     };
-    var data = JSON.stringify({"email": "hey@mail.com", "password": "101010"});
+
+    data["data"] = framecontent;
+    data["file_name"] = "test.txt";
+    data["time"] = 100;
+    data["data"] = "save";
+
+    data = JSON.stringify(data);
     xhr.send(data);
-    
-    
 
 }
-
-
 
 
 function scriptstat(classes, message, temps){
@@ -28,9 +34,9 @@ function scriptstat(classes, message, temps){
 	if(classes.indexOf("orange") >= 0){
 	 image = "warning";
 	}
-    var ligne = document.getElementById('servstats').insertRow(0);
+    var ligne = document.getElementById('contentnotifs').insertRow(0);
     ligne.innerHTML = '<tr><td class="' + image + '"><div onclick="statremove(this.parentNode.parentNode)" class="message ' + classes + '"><p class="contentmessage">' + message + '</p></div></td>';
-    document.getElementById('servstats').style.height = document.getElementById('servstats').offsetHeight + ligne.firstChild.firstChild.firstChild.offsetHeight +1;
+    document.getElementById('contentnotifs').style.height = document.getElementById('contentnotifs').offsetHeight + ligne.firstChild.firstChild.firstChild.offsetHeight +1;
     if(temps != 0){
       setTimeout(function(){statremove(ligne);}, temps);
     }
@@ -39,6 +45,6 @@ function scriptstat(classes, message, temps){
 
 
 function statremove(element){
-    document.getElementById('servstats').style.height = document.getElementById('servstats').offsetHeight - element.firstChild.firstChild.firstChild.offsetHeight -1;
+    document.getElementById('contentnotifs').style.height = document.getElementById('contentnotifs').offsetHeight - element.firstChild.firstChild.firstChild.offsetHeight -1;
     element.parentNode.removeChild(element)
   };
