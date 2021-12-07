@@ -35,7 +35,7 @@ if(isset($data['stat']) && isset($data['fileName'])){
 
         fclose($file);
 
-        print_r($data['data']);
+        //print_r($data['data']);
 
     }else{
         http_response_code(400);
