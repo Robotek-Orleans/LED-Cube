@@ -9,8 +9,6 @@ $dataArray = array();
 
  if(isset($_GET['f'])){
     $file = fopen($path.$data['f'], "r") or die("Unable to open file!");
-    die(fread($file));
-    fclose($file);
 
     $frames = fgets($file);
     $time = fgets($file);
@@ -46,7 +44,13 @@ $dataArray = array();
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <link rel="stylesheet" href="css/Main.css">
     <script>
-        var framecontent = <?php echo json_decode($dataArray); ?> // contenu des frames
+        <?php
+            if(isset($_GET['f'])){
+                echo "var framecontent = ".json_decode($dataArray).";";
+            }else{
+                echo "var framecontent = [];";
+            }
+        ?>
     </script>
     <script src="js/three.min.js"></script>
     <script src="js/Detector.js"></script>
