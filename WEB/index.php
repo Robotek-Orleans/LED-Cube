@@ -10,11 +10,12 @@ $dataArray = array();
  if(isset($_GET['f'])){
     $file = fopen($path.$data['f'], "r") or die("Unable to open file!");
 
-    $frames = fgets($file);
+    $frames = intval(fgets($file));
+    print_r($frames);
     $time = fgets($file);
 
     if ($file) {
-        for ($i=0;$i<intval($frames);$i++) {
+        for ($i=0;$i<$frames;$i++) {
             $dataArray[i] = array();
             for ($j=0;$j<8;$j++) {
                 $dataArray[i][j] = array();
@@ -25,7 +26,6 @@ $dataArray = array();
                         $green  = dechex(intval(fgets($file)));
                         $blue   = dechex(intval(fgets($file)));
                         array_push($dataArray[i][j][k][l],"#".$red.$green.$blue);
-                        print_r("#".$red.$green.$blue);
                     }
                 }
             }
