@@ -451,7 +451,7 @@ function reset() {
 }
 
 function isSavable(){
-    if(document.getElementById("fileName").value !== ""){
+    if(document.getElementById("fileName").value.length > 0){
         document.getElementById("fileName").disabled = false;
     }else{
         document.getElementById("saveButton").disabled = true;
