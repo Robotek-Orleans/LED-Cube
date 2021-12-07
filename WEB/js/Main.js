@@ -422,6 +422,10 @@ async function init() {
     document.getElementById("paste3D").disabled = true
     document.getElementById("frameInput").value = framecontent.length
     document.getElementById("frameRange").value = framecontent.length
+    document.getElementById("frameInput").max = framecontent.length
+    document.getElementById("frameRange").max = framecontent.length
+    document.getElementById("numframebefore").max = framecontent.length
+    document.getElementById("numframeafter").max = framecontent.length
 }
 
 
