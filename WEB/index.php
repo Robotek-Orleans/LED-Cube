@@ -16,16 +16,16 @@ $dataArray = array();
 
     if ($file) {
         for ($i=0;$i<$frames;$i++) {
-            $dataArray[i] = array();
+            $dataArray[$i] = array();
             for ($j=0;$j<8;$j++) {
-                $dataArray[i][j] = array();
+                $dataArray[$i][$j] = array();
                 for ($k=0;$k<8;$k++) {
-                    $dataArray[i][j][k] = array();
+                    $dataArray[$i][$j][$k] = array();
                     for ($l=0;$l<8;$l++) {
                         $red    = dechex(intval(fgets($file)));
                         $green  = dechex(intval(fgets($file)));
                         $blue   = dechex(intval(fgets($file)));
-                        array_push($dataArray[i][j][k][l],"#".$red.$green.$blue);
+                        array_push($dataArray[$i][$j][$k][$l],"#".$red.$green.$blue);
                     }
                 }
             }
