@@ -426,6 +426,7 @@ async function init() {
     document.getElementById("frameRange").max = framecontent.length
     document.getElementById("numframebefore").max = framecontent.length
     document.getElementById("numframeafter").max = framecontent.length
+    isSavable()
 }
 
 
@@ -447,6 +448,14 @@ function reset() {
     contentnumaf.max = framecontent.length
     contentnum.max = framecontent.length
     refresh3D()
+}
+
+function isSavable(){
+    if(document.getElementById("fileName").value != ""){
+        document.getElementById("fileName").disabled = false;
+    }else{
+        document.getElementById("fileName").disabled = true;
+    }
 }
 
 function nextplan() {

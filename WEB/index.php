@@ -87,8 +87,8 @@ $dataArray = array();
 
         <div class="contentviewer">
             <h1 class="title">Gestion du fichier</h1>
-            <input class="hugemargin" type="text" placeholder="Nom du fichier">
-            <button class="hugemargin mediumtopmargin" onclick="sendAnimation()" disabled>Enregistrer</button>
+            <input onchange="isSavable()" id="fileName" class="hugemargin" type="text" placeholder="Nom du fichier">
+            <button class="hugemargin mediumtopmargin" id="saveButton" onclick="sendAnimation()" disabled>Enregistrer</button>
             <button class="hugemargin red mediumtopmargin" onclick="reset()">Reset</button>
         </div>
 
@@ -100,7 +100,7 @@ $dataArray = array();
             </div>
             <div class="flexRow">
                 <p>Temps d'une frame (en ms)</p>
-                <input min="1" value="500" type="number">
+                <input id="frameTime" min="1" value="500" type="number">
             </div>
             <div class="flexRow">
                 <button onclick="addframebefore()">Ajouter une frame avant</button>
