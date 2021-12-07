@@ -25,7 +25,7 @@ $dataArray = array();
                         $red    = fgets($file);
                         $green  = fgets($file);
                         $blue   = fgets($file);
-                        array_push($dataArray[$i][$j][$k][$l],"#".$red.$green.$blue);
+                        $dataArray[$i][$j][$k][$l] = "#".$red.$green.$blue;
                     }
                 }
             }
