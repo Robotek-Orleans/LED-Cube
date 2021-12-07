@@ -22,9 +22,9 @@ $dataArray = array();
                 for ($k=0;$k<8;$k++) {
                     $dataArray[$i][$j][$k] = array();
                     for ($l=0;$l<8;$l++) {
-                        $red    = dechex(fgets($file));
-                        $green  = dechex(fgets($file));
-                        $blue   = dechex(fgets($file));
+                        $red    = fgets($file);
+                        $green  = fgets($file);
+                        $blue   = fgets($file);
                         array_push($dataArray[$i][$j][$k][$l],"#".$red.$green.$blue);
                     }
                 }
