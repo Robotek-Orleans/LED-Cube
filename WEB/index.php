@@ -11,7 +11,7 @@ $dataArray = array();
     $file = fopen($path.$_GET['f'], "r") or die("Unable to open file!");
 
     $frames = fgets($file);
-    print_r($frames);
+    //print_r($frames);
     $time = fgets($file);
 
     if ($file) {
@@ -31,7 +31,6 @@ $dataArray = array();
             }
             // process the line read.
         }
-        die();
     } else {
         // error opening the file.
     } 
