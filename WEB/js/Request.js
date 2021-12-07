@@ -10,7 +10,7 @@ function sendAnimation( ) {
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             scriptstat("vert", "Enregistré avec succès", 2000);
-        }else{
+        }else if (xhr.readyState === 4){
             scriptstat("rouge", "Erreur lors de l'enregistrement: " + xhr.responseText, 0);
         }
     };
