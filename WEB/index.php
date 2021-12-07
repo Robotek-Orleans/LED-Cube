@@ -46,7 +46,7 @@ $dataArray = array();
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <link rel="stylesheet" href="css/Main.css">
     <script>
-        let framecontent = <?php echo json_decode($dataArray); ?> // contenu des frames
+        var framecontent = <?php echo json_decode($dataArray); ?> // contenu des frames
     </script>
     <script src="js/three.min.js"></script>
     <script src="js/Detector.js"></script>
