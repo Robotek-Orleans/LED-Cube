@@ -8,7 +8,7 @@ $path = "./animations/";
 $dataArray = array();
 
  if(isset($_GET['f'])){
-    $file = fopen($path.$data['f'], "r") or die("Unable to open file!");
+    $file = fopen($path.$_GET['f'], "r") or die("Unable to open file!");
 
     $frames = fgets($file);
     print_r($frames);

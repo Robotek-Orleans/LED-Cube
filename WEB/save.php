@@ -13,7 +13,7 @@ if(isset($data['stat']) && isset($data['fileName'])){
 
         $file = fopen($path.$data['fileName'], "w") or die("Unable to open file!");
 
-        fwrite($file, count(count($data['data'])).PHP_EOL);
+        fwrite($file, strval(count($data['data'])).PHP_EOL);
         fwrite($file, $data['time'].PHP_EOL);
 
         for($i=0;$i<count($data['data']);$i++){
