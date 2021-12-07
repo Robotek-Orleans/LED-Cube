@@ -7,7 +7,7 @@ $path = "./animations/";
 
  if(isset($_GET['f'])){
     $file = fopen($path.$data['f'], "r") or die("Unable to open file!");
-    print_r(fread($file));
+    die(fread($file));
     fclose($file);
 
     $js_array = json_encode($php_array);
