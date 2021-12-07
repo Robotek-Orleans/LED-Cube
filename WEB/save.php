@@ -17,7 +17,9 @@ if(isset($data['stat']) && isset($data['fileName'])){
         for($i=0;$i<count($data['data']);$i++){
             for($j=0;$j<count($data['data'][$i]);$j++){
                 for($k=0;$k<count($data['data'][$i][$j]);$k++){
-                    fwrite($file, $data['data'][$i][$j][$k]."\n");
+                    for($l=0;$l<count($data['data'][$i][$j][$k]);$l++){
+                        fwrite($file, $data['data'][$i][$j][$k][$l]."\n");
+                    }
                 }
             }   
         }
