@@ -13,8 +13,8 @@ if(isset($data['stat']) && isset($data['fileName'])){
 
         $file = fopen($path.$data['fileName'], "w") or die("Unable to open file!");
 
-        fwrite($file, count(count($data['data']))."\n");
-        fwrite($file, $data['time']."\n");
+        fwrite($file, count(count($data['data'])).PHP_EOL);
+        fwrite($file, $data['time'].PHP_EOL);
 
         for($i=0;$i<count($data['data']);$i++){
             for($j=0;$j<count($data['data'][$i]);$j++){
@@ -23,9 +23,9 @@ if(isset($data['stat']) && isset($data['fileName'])){
                         $red = strval(hexdec(substr($data['data'][$i][$j][$k][$l],1,2)));
                         $green = strval(hexdec(substr($data['data'][$i][$j][$k][$l],3,2)));
                         $blue = strval(hexdec(substr($data['data'][$i][$j][$k][$l],5,2)));
-                        fwrite($file, $red."\n"); // rouge
-                        fwrite($file, $green."\n"); // vert
-                        fwrite($file, $blue."\n"); // bleu
+                        fwrite($file, $red.PHP_EOL); // rouge
+                        fwrite($file, $green.PHP_EOL); // vert
+                        fwrite($file, $blue.PHP_EOL); // bleu
                     }
                 }
             }   
