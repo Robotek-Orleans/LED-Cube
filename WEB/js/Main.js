@@ -412,6 +412,7 @@ async function init() {
     
     Draw2DMatrix()
     await initGL()
+    refresh3D()
     document.getElementsByName("axe").forEach(item => {
         item.addEventListener("click", SelectPlan)
     })
