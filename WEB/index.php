@@ -30,6 +30,7 @@ $dataArray = array();
             }
             // process the line read.
         }
+        die($dataArray);
     } else {
         // error opening the file.
     } 
