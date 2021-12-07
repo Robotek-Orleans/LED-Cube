@@ -50,6 +50,7 @@ $dataArray = array();
                 echo "var framecontent = ".json_encode($dataArray).";";
             }else{
                 echo "var framecontent = [];";
+                echo "addframe(0);";
             }
         ?>
     </script>
