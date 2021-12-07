@@ -15,7 +15,7 @@ function sendAnimation( ) {
     };
     let data = {};
     data["data"] = framecontent;
-    data["file_name"] = "test.txt";
+    data["fileName"] = "test.txt";
     data["time"] = 100;
     data["stat"] = "save";
 

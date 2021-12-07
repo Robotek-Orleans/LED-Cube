@@ -3,30 +3,30 @@
 $path = "./animations/";
 
 $data = json_decode(file_get_contents('php://input'), true);
-print_r($data);
+//print_r($data);
 
-/*
-if(isset($_POST['stat']) && isset($_POST['fileName'])){
-    if(isset($_POST['file_name']) && isset($_POST['data']) && isset($_POST['time']) && $_POST['stat'] == 'save'){
-*/
-        /*$file = fopen($path."lidn.txt", "w") or die("Unable to open file!");
 
-        fwrite($file, count($_POST['data'])."\n");
-        fwrite($file, $_POST['time']."\n");
+if(isset($data['stat']) && isset($data['fileName'])){
+    if(isset($data['fileName']) && isset($data['data']) && isset($data['time']) && $data['stat'] == 'save'){
 
-        for($i=0;$i<count($_POST['data']);$i++){
-            for($j=0;$j<count($_POST['data'][$i]);$j++){
-                for($k=0;$k<count($_POST['data'][$i][$j]);$k++){
+        $file = fopen($path.$data['fileName'], "w") or die("Unable to open file!");
 
+        fwrite($file, count(count($data['data']))."\n");
+        fwrite($file, $data['time']."\n");
+
+        for($i=0;$i<count($data['data']);$i++){
+            for($j=0;$j<count($data['data'][$i]);$j++){
+                for($k=0;$k<count($data['data'][$i][$j]);$k++){
+                    fwrite($file, $data['data'][$i][$j][$k]."\n");
                 }
             }   
         }
-        fwrite($file, $txt);
+        //fwrite($file, $txt);
 
 
-        fclose($file);*/
-/*
-        print_r($_POST['data']);
+        fclose($file);
+
+        print_r($data['data']);
 
         http_response_code(200);
 
@@ -37,6 +37,6 @@ if(isset($_POST['stat']) && isset($_POST['fileName'])){
         die('bad request');
     }
     
-}*/
+}
 
 ?> 
