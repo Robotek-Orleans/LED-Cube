@@ -23,8 +23,17 @@ $dataArray = array();
                     $dataArray[$i][$j][$k] = array();
                     for ($l=0;$l<8;$l++) {
                         $red    = dechex(intval(fgets($file)));
+                        if(strlen($red)<2){
+                            $red = '0'.$red;
+                        }
                         $green  = dechex(intval(fgets($file)));
+                        if(strlen($green)<2){
+                            $green = '0'.$green;
+                        }
                         $blue   = dechex(intval(fgets($file)));
+                        if(strlen($blue)<2){
+                            $blue = '0'.$blue;
+                        }
                         $dataArray[$i][$j][$k][$l] = "#".$red.$green.$blue;
                     }
                 }
