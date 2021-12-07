@@ -1,6 +1,7 @@
 function sendAnimation( ) {
 
     /* file_name , data , time , stat (=save) */
+    scriptstat("orange", "Enregistrement en cours", 2000);
 
     let xhr = new XMLHttpRequest();
     let url = "save.php";
@@ -8,9 +9,9 @@ function sendAnimation( ) {
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
-            console.log("ok :" + xhr.responseText);
+            scriptstat("vert", "Enregistré avec succès", 2000);
         }else{
-
+            scriptstat("rouge", "Erreur lors de l'enregistrement: " + xhr.responseText, 0);
         }
     };
     let data = {};
