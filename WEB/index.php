@@ -25,13 +25,13 @@ $dataArray = array();
                         $green  = dechex(intval(fgets($file)));
                         $blue   = dechex(intval(fgets($file)));
                         array_push($dataArray[i][j][k][l],"#".$red.$green.$blue);
-
+                        print_r("#".$red.$green.$blue);
                     }
                 }
             }
             // process the line read.
         }
-        //die();
+        die();
     } else {
         // error opening the file.
     } 
