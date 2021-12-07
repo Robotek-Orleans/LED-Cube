@@ -3,12 +3,11 @@ function sendAnimation( ) {
     /* file_name , data , time , stat (=save) */
 
     let xhr = new XMLHttpRequest();
-    let url = "http://raspberrypi.local/LED-Cube/WEB/save.php";
+    let url = "save.php";
     xhr.open("POST", url, true);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
-            var json = JSON.parse(xhr.responseText);
             console.log("ok :" + xhr.responseText);
         }else{
 
@@ -18,7 +17,7 @@ function sendAnimation( ) {
     data["data"] = framecontent;
     data["file_name"] = "test.txt";
     data["time"] = 100;
-    data["data"] = "save";
+    data["stat"] = "save";
 
     xhr.send(JSON.stringify(data));
 
