@@ -6,6 +6,8 @@ $data = json_decode(file_get_contents('php://input'), true);
 //print_r($data);
 
 
+http_response_code(200);
+
 if(isset($data['stat']) && isset($data['fileName'])){
     if(isset($data['fileName']) && isset($data['data']) && isset($data['time']) && $data['stat'] == 'save'){
 
@@ -35,9 +37,6 @@ if(isset($data['stat']) && isset($data['fileName'])){
 
         print_r($data['data']);
 
-        http_response_code(200);
-
-        die('OK');
     }else{
         http_response_code(400);
 
