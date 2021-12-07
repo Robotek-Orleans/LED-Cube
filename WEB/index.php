@@ -5,12 +5,37 @@
 
 $path = "./animations/";
 
+$dataArray = array();
+
  if(isset($_GET['f'])){
     $file = fopen($path.$data['f'], "r") or die("Unable to open file!");
     die(fread($file));
     fclose($file);
 
-    $js_array = json_encode($php_array);
+    $frames = fgets($file);
+    $time = fgets($file);
+
+    if ($file) {
+        for ($i=0;$i<intval($frames);$i++) {
+            $dataArray[i] = array();
+            for ($j=0;$j<8;$j++) {
+                $dataArray[i][j] = array();
+                for ($k=0;$k<8;$k++) {
+                    $dataArray[i][j][k] = array();
+                    for ($l=0;$l<8;$l++) {
+                        $red    = dechex(intval(fgets($file)));
+                        $green  = dechex(intval(fgets($file)));
+                        $blue   = dechex(intval(fgets($file)));
+                        array_push($dataArray[i][j][k],"#".$red.$green.$blue);
+                    }
+                }
+            }
+            // process the line read.
+        }
+    } else {
+        // error opening the file.
+    } 
+    fclose($file);
  }
 
 ?>
@@ -26,6 +51,10 @@ $path = "./animations/";
     <script src="js/Viewerscript.js"></script>
     <script src="js/Main.js"></script>
     <script src="js/Request.js"></script>
+
+    <script>
+        let framecontent = <?php echo json_decode($dataArray); ?> // contenu des frames
+    </script>
 </head>
 
 <body onload="init()">
