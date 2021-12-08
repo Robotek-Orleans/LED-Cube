@@ -1,16 +1,80 @@
 <!DOCTYPE html>
 <html lang="fr">
 
+<?php
+
+$path = "./animations/";
+
+$dataArray = array();
+
+ if(isset($_GET['f'])){
+    $file = fopen($path.$_GET['f'], "r") or die("Unable to open file!");
+    $frames = intval(fgets($file));
+    $time = intval(fgets($file));
+
+    if ($file) {
+        for ($i=0;$i<$frames;$i++) {
+            $dataArray[$i] = array();
+            for ($j=0;$j<8;$j++) {
+                $dataArray[$i][$j] = array();
+                for ($k=0;$k<8;$k++) {
+                    $dataArray[$i][$j][$k] = array();
+                    for ($l=0;$l<8;$l++) {
+                        $red    = dechex(intval(fgets($file)));
+                        if(strlen($red)<2){
+                            $red = '0'.$red;
+                        }
+                        $green  = dechex(intval(fgets($file)));
+                        if(strlen($green)<2){
+                            $green = '0'.$green;
+                        }
+                        $blue   = dechex(intval(fgets($file)));
+                        if(strlen($blue)<2){
+                            $blue = '0'.$blue;
+                        }
+                        $dataArray[$i][$j][$k][$l] = "#".$red.$green.$blue;
+                    }
+                }
+            }
+            // process the line read.
+        }
+    } else {
+        // error opening the file.
+    } 
+    fclose($file);
+ }
+
+?>
+
 <head>
     <title>LED cube IHM</title>
     <meta http-equiv="content-type" content="text/html;charset=utf-8" />
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <link rel="stylesheet" href="css/Main.css">
+
     <script src="js/three.min.js"></script>
     <script src="js/Detector.js"></script>
     <script src="js/OrbitControls.js"></script>
     <script src="js/Viewerscript.js"></script>
     <script src="js/Main.js"></script>
+    <script src="js/Request.js"></script>
+    <script>
+        var selectedPlanDirection = "X"; // X , Y ou Z
+        var selectedPlanNumber = 1; // entre 1 et 8
+        var selectedFrame = 1; // entre 1 et N frame
+        var selected2D = []; // tableau en 2D avec des valeurs entre 0 et 7
+        var shiftpressed = false;
+        var copied2D = [];
+        var copied3D = [];
+        <?php
+            if(isset($_GET['f'])){
+                echo "var framecontent = ".json_encode($dataArray).";";
+            }else{
+                echo "var framecontent = [];";
+                echo "addframe(0);";
+            }
+        ?>
+    </script>
 </head>
 
 <body onload="init()">
@@ -23,8 +87,8 @@
 
         <div class="contentviewer">
             <h1 class="title">Gestion du fichier</h1>
-            <button class="hugemargin" disabled>Ouvrir</button>
-            <button class="hugemargin mediumtopmargin" disabled>Enregistrer</button>
+            <input onchange="isSavable()" id="fileName" class="hugemargin" type="text" placeholder="Nom du fichier" value=<?php echo "\"".$_GET['f']."\"" ?>>
+            <button class="hugemargin mediumtopmargin" id="saveButton" onclick="sendAnimation()" disabled>Enregistrer</button>
             <button class="hugemargin red mediumtopmargin" onclick="reset()">Reset</button>
         </div>
 
@@ -36,7 +100,7 @@
             </div>
             <div class="flexRow">
                 <p>Temps d'une frame (en ms)</p>
-                <input min="1" value="500" type="number">
+                <input id="frameTime" min="1" value="500" type="number">
             </div>
             <div class="flexRow">
                 <button onclick="addframebefore()">Ajouter une frame avant</button>
@@ -100,17 +164,18 @@
         <div class="contentviewer fixedwidth">
             <h1 class="title">Choix de la couleur</h1>
             <div class="flexRow hugetopmargin">
-                <p>Choisissez votre couleur: </p>
-                <input type="color" id="pickColor">
+                <button id="redButton" class="colorButton grey" onclick="changeColor(this,'red');setColor()">Rouge</button>
+                <button id="greenButton" class="colorButton grey" onclick="changeColor(this,'green');setColor()">Vert</button>
+                <button id="blueButton" class="colorButton grey" onclick="changeColor(this,'blue');setColor()">Bleu</button>
             </div>
-            <button class="hugemargin" onclick="setColor()">Appliquer</button>
+            <input class="hugemargin" type="color" id="pickColor" disabled>
             <div class="flexRow">
                 <button class="mediummargin purple" onclick="copy2D()">Copier la matrice</button>
                 <button class="mediummargin purple" id="paste2D" onclick="paste2D()" disabled>Coller la matrice</button>
             </div>
         </div>
     </div>
-
+    <table id="contentnotifs"></table>
 </body>
 
 
