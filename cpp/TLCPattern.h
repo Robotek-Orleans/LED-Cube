@@ -21,7 +21,7 @@ public:
 	 * @param duration Nombre de frame du pattern
 	 */
 	TLCPattern(int duration);
-	TLCPattern(const TLCPattern &pattern);
+	//TLCPattern(const TLCPattern &pattern);
 	~TLCPattern();
 
 	/**
@@ -35,7 +35,7 @@ public:
 	 * @param z Couche hauteur
 	 * @return TLC Compatible
 	 **/
-	const uint8_t *getTLCCompatible(int t, int z) const;
+	uint8_t *getTLCCompatible(int t, int z);
 
 private:
 	int duration;
@@ -43,7 +43,7 @@ private:
 	Tableau 3D : (TLCCompatible, z, t)
 	TLCCompatible : 2 LED = 6*couleurs (6*12 bits) splité en 9 * 8 bits
 	*/
-	uint8_t ***tlc_pattern = nullptr;
+	uint8_t tlc_pattern[2][8][TLC_SIZE];
 };
 
 #endif // TLCPATTERN

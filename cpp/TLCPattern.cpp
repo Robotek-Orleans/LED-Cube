@@ -3,38 +3,38 @@
 TLCPattern::TLCPattern(int duration)
 {
 	this->duration = duration;
-	tlc_pattern = new uint8_t **[duration];
+	/*tlc_pattern = new uint8_t **[duration];
 	for (int t = 0; t < duration; ++t) {
 		tlc_pattern[t] = new uint8_t *[LED_HEIGHT];
 		for (int z = 0; z < LED_HEIGHT; ++z) {
 			tlc_pattern[t][z] = new uint8_t[TLC_SIZE];
 			std::memset(tlc_pattern[t][z], 0, sizeof(uint8_t) * TLC_SIZE);
 		}
-	}
+	}*/
 }
-
+/*
 TLCPattern::TLCPattern(const TLCPattern &pattern)
 {
 	duration = pattern.duration;
-	tlc_pattern = new uint8_t **[duration];
+	//tlc_pattern = new uint8_t **[duration];
 	for (int t = 0; t < duration; ++t) {
-		tlc_pattern[t] = new uint8_t *[LED_HEIGHT];
+		//tlc_pattern[t] = new uint8_t *[LED_HEIGHT];
 		for (int z = 0; z < LED_HEIGHT; ++z) {
-			tlc_pattern[t][z] = new uint8_t[TLC_SIZE];
+			//tlc_pattern[t][z] = new uint8_t[TLC_SIZE];
 			std::memcpy(tlc_pattern[t][z], pattern.tlc_pattern[t][z], sizeof(uint8_t) * TLC_SIZE);
 		}
 	}
 }
-
+*/
 TLCPattern::~TLCPattern()
 {
-	for (int t = 0; t < duration; ++t) {
+	/*for (int t = 0; t < duration; ++t) {
 		for (int z = 0; z < LED_HEIGHT; ++z) {
 			delete[] tlc_pattern[t][z];
 		}
 		delete[] tlc_pattern[t];
 	}
-	delete[] tlc_pattern;
+	delete[] tlc_pattern;*/
 }
 
 void TLCPattern::setData(int t, uint8_t ****matrice)
@@ -122,7 +122,7 @@ void TLCPattern::setData(int t, uint8_t ****matrice)
 	}
 }
 
-const uint8_t *TLCPattern::getTLCCompatible(int t, int z) const
+uint8_t *TLCPattern::getTLCCompatible(int t, int z)
 {
 	return tlc_pattern[t][z];
 }
