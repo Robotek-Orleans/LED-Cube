@@ -14,6 +14,8 @@
 #define TLC_SIZE 288		   // Data for one layer : 8*8*3 = 192 color (int12) => * INT12_TO_INT8 = 288 octets
 #define TLC_NEXT_COLOR 24	   // LED_GROUP_ONE_COLOR * INT12_TO_INT8, number of octets to store 2 lines of red
 
+static uint8_t flipBit(uint8_t n);
+
 class TLCPattern
 {
 public:

@@ -1,5 +1,13 @@
 #include "TLCPattern.h"
 
+uint8_t flipBit(uint8_t n)
+{
+	n = (n & 0xF0) >> 4 | (n & 0x0F) << 4;
+	n = (n & 0xCC) >> 2 | (n & 0x33) << 2;
+	n = (n & 0xAA) >> 1 | (n & 0x55) << 1;
+	return n;
+}
+
 TLCPattern::TLCPattern(int duration)
 {
 	this->duration = duration;
@@ -48,6 +56,7 @@ void TLCPattern::setData(int t, uint8_t ****matrice)
 	int i;
 	uint8_t r1, g1, b1, r2, g2, b2;
 	int iSplitR, iSplitG, iSplitB;
+	uint8_t *tlc_octet;
 
 	for (z = 0; z < LED_HEIGHT; ++z) {
 		tlc_layer = tlc_pattern[t][z];
@@ -72,41 +81,26 @@ void TLCPattern::setData(int t, uint8_t ****matrice)
 					}
 				}
 
-				r1 = line[x][0];
-				g1 = line[x][1];
-				b1 = line[x][2];
-				r2 = line[x + 1][0];
-				g2 = line[x + 1][1];
-				b2 = line[x + 1][2];
+				r1 = flipBit(line[x][0]);
+				g1 = flipBit(line[x][1]);
+				b1 = flipBit(line[x][2]);
+				r2 = flipBit(line[x + 1][0]);
+				g2 = flipBit(line[x + 1][1]);
+				b2 = flipBit(line[x + 1][2]);
 
 				// Split 2 LED : 6 uint16 en 9 uint8 (3 uint8 pour 3 couleurs, ou encore 6*1.5 uint8)
 
-				iSplitR = i * INT12_TO_INT8;
-				uint8_t *tlc_octet = &tlc_layer[iSplitR];
+				iSplitR = TLC_SIZE - i * INT12_TO_INT8 - 1;
+				tlc_octet = &tlc_layer[iSplitR];
 				*(tlc_octet) = r1;
-				*(++tlc_octet) = (r2 & 0b11110000) >> 4;
-				*(++tlc_octet) = (r2 & 0b00001111) << 4;
-				*(tlc_octet += TLC_NEXT_COLOR - 2) = g1;
-				*(++tlc_octet) = (g2 & 0b11110000) >> 4;
-				*(++tlc_octet) = (g2 & 0b00001111) << 4;
-				*(tlc_octet += TLC_NEXT_COLOR - 2) = b1;
-				*(++tlc_octet) = (b2 & 0b11110000) >> 4;
-				*(++tlc_octet) = (b2 & 0b00001111) << 4;
-
-				// iSplitR = i * INT12_TO_INT8;
-				// iSplitG = (i + LED_GROUP_ONE_COLOR) * INT12_TO_INT8;
-				// iSplitB = (i + LED_GROUP_TWO_COLOR) * INT12_TO_INT8;
-				// LED1{x,y,z} : [r1,g1,b1], LED2{x+1,y,z} : [r2,g2,b2]
-				// TLC : [r1" r1'|r2' r3" ... g1" g1'|g2' g3" ... b1" b1'|b2' b3" ...]
-				// tlc_layer[iSplitR] = (r1 >> 4);
-				// tlc_layer[iSplitR + 1] = (r1 & 0B1111) << 4 | (r2 >> 8);
-				// tlc_layer[iSplitR + 2] = (r2 & 0B11111111);
-				// tlc_layer[iSplitG] = (g1 >> 4);
-				// tlc_layer[iSplitG + 1] = (g1 & 0B1111) << 4 | (g2 >> 8);
-				// tlc_layer[iSplitG + 2] = (g2 & 0B11111111);
-				// tlc_layer[iSplitB] = (b1 >> 4);
-				// tlc_layer[iSplitB + 1] = (b1 & 0B1111) << 4 | (b2 >> 8);
-				// tlc_layer[iSplitB + 2] = (b2 & 0B11111111);
+				*(--tlc_octet) = (r2 & 0b11110000) >> 4;
+				*(--tlc_octet) = (r2 & 0b00001111) << 4;
+				*(tlc_octet -= TLC_NEXT_COLOR - 2) = g1;
+				*(--tlc_octet) = (g2 & 0b11110000) >> 4;
+				*(--tlc_octet) = (g2 & 0b00001111) << 4;
+				*(tlc_octet -= TLC_NEXT_COLOR - 2) = b1;
+				*(--tlc_octet) = (b2 & 0b11110000) >> 4;
+				*(--tlc_octet) = (b2 & 0b00001111) << 4;
 
 				/**
 				 * Exemple pour une couleur :
