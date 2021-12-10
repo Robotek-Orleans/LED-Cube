@@ -150,7 +150,13 @@ void LEDCube::start()
             // std::cout << i << std::endl;
             setLayer(i == 0 ? 7 : i - 1, false);
             setLayer(i, true);
+            //bcm2835_delayMicroseconds(1);
             // std::cout << "layer set " << i << std::endl;
+            //tlc->send(tlc_pattern[0][i]);
+            /*for(int j=0;j<10;j++){
+                tlc->send(tlc_pattern[0][i]);
+            }*/
+            
             tlc->send(tlc_pattern[0][(i + 1) % 8]);
         }
     }
@@ -218,6 +224,11 @@ void LEDCube::setData(int t, uint8_t ****matrice)
 
     for (z = 0; z < ZLENGTH; ++z)
     {
+        // Inversion de couleurs
+        uint8_t a = matrice[z][3][6][1];
+        matrice[z][3][6][1] = matrice[z][3][6][2];
+        matrice[z][3][6][2] = a;
+
         tlc_layer = tlc_pattern[t][z];
         for (y = 0; y < YLENGTH; ++y)
         {
