@@ -409,7 +409,8 @@ function addframe(index) {
 }
 
 async function init() {
-    
+    if(framecontent.length == 0)
+        addframe(0);
     Draw2DMatrix()
     await initGL()
     refresh3D()

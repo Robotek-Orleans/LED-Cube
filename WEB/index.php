@@ -5,20 +5,21 @@
 
 $path = "./animations/";
 
+$futureFrameContent = "[]";
 $dataArray = array();
 
- if(isset($_GET['f'])){
-    $file = fopen($path.$_GET['f'], "r") or die("Unable to open file!");
+if (isset($_GET['f'])) {
+    $file = fopen($path . $_GET['f'], "r") or die("Unable to open file!");
     $frames = intval(fgets($file));
     $time = intval(fgets($file));
 
-    for ($i=0;$i<$frames;$i++) {
+    for ($i = 0; $i < $frames; $i++) {
         $dataArray[$i] = array();
-        for ($j=0;$j<8;$j++) {
+        for ($j = 0; $j < 8; $j++) {
             $dataArray[$i][$j] = array();
-            for ($k=0;$k<8;$k++) {
+            for ($k = 0; $k < 8; $k++) {
                 $dataArray[$i][$j][$k] = array();
-                for ($l=0;$l<8;$l++) {
+                for ($l = 0; $l < 8; $l++) {
                     $dataArray[$i][$j][$k][$l] = "#000000";
                 }
             }
@@ -27,23 +28,23 @@ $dataArray = array();
     }
 
     if ($file) {
-        for ($i=0;$i<$frames;$i++) {
-            for ($j=0;$j<8;$j++) {
-                for ($k=0;$k<8;$k++) {
-                    for ($l=0;$l<8;$l++) {
+        for ($i = 0; $i < $frames; $i++) {
+            for ($j = 0; $j < 8; $j++) {
+                for ($k = 0; $k < 8; $k++) {
+                    for ($l = 0; $l < 8; $l++) {
                         $red    = dechex(intval(fgets($file)));
-                        if(strlen($red)<2){
-                            $red = '0'.$red;
+                        if (strlen($red) < 2) {
+                            $red = '0' . $red;
                         }
                         $green  = dechex(intval(fgets($file)));
-                        if(strlen($green)<2){
-                            $green = '0'.$green;
+                        if (strlen($green) < 2) {
+                            $green = '0' . $green;
                         }
                         $blue   = dechex(intval(fgets($file)));
-                        if(strlen($blue)<2){
-                            $blue = '0'.$blue;
+                        if (strlen($blue) < 2) {
+                            $blue = '0' . $blue;
                         }
-                        $dataArray[$i][7-$l][$k][7-$j] = "#".$red.$green.$blue;
+                        $dataArray[$i][7 - $l][$k][7 - $j] = "#" . $red . $green . $blue;
                     }
                 }
             }
@@ -51,41 +52,33 @@ $dataArray = array();
         }
     } else {
         // error opening the file.
-    } 
-    fclose($file);
- }
-
- function convertArray($val){
-    $result = "[";
-    foreach($val as $index=>$i){
-        if(intval($index) == 0){
-            $result = $result." [";
-        }else{
-            $result = $result.", [";
-        }
-        foreach($i as $index1=>$j){
-            if(intval($index1) == 0){
-                $result = $result." [";
-            }else{
-                $result = $result.", [";
-            }
-            foreach($j as $index2=>$k){
-                if(intval($index2) == 0){
-                    $result = $result." [";
-                }else{
-                    $result = $result.", [";
-                }
-                foreach($k as $index3=>$l){
-                     $result = $result." \"".$l."\" ,";     
-                }
-                $result = substr($result, 0, -1)." ]";
-            }
-            $result = $result." ]";
-        }
-        $result = $result." ]";
     }
-    return $result." ]";
+    fclose($file);
+    $futureFrameContent = convertArray($dataArray);
+} else if (isset($_POST['frames'])) {
+    $futureFrameContent = $_POST['frames'];
+    $futureFrameContentZYX = 1;
+}
 
+function convertArray($array)
+{
+    $result = "[";
+    foreach ($array as $i) {
+        $result = $result . " [";
+        foreach ($i as $j) {
+            $result = $result . " [";
+            foreach ($j as $k) {
+                $result = $result . " [";
+                foreach ($k as $l) {
+                    $result = $result . " \"" . $l . "\" ,";
+                }
+                $result = $result . " ],";
+            }
+            $result = $result . " ],";
+        }
+        $result = $result . " ],";
+    }
+    return $result . " ]";
 }
 
 ?>
@@ -110,14 +103,17 @@ $dataArray = array();
         var shiftpressed = false;
         var copied2D = [];
         var copied3D = [];
-        <?php
-            if(isset($_GET['f'])){
-                echo "var framecontent = ".convertArray($dataArray).";";
-            }else{
-                echo "var framecontent = [];";
-                echo "addframe(0);";
-            }
-        ?>
+        var framecontent = <?php echo $futureFrameContent ?>;
+        for (var t = 0; t < framecontent.length; t++)
+            for (var z = 0; z < framecontent[t].length; z++)
+                for (var y = 0; y < framecontent[t][z].length; y++)
+                    for (var x = 0; x < framecontent[t][z][y].length; x++) {
+                        if (typeof(framecontent[t][z][y][x]) === "number") {
+                            var value = framecontent[t][z][y][x].toString(16);
+                            while (value.length < 6) value = "0" + value;
+                            framecontent[t][z][y][x] = "#" + value;
+                        }
+                    }
     </script>
 </head>
 
@@ -131,7 +127,7 @@ $dataArray = array();
 
         <div class="contentviewer">
             <h1 class="title">Gestion du fichier</h1>
-            <input onchange="isSavable()" id="fileName" class="hugemargin" type="text" placeholder="Nom du fichier" value=<?php echo "\"".$_GET['f']."\"" ?>>
+            <input onchange="isSavable()" id="fileName" class="hugemargin" type="text" placeholder="Nom du fichier" value=<?php echo "\"" . (isset($_GET['f']) ? $_GET['f'] : '') . "\"" ?>>
             <button class="hugemargin mediumtopmargin" id="saveButton" onclick="sendAnimation()" disabled>Enregistrer</button>
             <button class="hugemargin red mediumtopmargin" onclick="reset()">Reset</button>
         </div>

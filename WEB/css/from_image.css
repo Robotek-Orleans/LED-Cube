@@ -1,0 +1,6 @@
+#display_image {
+	height: 200px;
+	background-size: contain;
+	background-repeat: no-repeat;
+	image-rendering: pixelated;	
+}
