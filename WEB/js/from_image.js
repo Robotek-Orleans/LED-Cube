@@ -108,7 +108,6 @@ function submitPattern(frames) {
 	var f = document.createElement('form');
 	f.action = './';
 	f.method = 'POST';
-	f.target = '_blank';
 
 	var inputF = document.createElement('input');
 	inputF.type = 'hidden';
