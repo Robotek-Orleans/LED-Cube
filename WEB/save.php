@@ -20,9 +20,9 @@ if(isset($data['stat']) && isset($data['fileName'])){
             for($j=0;$j<count($data['data'][$i]);$j++){
                 for($k=0;$k<count($data['data'][$i][$j]);$k++){
                     for($l=0;$l<count($data['data'][$i][$j][$k]);$l++){
-                        $red = strval(hexdec(substr($data['data'][$i][$j][$k][$l],1,2)));
-                        $green = strval(hexdec(substr($data['data'][$i][$j][$k][$l],3,2)));
-                        $blue = strval(hexdec(substr($data['data'][$i][$j][$k][$l],5,2)));
+                        $red = strval(hexdec(substr($data['data'][$i][7-$l][$k][7-$j],1,2)));
+                        $green = strval(hexdec(substr($data['data'][$i][7-$l][$k][7-$j],3,2)));
+                        $blue = strval(hexdec(substr($data['data'][$i][7-$l][$k][7-$j],5,2)));
                         fwrite($file, $red.PHP_EOL); // rouge
                         fwrite($file, $green.PHP_EOL); // vert
                         fwrite($file, $blue.PHP_EOL); // bleu

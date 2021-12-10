@@ -12,13 +12,24 @@ $dataArray = array();
     $frames = intval(fgets($file));
     $time = intval(fgets($file));
 
+    for ($i=0;$i<$frames;$i++) {
+        $dataArray[$i] = array();
+        for ($j=0;$j<8;$j++) {
+            $dataArray[$i][$j] = array();
+            for ($k=0;$k<8;$k++) {
+                $dataArray[$i][$j][$k] = array();
+                for ($l=0;$l<8;$l++) {
+                    $dataArray[$i][$j][$k][$l] = "#000000";
+                }
+            }
+        }
+        // process the line read.
+    }
+
     if ($file) {
         for ($i=0;$i<$frames;$i++) {
-            $dataArray[$i] = array();
             for ($j=0;$j<8;$j++) {
-                $dataArray[$i][$j] = array();
                 for ($k=0;$k<8;$k++) {
-                    $dataArray[$i][$j][$k] = array();
                     for ($l=0;$l<8;$l++) {
                         $red    = dechex(intval(fgets($file)));
                         if(strlen($red)<2){
@@ -32,7 +43,7 @@ $dataArray = array();
                         if(strlen($blue)<2){
                             $blue = '0'.$blue;
                         }
-                        $dataArray[$i][$j][$k][$l] = "#".$red.$green.$blue;
+                        $dataArray[$i][7-$l][$k][7-$j] = "#".$red.$green.$blue;
                     }
                 }
             }
@@ -43,6 +54,39 @@ $dataArray = array();
     } 
     fclose($file);
  }
+
+ function convertArray($val){
+    $result = "[";
+    foreach($val as $index=>$i){
+        if(intval($index) == 0){
+            $result = $result." [";
+        }else{
+            $result = $result.", [";
+        }
+        foreach($i as $index1=>$j){
+            if(intval($index1) == 0){
+                $result = $result." [";
+            }else{
+                $result = $result.", [";
+            }
+            foreach($j as $index2=>$k){
+                if(intval($index2) == 0){
+                    $result = $result." [";
+                }else{
+                    $result = $result.", [";
+                }
+                foreach($k as $index3=>$l){
+                     $result = $result." \"".$l."\" ,";     
+                }
+                $result = substr($result, 0, -1)." ]";
+            }
+            $result = $result." ]";
+        }
+        $result = $result." ]";
+    }
+    return $result." ]";
+
+}
 
 ?>
 
@@ -68,7 +112,7 @@ $dataArray = array();
         var copied3D = [];
         <?php
             if(isset($_GET['f'])){
-                echo "var framecontent = ".json_encode($dataArray).";";
+                echo "var framecontent = ".convertArray($dataArray).";";
             }else{
                 echo "var framecontent = [];";
                 echo "addframe(0);";

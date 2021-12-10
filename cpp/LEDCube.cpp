@@ -142,23 +142,27 @@ LEDCube::LEDCube(std::string fileName)
 
 void LEDCube::start()
 {
-
+    int f = 0;
     while (1)
     {
-        for (int i = 0; i < 8; i++)
-        {
-            // std::cout << i << std::endl;
-            setLayer(i == 0 ? 7 : i - 1, false);
-            setLayer(i, true);
-            //bcm2835_delayMicroseconds(1);
-            // std::cout << "layer set " << i << std::endl;
-            //tlc->send(tlc_pattern[0][i]);
-            /*for(int j=0;j<10;j++){
-                tlc->send(tlc_pattern[0][i]);
-            }*/
-            
-            tlc->send(tlc_pattern[0][(i + 1) % 8]);
+        clock_t before = clock();
+        clock_t newFrameTime = clock() + frameTime*CLOCKS_PER_SEC/1000;
+        while(clock() < newFrameTime){
+            for (int z = 0; z < 8; z++)
+            {
+                // std::cout << i << std::endl;
+                setLayer(z == 0 ? 7 : z - 1, false);
+                setLayer(z, true);
+                //bcm2835_delayMicroseconds(1);
+                // std::cout << "layer set " << i << std::endl;
+                //tlc->send(tlc_pattern[0][i]);
+                /*for(int j=0;j<10;j++){
+                    tlc->send(tlc_pattern[0][i]);
+                }*/
+                tlc->send(tlc_pattern[f][(z + 1) % 8]);
+            }
         }
+        f = (f+1)%numberFrames;
     }
 }
 

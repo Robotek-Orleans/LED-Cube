@@ -477,7 +477,7 @@ function previousaxe() {
 
 document.addEventListener('keydown', (e) => {
     switch (e.key) {
-        case "Shift":
+        case "Control":
             shiftpressed = true;
             break;
     }
@@ -485,7 +485,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 document.addEventListener('keyup', (e) => {
-    if (e.key === "Shift") {
+    if (e.key === "Control") {
         shiftpressed = false
     }
 });

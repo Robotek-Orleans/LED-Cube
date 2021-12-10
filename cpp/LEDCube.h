@@ -1,6 +1,8 @@
 #include "TLCSin.h"
 #include <string>
 #include <fstream>
+#include <time.h>
+
 //#include "TLCPattern.h"
 
 #define DATALENGTH 288 // Data for one layer : 8*8*3 = 192 color (int12) => * INT12_TO_INT8 = 288 octets
