@@ -142,7 +142,7 @@ function convertArray($array)
             </div>
             <div class="flexRow">
                 <p>Temps d'une frame (en ms)</p>
-                <input id="frameTime" onchange="timeChanged()" min="1" type="number" value=<?php if(isset($_GET['f']) { echo "\"".$time."\""; } else { echo "\"500\"";} ?>>
+                <input id="frameTime" onchange="timeChanged()" min="1" type="number" value=<?php if(isset($_GET['f'])){ echo "\"".$time."\""; } else { echo "\"500\"";} ?>>
             </div>
             <div class="flexRow">
                 <button onclick="addframebefore()">Ajouter une frame avant</button>
