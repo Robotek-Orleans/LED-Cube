@@ -1,4 +1,4 @@
-function sendAnimation(playAnimation){
+function sendAnimation(isPlayAnimation){
     /* file_name , data , time , stat (=save) */
     if (save) {
         scriptstat("orange", "Enregistrement en cours", 2000);
@@ -12,7 +12,7 @@ function sendAnimation(playAnimation){
                 scriptstat("vert", "Enregistré avec succès", 2000);
                 save = false;
                 isSavable();
-                if(playAnimation){
+                if(isPlayAnimation){
                     playAnimation();
                 }
             } else if (xhr.readyState === 4) {
@@ -28,7 +28,7 @@ function sendAnimation(playAnimation){
         xhr.send(JSON.stringify(data));
     } else {
         scriptstat("orange", "Votre fichier a déjà été enregistré", 2000);
-        if(playAnimation){
+        if(isPlayAnimation){
             playAnimation();
         }
     }
