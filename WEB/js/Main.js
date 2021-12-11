@@ -3,6 +3,7 @@
 
 function paste2D() {
     if (!copied2D.length) return;
+    save = true;
     switch (selectedPlanDirection) {
         case "X":
             for (let y = 0; y < 8; y++) {
@@ -27,6 +28,10 @@ function paste2D() {
             break;
     }
     refresh2D()
+}
+
+function timeChanged(){
+    save = true
 }
 
 function copy2D() {
@@ -76,6 +81,7 @@ function copy3D() {
 }
 
 function paste3D() {
+    save = true;
     for (let x = 0; x < 8; x++) {
         for (let y = 0; y < 8; y++) {
             for (let z = 0; z < 8; z++) {
@@ -138,6 +144,7 @@ function setColor() {
 }
 
 function changeColor(element,color){
+    save = true;
     let colorPicker = document.getElementById("pickColor")
     let actualColor = colorPicker.value.replace('#', '').match(/.{1,2}/g)
     console.log(actualColor)
@@ -278,7 +285,6 @@ function getRadioSelectedValue(radioName) {
 
 
 function addframebefore() {
-
     const contentnum = document.getElementById("numframebefore")
     const contentnumaf = document.getElementById("numframeafter")
     index = parseInt(contentnum.value) - 1
@@ -353,6 +359,11 @@ function gotoframe() {
 }
 
 function removeframe() {
+    if (framecontent.length <= 1){
+        alert('Erreur: vous devez avoir au moins une frame')
+        return
+    }
+    save = true;
     const framerange = document.getElementById("frameRange")
     const frameinput = document.getElementById("frameInput")
     const frame = framerange.value
@@ -379,7 +390,7 @@ function removeframe() {
         }
         refresh3D()
     }
-    if (framecontent.length <= 1) alert('Erreur: vous devez avoir au moins une frame')
+    
 }
 
 function nextframe() {
@@ -395,6 +406,7 @@ function previousframe() {
 }
 
 function addframe(index) {
+    save = true;
     framecontent.splice(index, 0, [])
     for (let i = 0; i < RES; i++) {
         framecontent[index].push([])
@@ -433,6 +445,7 @@ async function init() {
 
 function reset() {
     if(!confirm('Voulez-vous vraiment tout effacer?')) return;
+    save = true;
     const contentnum = document.getElementById("numframebefore")
     const contentnumaf = document.getElementById("numframeafter")
     const framerange = document.getElementById("frameRange")
@@ -454,8 +467,10 @@ function reset() {
 function isSavable(){
     if(document.getElementById("fileName").value.length > 0){
         document.getElementById("saveButton").disabled = false;
+        document.getElementById("playAnimation").disabled = false;
     }else{
         document.getElementById("saveButton").disabled = true;
+        document.getElementById("playAnimation").disabled = true;
     }
 }
 

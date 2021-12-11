@@ -96,6 +96,7 @@ function convertArray($array)
     <script src="js/Main.js"></script>
     <script src="js/Request.js"></script>
     <script>
+        var save = false;
         var selectedPlanDirection = "X"; // X , Y ou Z
         var selectedPlanNumber = 1; // entre 1 et 8
         var selectedFrame = 1; // entre 1 et N frame
@@ -127,9 +128,10 @@ function convertArray($array)
 
         <div class="contentviewer">
             <h1 class="title">Gestion du fichier</h1>
-            <input onchange="isSavable()" id="fileName" class="hugemargin" type="text" placeholder="Nom du fichier" value=<?php echo "\"" . (isset($_GET['f']) ? $_GET['f'] : '') . "\"" ?>>
-            <button class="hugemargin mediumtopmargin" id="saveButton" onclick="sendAnimation()" disabled>Enregistrer</button>
-            <button class="hugemargin red mediumtopmargin" onclick="reset()">Reset</button>
+            <input onchange="isSavable()" id="fileName" class="mediummargin hugetopmargin" type="text" placeholder="Nom du fichier" value=<?php echo "\"" . (isset($_GET['f']) ? $_GET['f'] : '') . "\"" ?>>
+            <button class="mediummargin purple" id="playAnimation" onclick="playAnimation()" disabled>Jouer sur le LEDCube</button>
+            <button class="mediummargin" id="saveButton" onclick="sendAnimation()" disabled>Enregistrer</button>
+            <button class="red mediummargin" onclick="reset()">Reset</button>
         </div>
 
         <div class="contentviewer fixedwidth">
@@ -140,7 +142,7 @@ function convertArray($array)
             </div>
             <div class="flexRow">
                 <p>Temps d'une frame (en ms)</p>
-                <input id="frameTime" min="1" value="500" type="number">
+                <input id="frameTime" onchange="timeChanged()" min="1" value="500" type="number">
             </div>
             <div class="flexRow">
                 <button onclick="addframebefore()">Ajouter une frame avant</button>

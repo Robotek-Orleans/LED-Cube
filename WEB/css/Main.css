@@ -321,6 +321,11 @@ input[type=radio]:before {
     margin-top: 50px;
 }
 
+.hugeverticalmargin {
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
 .hugemargin {
     margin: 50px;
 }

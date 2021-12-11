@@ -131,7 +131,7 @@ window.addEventListener('load', () => {
 			display.src = URL.createObjectURL(new Blob([byteArrayImage.buffer], { type: 'image' }));
 			document.querySelector('#send_matrice').removeAttribute('disabled');
 
-			sendMatrice();
+			//sendMatrice();
 		});
 		reader.readAsArrayBuffer(this.files[0]);
 	});
