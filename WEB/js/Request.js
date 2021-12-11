@@ -1,4 +1,4 @@
-
+function sendAnimation(playAnimation){
     /* file_name , data , time , stat (=save) */
     if (save) {
         scriptstat("orange", "Enregistrement en cours", 2000);
