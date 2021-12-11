@@ -129,8 +129,8 @@ function convertArray($array)
         <div class="contentviewer">
             <h1 class="title">Gestion du fichier</h1>
             <input onchange="isSavable()" id="fileName" class="mediummargin hugetopmargin" type="text" placeholder="Nom du fichier" value=<?php echo "\"" . (isset($_GET['f']) ? $_GET['f'] : '') . "\"" ?>>
-            <button class="mediummargin purple" id="playAnimation" onclick="playAnimation()" disabled>Jouer sur le LEDCube</button>
-            <button class="mediummargin" id="saveButton" onclick="sendAnimation()" disabled>Enregistrer</button>
+            <button class="mediummargin purple" id="playAnimation" onclick="sendAnimation(true)" disabled>Jouer sur le LEDCube</button>
+            <button class="mediummargin" id="saveButton" onclick="sendAnimation(false)" disabled>Enregistrer</button>
             <button class="red mediummargin" onclick="reset()">Reset</button>
         </div>
 

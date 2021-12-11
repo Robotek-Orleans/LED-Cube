@@ -1,4 +1,3 @@
-function sendAnimation() {
 
     /* file_name , data , time , stat (=save) */
     if (save) {
@@ -13,6 +12,9 @@ function sendAnimation() {
                 scriptstat("vert", "Enregistré avec succès", 2000);
                 save = false;
                 isSavable();
+                if(playAnimation){
+                    playAnimation();
+                }
             } else if (xhr.readyState === 4) {
                 scriptstat("rouge", "Erreur lors de l'enregistrement: " + xhr.responseText, 0);
             }
@@ -26,15 +28,13 @@ function sendAnimation() {
         xhr.send(JSON.stringify(data));
     } else {
         scriptstat("orange", "Votre fichier a déjà été enregistré", 2000);
+        if(playAnimation){
+            playAnimation();
+        }
     }
 }
 
 function playAnimation() {
-
-    if(save){
-        sendAnimation();
-    }
-
     scriptstat("orange", "Demande en cours", 2000);
 
     let xhr = new XMLHttpRequest();
