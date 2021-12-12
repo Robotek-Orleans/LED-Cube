@@ -398,7 +398,7 @@ LEDCube::~LEDCube()
     // Eteind toutes les couches
     stop();
     // Delete des variables
-    delete[] tlc;
+    delete tlc;
     for (int t = 0; t < numberFrames; ++t)
     {
         for (int z = 0; z < ZLENGTH; ++z)
