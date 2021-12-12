@@ -210,7 +210,7 @@ function convertArray($array)
                 <button id="greenButton" class="colorButton grey" onclick="changeColor(this,'green');setColor()">Vert</button>
                 <button id="blueButton" class="colorButton grey" onclick="changeColor(this,'blue');setColor()">Bleu</button>
             </div>
-            <input class="hugemargin" type="color" id="pickColor" disabled>
+            <input class="hugemargin" type="color" id="pickColor" onchange="save=true;setColor()">
             <div class="flexRow">
                 <button class="mediummargin purple" onclick="copy2D()">Copier la matrice</button>
                 <button class="mediummargin purple" id="paste2D" onclick="paste2D()" disabled>Coller la matrice</button>

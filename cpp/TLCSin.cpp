@@ -1,6 +1,8 @@
 #include "TLCSin.h"
-#include <iostream>
 
+#ifdef DEBUG
+#include <iostream>
+#endif
 TLCSin::TLCSin(int dataLength)
 :m_dataLength(dataLength)
 {
@@ -36,23 +38,29 @@ TLCSin::TLCSin(int dataLength)
 TLCSin::~TLCSin(){
   bcm2835_spi_end();
   bcm2835_close();
-  delete[] m_dataArray;
+  if(m_dataArray != nullptr) delete[] m_dataArray;
 }
 
 void TLCSin::send(uint8_t *data)
 {
-  //for(int i =GRAYSCALELENGTH-1; i>m_dataArrayLength-1;i--) m_dataArray[i] = data[i-m_dataArrayLength];
-  //for(int i =m_emptyArrayLength; i<GRAYSCALELENGTH;i++) m_dataArray[i] = data[i-m_emptyArrayLength];
-  if(data==NULL){
+  if(data==nullptr){
+    #ifdef DEBUG
     std::cout << "is null" << std::endl;
+    #endif
     exit(1);  
   }
 
+  //Replace end of dataArray by LEDs values
   memcpy(&m_dataArray[m_emptyArrayLength],data,m_dataLength);
-  //std::cout << "ready to be sent" << std::endl;
+
+  #ifdef DEBUG
+  std::cout << "ready to be sent" << std::endl;
+  #endif
+
   bcm2835_spi_writenb((const char*) m_dataArray, GRAYSCALELENGTH);
-  //bcm2835_spi_writenb((const char*) data, m_dataLength);
-  //std::cout << "data sent" << std::endl;
+  #ifdef DEBUG
+  std::cout << "data sent" << std::endl;
+  #endif
   xlatPulse();
 }
 
