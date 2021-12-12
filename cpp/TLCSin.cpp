@@ -41,10 +41,19 @@ TLCSin::~TLCSin(){
   #endif
   std::memset(m_dataArray, 0, GRAYSCALELENGTH);
   bcm2835_spi_writenb((const char*) m_dataArray, GRAYSCALELENGTH);
-  bcm2835_spi_end(); 
+  #ifdef DEBUG
+    std::cout << "Empty SPI signal sended" <<std::endl;
+  #endif
+  bcm2835_spi_end();
+  #ifdef DEBUG
+    std::cout << "SPI closed" <<std::endl;
+  #endif
   //Set BLANK to HIGH for security reasons
   bcm2835_gpio_fsel(BLANK, BCM2835_GPIO_FSEL_OUTP);
   bcm2835_gpio_write(BLANK, HIGH);
+  #ifdef DEBUG
+    std::cout << "BLANKETTE set to high" <<std::endl;
+  #endif
   bcm2835_close();
   if(m_dataArray != nullptr) delete[] m_dataArray;
   #ifdef DEBUG
