@@ -17,3 +17,19 @@ canvas#display_frames {
 #frame_range {
 	width: 160px;
 }
+
+.hides {
+	transition: opacity 100ms linear;
+}
+
+.hides[hidden] {
+	opacity: 0;
+}
+
+.fakeRadioInput {
+	margin-left: 48px;
+}
+
+.fakeRadioInput input[type=number] {
+	margin-left: 16px;
+}

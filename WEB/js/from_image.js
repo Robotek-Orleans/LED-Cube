@@ -1,7 +1,7 @@
 /**
- * @type {Map<File,Uint8Array>}
+ * @type {Map<File,Image8x8>}
  */
-var images8x8 = new Map();
+var images = new Map();
 
 /**
  * bytesToUint32 converts the given bytes from the "start" to "count" to an unsigned 32 bit integer.
@@ -17,18 +17,26 @@ function bytesToUint32(byteArray, start, count) {
 	return n;
 }
 
-function generateLayer(w, h) {
-	const layer = new Array(h);
-	for (var y = 0; y < h; y++) {
-		layer[y] = new Array(w);
+/**
+ * @return {number[][]}
+ */
+function generateLayer() {
+	const layer = new Array(8);
+	for (var y = 0; y < 8; y++) {
+		layer[y] = new Array(8);
 		layer[y].fill(0);
 	}
 	return layer;
 }
 
+/**
+ * @return {number[][][]}
+ */
 function generateFrame() {
 	const frame = new Array(8);
-	frame.fill(generateLayer(8, 8), 0, 8);
+	for (let z = 0; z < 8; z++) {
+		frame[z] = generateLayer();
+	}
 	return frame;
 }
 
@@ -42,15 +50,7 @@ class Image8x8 {
 	 * @param {number[][]}
 	 */
 	constructor(pixels) {
-		if (pixels != undefined) {
-			this.pixels = pixels;
-		} else {
-			this.pixels = new Array(8);
-			for (var y = 0; y < 8; y++) {
-				this.pixels[y] = new Array(8);
-				this.pixels[y].fill(0, 0, 8);
-			}
-		}
+		this.pixels = pixels ?? generateLayer();
 	}
 
 	/**
@@ -68,6 +68,9 @@ class Image8x8 {
 	 * @return {number} color RGB
 	 */
 	getPixel(x, y) {
+		if (typeof x !== 'number' || typeof y !== 'number' || x < 0 || 8 <= x || y < 0 || 8 <= y) {
+			throw new Error(`Invalid position of Image8x8 (${x},${y})`);
+		}
 		return this.pixels[y][x];
 	}
 
@@ -131,6 +134,14 @@ class Image8x8 {
 		}
 		return rot;
 	}
+
+	clone() {
+		const c = new Image8x8();
+		for (var y = 0; y < 8; y++) {
+			c.pixels[y] = [...this.pixels[y]];
+		}
+		return c;
+	}
 }
 
 /**
@@ -160,30 +171,49 @@ function BlobToImageDataConvertor(imageFileBlob) {
 }
 
 async function sendMatrice() {
-	const images = Array.from(images8x8.values());
+	var images8x8 = Array.from(images.values());
 
-	console.log('Images :', images);
+	console.log('Images :', images8x8);
 
-	if (document.location.search === '?debug_dont_submit') return;
+	images8x8.filter(image => image !== undefined);
+	if (images8x8.length !== images.size) {
+		alert("Une image n'a pas été chargée");
+	}
 
-	var count_no_image = 0;
-	const frames = images.map(image => {
-		const frame = generateFrame();
-		if (image !== undefined) {
-			frame[0] = image.rotate90().pixels;
-		} else {
-			count_no_image++;
-			console.warn("Une image n'a pas été chargée");
+	const fill_type = Array.from(document.getElementsByName('fill_type')).filter(r => r.checked)[0].value;
+	var frames;
+	if (fill_type === 'fill_one_layer' || fill_type === 'fill_extend') {
+		const fill_one_layer = fill_type === 'fill_one_layer';
+		frames = images8x8.map(image => {
+			var frame = generateFrame();
+			var data = image.rotate90().pixels;
+			if (fill_one_layer) {
+				frame[0] = data;
+			} else {
+				frame = frame.map(() => data);
+			}
+			return frame;
+		});
+	} else if (fill_type == 'fill_with_formule') {
+		const fill_formule = document.querySelector('#fill_formule').value;
+		try {
+			frames = generateFramesWithFormule(fill_formule, images8x8);
+		} catch (error) {
+			alert(error);
+			console.error(error);
+			return;
 		}
-		return frame;
-	});
-	if (count_no_image === frames.length) {
+	} else {
+		alert(`Le type de remplissage '${fill_type}' n'est pas valide`);
+	}
+	if (frames.length === 0) {
 		alert('Aucune image à envoyer');
 		return;
 	}
-	if (count_no_image > 0) {
-		alert("Une image n'a pas été chargée");
-	}
+
+	console.log('Frames : ', frames);
+
+	if (document.location.search === '?debug_dont_submit') return;
 
 	submitPattern(frames);
 }
@@ -215,7 +245,7 @@ function loadImages() {
 	if (files.length == 0) return;
 
 	const reader = new FileReader();
-	images8x8 = new Map();
+	images = new Map();
 	/**
 	 * @type {HTMLCanvasElement}
 	 */
@@ -227,10 +257,10 @@ function loadImages() {
 
 	reader.addEventListener('load', async () => {
 		const arrayBuffer = reader.result;
-		var i = images8x8.size;
+		var i = images.size;
 		var byteArray = new Uint8Array(arrayBuffer);
 		const img = await Image8x8.readImage(byteArray);
-		images8x8.set(files[i], img);
+		images.set(files[i], img);
 
 		var canvasImg = ctx.createImageData(8, 8);
 		for (let y8 = 0; y8 < 8; y8++) {
@@ -244,27 +274,136 @@ function loadImages() {
 		}
 		ctx.putImageData(canvasImg, 0, canvasSize * i);
 
-		if (i == 0) {
-			document.querySelector('#send_matrice').removeAttribute('disabled');
-		}
 		if (i + 1 < files.length) reader.readAsArrayBuffer(files[i + 1]);
 		else {
 			const frame_range_input = document.querySelector('#frame_range');
-			frame_range_input.setAttribute('max', images8x8.size);
-			if (images8x8.size == 1) {
+			frame_range_input.setAttribute('max', images.size);
+			if (images.size == 1) {
 				frame_range_input.setAttribute('hidden', '');
 			} else {
 				frame_range_input.removeAttribute('hidden');
 			}
+			onImagesChanged();
 		}
 	});
 
 	reader.readAsArrayBuffer(this.files[0]);
 }
 
+function updateButtonSubmit() {
+	var canSubmit = false;
+	const has_image = images.size > 0;
+	const fill_type = Array.from(document.getElementsByName('fill_type')).filter(r => r.checked)[0].value;
+	const fill_formule = document.querySelector('#fill_formule');
+	const fill_formule_require_img = fill_formule.value.includes('img');
+	const input_fill_time = document.querySelector('#fill_time');
+
+	if (has_image) {
+		canSubmit = true;
+	} else {
+		if (fill_type == 'fill_with_formule' && !fill_formule_require_img) {
+			canSubmit = true;
+		}
+	}
+	const submit = document.querySelector('#send_pattern');
+	if (canSubmit) {
+		submit.removeAttribute('disabled');
+	} else {
+		submit.setAttribute('disabled', '');
+	}
+
+	if (fill_type === 'fill_with_formule') {
+		fill_formule.removeAttribute('disabled');
+		input_fill_time.parentElement.removeAttribute('hidden');
+	} else {
+		fill_formule.setAttribute('disabled', '');
+		input_fill_time.parentElement.setAttribute('hidden', '');
+	}
+}
+
+function onImagesChanged() {
+	updateButtonSubmit();
+	if (!preLoadImages) {
+		const input_fill_time = document.querySelector('#fill_time');
+		input_fill_time.value = Math.max(images.size, 1);
+	}
+	preLoadImages = false;
+}
+
+function onFillControlChanged() {
+	updateButtonSubmit();
+}
+
+function onFillFormuleChanged() {
+	updateButtonSubmit();
+}
+
+/**
+ * @param {string} formule
+ * @param {Image8x8[]} imgs
+ */
+function generateFramesWithFormule(formule, imgs) {
+	const input_fill_time = document.querySelector('#fill_time');
+	const tMax = parseInt(input_fill_time.value);
+	/** @type {number[][][][]} */
+	var frames = new Array(tMax);
+	const formuleS = formule.match(/=(.+)$/)[1];
+	for (let t = 0; t < tMax; t++) {
+		frames[t] = generateFrame();
+		var formuleS_T = formuleS.replace(/t/gi, t);
+		for (let z = 0; z < 8; z++) {
+			var formuleS_TZ = formuleS_T.replace(/z/gi, z);
+			for (let y = 0; y < 8; y++) {
+				var formuleS_TZY = formuleS_TZ.replace(/y/gi, y);
+				for (let x = 0; x < 8; x++) {
+					var formuleS_TZYX = formuleS_TZY.replace(/x/gi, x);
+					var equaColor = MATH.parseMath(formuleS_TZYX);
+					var matchesImg = Array.from(equaColor.matchAll(/img\(.*\)/gi));
+					if (t === 6) console.log(equaColor, matchesImg);
+					matchesImg.forEach(match => {
+						const imgFunc = match[0];
+						var args = Array.from(imgFunc.matchAll(/(?<=[\(,])[^,]+(?=[,\)])/gi));
+						var imgArgs = args.map(arg => MATH.parseMath(arg[0]));
+						const tImg = parseInt(imgArgs[2]) || 0;
+						const yImg = parseInt(imgArgs[1]) || 0;
+						const xImg = parseInt(imgArgs[0]) || 0;
+						var colorImg;
+						if (tImg < 0 || imgs.length <= tImg) {
+							throw new Error(
+								`Vous avez dépassé le nombre d'images disponibles (${imgs.length}) avec la formule (t=${tImg}).\n` +
+									`Essayez avec '0' dans l'expression 'img(y,z,0)'.`
+							);
+						}
+						if (0 <= xImg && xImg < 8 && 0 <= yImg && yImg < 8) {
+							colorImg = imgs[tImg].getPixel(xImg, yImg);
+						} else {
+							colorImg = 0;
+						}
+						equaColor = equaColor.replace(imgFunc, colorImg);
+					});
+
+					if (t === 6) console.log(`t=6 [${x}][${y}][${z}] '${formuleS_TZYX}' => '${equaColor}'`);
+
+					var color = MATH.parseMath(equaColor);
+					frames[t][x][y][z] = color;
+				}
+			}
+		}
+	}
+	return frames;
+}
+
+var preLoadImages = false;
 window.addEventListener('load', () => {
+	/**
+	 * @type {HTMLInputElement}
+	 */
 	const image_input = document.querySelector('#image_input');
 	image_input.addEventListener('input', loadImages);
+	if (image_input.files.length > 0) {
+		preLoadImages = true;
+		loadImages.call(image_input);
+	}
 
 	const div_frames = document.querySelector('#div_frames');
 	/**
@@ -276,4 +415,6 @@ window.addEventListener('load', () => {
 		var height = div_frames.clientHeight;
 		div_frames.scroll(0, height * value);
 	});
+
+	document.getElementById('fill_formule').setAttribute('disabled', '');
 });
