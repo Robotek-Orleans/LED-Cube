@@ -449,3 +449,63 @@ button:disabled {
       margin: auto;
       padding: 10px;
   }
+
+
+/*---------------open file modal css----------*/
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 370px; /* Location of the box */
+    left: 0;
+    float: right;
+    top: 0; 
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(94, 71, 71, 0.4); /* Black w/ opacity */
+  }
+  
+  /* Modal Content */
+  .modal-content {
+    float: right;
+    padding: 0px;                           
+    border: 0px solid #888;
+    width: 30%;
+  }
+  
+  /* The Close Button */
+  .close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  
+
+  /*---modal's link----*/
+  .link{
+    transition-duration: 0.1s;
+    height: 50px;
+    border-width: 0px;
+    border-radius: 10px;
+    background: linear-gradient(
+45deg, #4098ac, #3aaa96);
+    color: rgb(232, 230, 227);
+    font-size: 18px;
+    font-weight: bold;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin: 6px;
+  }
+  
