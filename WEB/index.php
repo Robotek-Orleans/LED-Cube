@@ -115,6 +115,7 @@ function convertArray($array)
                             framecontent[t][z][y][x] = "#" + value;
                         }
                     }
+        var isSavableTimeout;
     </script>
 </head>
 
@@ -128,7 +129,7 @@ function convertArray($array)
 
         <div class="contentviewer">
             <h1 class="title">Gestion du fichier</h1>
-            <input onchange="isSavable()" id="fileName" class="mediummargin hugetopmargin" type="text" placeholder="Nom du fichier" value=<?php echo "\"" . (isset($_GET['f']) ? $_GET['f'] : '') . "\"" ?>>
+            <input oninput="clearTimeout(isSavableTimeout); isSavableTimeout = setTimeout(isSavable, 500)" onchange="isSavable()" id="fileName" class="mediummargin hugetopmargin" type="text" placeholder="Nom du fichier" value=<?php echo "\"" . (isset($_GET['f']) ? $_GET['f'] : '') . "\"" ?>>
             <button class="mediummargin purple" id="playAnimation" onclick="sendAnimation(true)" disabled>Jouer sur le LEDCube</button>
             <button class="mediummargin" id="saveButton" onclick="sendAnimation(false)" disabled>Enregistrer</button>
             <button class="red mediummargin" onclick="reset()">Reset</button>
@@ -142,7 +143,7 @@ function convertArray($array)
             </div>
             <div class="flexRow">
                 <p>Temps d'une frame (en ms)</p>
-                <input id="frameTime" onchange="timeChanged()" min="1" type="number" value=<?php if(isset($_GET['f'])){ echo "\"".$time."\""; } else { echo "\"500\"";} ?>>
+                <input id="frameTime" onchange="timeChanged()" min="1" type="number" value="<?php echo isset($time) ? $time : "500" ?>">
             </div>
             <div class="flexRow">
                 <button onclick="addframebefore()">Ajouter une frame avant</button>
@@ -156,9 +157,9 @@ function convertArray($array)
             <div class="flexRow">
 
                 <button onclick="previousframe()">&lt;</button>
-                <input id="frameRange" onchange="gotoframe()" oninput="document.getElementById('frameInput').value = this.value" type="range" min="1" max="1" value="1">
+                <input id="frameRange" oninput="gotoframe()" type="range" min="1" max="1" value="1">
                 <button onclick="nextframe()">&gt;</button>
-                <input class="inputnumfixedwidth" id="frameInput" type="number" min="1" value="1">
+                <input class="inputnumfixedwidth" id="frameInput" type="number" oninput="document.getElementById('frameRange').value = Math.max(this.value, 1); gotoframe()" min="1" max="1" value="1">
             </div>
             <div class="flexRow">
                 <button class="mediumtopmargin red" onclick="removeframe()">Supprimer la frame</button>

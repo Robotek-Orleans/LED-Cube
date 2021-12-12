@@ -41,7 +41,7 @@ table {
     flex-flow: column;
     border-radius: 10px;
   }
-  .message:hover{
+  .message:hover:not(:disabled) {
     opacity:0.7;
   }
 
@@ -159,7 +159,7 @@ input[type=number] {
     flex-basis: 50%;
 }
 
-input[type=number]:hover {
+input[type=number]:hover:not(:disabled) {
     background-color: #6d8a8d;
 }
 
@@ -182,8 +182,12 @@ input[type=text] {
     font-weight: bold;
 }
 
-input[type=text]:hover {
+input[type=text]:hover:not(:disabled) {
     background-color: #6d8a8d;
+}
+
+input[type=text]:disabled {
+    opacity: 0.2;
 }
 
 
@@ -201,8 +205,9 @@ button {
     margin: 6px;
 }
 
-button:hover {
+button:hover:not(:disabled) {
     background: linear-gradient(45deg, #40ac5b, #60c0ae);
+    cursor: pointer;
 }
 
 input[type=range] {
@@ -240,7 +245,7 @@ datalist {
     width: 100%;
 }
 
-input[type=range]:hover {
+input[type=range]:hover:not(:disabled) {
     background: #6d8a8d;
 }
 
@@ -284,7 +289,8 @@ input[type=radio] {
     cursor: pointer;
     border-radius: 40px;
     padding: 4px 8px;
-    background: #454857;
+    background: linear-gradient(45deg, #4098ac, #3aaa96);
+    filter: brightness(0.3) contrast(0.6) hue-rotate(62deg);
     transition: all 100ms linear;
 }
 
@@ -299,7 +305,7 @@ input[type=color] {
 }
 
 input[type=radio]:checked {
-    background: linear-gradient(45deg, #4098ac, #3aaa96);
+    filter: none;
 }
 
 input[type=radio]:before {
@@ -342,43 +348,43 @@ input[type=radio]:before {
     background: linear-gradient(45deg, #ac4040, #aa5a3a);
 }
 
-.red:hover {
+.red:hover:not(:disabled) {
     background: linear-gradient(45deg, #ac4040, #d2a740);
-}
-
-.green:hover {
-    background: linear-gradient(45deg, #48ce57, #58dd9e);
 }
 
 .green {
     background: linear-gradient(45deg, #62ac40, #3aaa6b);
 }
 
-.blue:hover {
-    background: linear-gradient(45deg, #4089ac, #4080d2)
+.green:hover:not(:disabled) {
+    background: linear-gradient(45deg, #48ce57, #58dd9e);
 }
 
 .blue {
     background: linear-gradient(45deg, #405bac, #583aaa);
 }
 
-.grey{
+.blue:hover:not(:disabled) {
+    background: linear-gradient(45deg, #4089ac, #4080d2)
+}
+
+.grey {
     background: linear-gradient(45deg, #3a484a, #485956);
 }
 
-.grey:hover{
+.grey:hover:not(:disabled) {
     background: linear-gradient(45deg, #58756e, #495b58);
 }
 
-.purple{
+.purple {
     background: linear-gradient(45deg, #4047ac, #a63aaa);
 }
 
-.purple:hover{
+.purple:hover:not(:disabled) {
     background: linear-gradient(45deg, #ac4096, #aa3a3a);
 }
 
-button:disabled{
+button:disabled {
     opacity: 0.2;
 }
 
@@ -390,7 +396,7 @@ button:disabled{
     }
 }
 
-.colorButton{
+.colorButton {
     width: 80px;
 }
 
