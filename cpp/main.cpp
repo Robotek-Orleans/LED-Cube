@@ -2,10 +2,23 @@
 #include <string>
 #include <csignal>
 
+#define DEBUG
+
+
+#ifdef DEBUG
+#include <iostream>
+#endif
+
 LEDCube* cube; // pas bien
 
 void signalHandler( int signum ) {
+   #ifdef DEBUG
+    std::cout << "Sigterm signal triggered" <<std::endl;
+   #endif
    cube->m_isRunning = false;
+   #ifdef DEBUG
+    std::cout << "Sigterm signal ended" <<std::endl;
+   #endif
    //exit(signum);  
 }
 

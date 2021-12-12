@@ -36,6 +36,9 @@ TLCSin::TLCSin(int dataLength)
 }
 
 TLCSin::~TLCSin(){
+  #ifdef DEBUG
+    std::cout << "TLCSin destructor triggered" <<std::endl;
+  #endif
   std::memset(m_dataArray, 0, GRAYSCALELENGTH);
   bcm2835_spi_writenb((const char*) m_dataArray, GRAYSCALELENGTH);
   bcm2835_spi_end(); 
@@ -44,6 +47,9 @@ TLCSin::~TLCSin(){
   bcm2835_gpio_write(BLANK, HIGH);
   bcm2835_close();
   if(m_dataArray != nullptr) delete[] m_dataArray;
+  #ifdef DEBUG
+    std::cout << "TLCSin destructor ended" <<std::endl;
+  #endif
 }
 
 void TLCSin::send(uint8_t *data)

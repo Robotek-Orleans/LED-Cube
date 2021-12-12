@@ -392,6 +392,9 @@ void LEDCube::setData(int t, uint8_t ****matrice)
 
 LEDCube::~LEDCube()
 {
+    #ifdef DEBUG
+    std::cout << "LEDCube destructor triggered" <<std::endl;
+    #endif
     // Eteind toutes les couches
     stop();
     // Delete des variables
@@ -405,4 +408,7 @@ LEDCube::~LEDCube()
         delete[] tlc_pattern[t];
     }
     delete[] tlc_pattern;
+    #ifdef DEBUG
+    std::cout << "LEDCube destructor ended" <<std::endl;
+    #endif
 }
