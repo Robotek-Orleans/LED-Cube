@@ -77,9 +77,6 @@ class Image8x8 {
 	static decodeImageData(imageData) {
 		const scale_x = 8 / imageData.width;
 		const scale_y = 8 / imageData.height;
-		const countPPPX = Math.ceil(1 / scale_x);
-		const countPPPY = Math.ceil(1 / scale_y);
-		const countPPP = countPPPX * countPPPY;
 
 		var data = new Array(8);
 		for (let y8 = 0; y8 < 8; y8++) {
@@ -87,7 +84,7 @@ class Image8x8 {
 			var yMin = Math.floor(y8 / scale_y);
 			var yMax = Math.ceil((y8 + 1) / scale_y);
 			for (let x8 = 0; x8 < 8; x8++) {
-				data[y8][x8] = new Array(3).fill(0);
+				data[y8][x8] = new Array(4).fill(0);
 				var xMin = Math.floor(x8 / scale_x);
 				var xMax = Math.ceil((x8 + 1) / scale_x);
 				for (let y = yMin; y < yMax; y++) {
@@ -97,6 +94,7 @@ class Image8x8 {
 						data[y8][x8][0] += imageData.data[i + 2] * alpha; // R
 						data[y8][x8][1] += imageData.data[i + 1] * alpha; // G
 						data[y8][x8][2] += imageData.data[i] * alpha; // B
+						data[y8][x8][3] += alpha;
 					}
 				}
 			}
@@ -105,7 +103,7 @@ class Image8x8 {
 		for (let y8 = 0; y8 < 8; y8++) {
 			for (let x8 = 0; x8 < 8; x8++) {
 				const rgb = bytesToUint32(
-					data[y8][x8].map(c => Math.round(c / countPPP)),
+					data[y8][x8].map(c => Math.min(Math.round(c / data[y8][x8][3]), 256)),
 					0,
 					3
 				);
