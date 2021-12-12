@@ -3,8 +3,7 @@
 // for @Jig0ll
 
 const n = '[\\d\\.]';
-const reel = `[\\+\\-]?${n}+`;
-const reelOuVide = `[\\+\\-]?${n}*`;
+const reel = `[\\+\\-]?\\.?\\d+\\.?\\d*`;
 const op = '\\+\\-\\*\\/';
 const MATH = {};
 function listCompare(strOperator, funcOperator) {
@@ -40,27 +39,20 @@ function funcOperation(strFunction, nbArgs, funcOperator) {
 function pairOperation(strOperator, funcOperator) {
 	strOperator = strOperator.replace(/(.)/g, '\\$1');
 	return [
-		`(${reel}) *${strOperator} *(${reelOuVide})`,
-		match => funcOperator(parseFloat(match[1]) || undefined, parseFloat(match[2]) || undefined),
+		`(${reel}) *${strOperator} *(${reel})`,
+		match => '+' + funcOperator(parseFloat(match[1]) || undefined, parseFloat(match[2]) || undefined),
 	];
 }
 
 const transfoCalc = [
 	[
-		// transfo fonctions
-		funcOperation('max', 2, (a = 0, b = 0) => Math.max(a, b)),
-		funcOperation('min', 2, (a = 0, b = 0) => Math.min(a, b)),
-	],
-	[
 		// transfo sign
-		[/\+\+/, () => '+'],
-		[/\-\-/, () => '+'],
-		[/\+\-/, () => '-)'],
-		[/\-\+/, () => '-'],
-		[/\+ +/, () => '+'],
-		[/\- +/, () => '-'],
-		[/\* +/, () => '*'],
-		[/\/ +/, () => '/'],
+		[/\+ *\+/, () => '+'],
+		[/\- *\-/, () => '+'],
+		[/\+ *\-/, () => '-'],
+		[/\- *\+/, () => '-'],
+		[/\* *\+/, () => '*'],
+		[/\/ *\+/, () => '/'],
 		[/ +/, () => ' '],
 	],
 	[
@@ -94,25 +86,55 @@ const transfoCalc = [
 		pairOperation(' ', (a = 0, b = 0) => a + b),
 	],
 	[
+		// transfo fonctions
+		funcOperation('max', 2, (a = 0, b = 0) => Math.max(a, b)),
+		funcOperation('min', 2, (a = 0, b = 0) => Math.min(a, b)),
+		funcOperation('abs', 1, (a = 0) => Math.abs(a)),
+		funcOperation('sqrt', 1, (a = 0) => Math.sqrt(a)),
+		funcOperation('round', 1, (a = 0) => Math.round(a)),
+		funcOperation('floor', 1, (a = 0) => Math.floor(a)),
+		funcOperation('ceil', 1, (a = 0) => Math.ceil(a)),
+	],
+	[
 		// transfoAddition
-		[/\( *\+? *(\d+) *\)/, match => match[1]],
-		[/\( *\- *(\d+) *\)/, match => -match[1]],
+		[`\\( *\\+? *(${reel}) *\\)`, match => match[1]],
+		[`\\( *\\- *(${reel}) *\\)`, match => -match[1]],
 		//[/\([ \+\-\*\/]*\)/, () => 0],
 	],
 ];
 
-MATH.parseMath = equation => {
+/**
+ * @param {string} equation Line
+ * @param {string[]|undefined} equaStep Empty array
+ */
+MATH.parseMath = (equation, equaStep) => {
 	equation = equation.replace(/^ */, '').replace('&gt;', '>').replace('&lt;', '<');
 	//`!r 1++2 * 5` donne `1+2*5`
+	equaStep ??= [];
+	equaStep.push(equation);
 	var previousLine;
 	do {
 		previousLine = equation;
 		for (const transfoGrp of transfoCalc) {
-			equation = applyTransfo(equation, transfoGrp);
+			const equationTransformed = applyTransfo(equation, transfoGrp);
+			if (equationTransformed != equation) {
+				if (transfoGrp.some(t => t[2] === 'after')) {
+					// l'une des transfos demande l'update avec la nouvelle version
+					equaStep.push(equationTransformed);
+				} else if (transfoGrp.some(t => t[2] === 'before')) {
+					// l'une des transfos demande l'update avec la version précédente
+					if (equaStep[equaStep.length - 1] !== equation) equaStep.push(equation);
+				} else {
+					equaStep.push(equationTransformed);
+				}
+				equation = equationTransformed;
+				break;
+			}
 		}
 	} while (equation != previousLine && equation.length < 100000);
 
 	if (equation == '') equation = 0;
+	equaStep.push(equation);
 	return equation;
 };
 
@@ -120,29 +142,29 @@ MATH.parseMath = equation => {
  * @param {string} equation
  * @param {[string,Function][]} rules
  */
+function getFirstMatch(equation, rules) {
+	return rules
+		.map(rule => {
+			return { rule, match: equation.match(new RegExp(rule[0], 'g')) };
+		})
+		.filter(result => result.match)
+		.sort((a, b) => Math.sign(a.match.index, b.match.index))?.[0];
+}
+
+/**
+ * @param {string} equation
+ * @param {[string,Function][]} rules
+ */
 function applyTransfo(equation, rules) {
 	var i = 0;
-
-	/**
-	 * @type {Map<RegExpMatchArray,[string,Function]>}
-	 */
-	var matchesAndCallback = new Map();
-	for (const special of rules) {
-		const regex = new RegExp(special[0], 'g');
-		const speMatches = Array.from(equation.matchAll(regex));
-		speMatches.forEach(match => matchesAndCallback.set(match, special));
-	}
-
-	var matchesSorted = Array.from(matchesAndCallback.keys()).sort((a, b) => Math.sign(a.index - b.index));
-	for (let match of matchesSorted) {
-		const rule = matchesAndCallback.get(match);
+	var result;
+	while ((result = getFirstMatch(equation, rules))) {
+		const rule = result.rule;
 		const regex = new RegExp(rule[0]);
 		const replacement = rule[1](equation.match(regex));
-		equation = equation.replace(match[0], replacement);
+		equation = equation.replace(result.match[0], replacement);
 
-		//TODO: remove this limit
-		i++;
-		if (i > 100) break;
+		if (i++ > 100) throw new Error('équation trop grande ou impossible à résoudre');
 	}
 	return equation;
 }
