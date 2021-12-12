@@ -1,6 +1,8 @@
 #include "TLCSin.h"
-#include <iostream>
 
+#ifdef DEBUG
+#include <iostream>
+#endif
 TLCSin::TLCSin(int dataLength)
 :m_dataLength(dataLength)
 {
@@ -34,25 +36,54 @@ TLCSin::TLCSin(int dataLength)
 }
 
 TLCSin::~TLCSin(){
+  #ifdef DEBUG
+    std::cout << "TLCSin destructor triggered" <<std::endl;
+  #endif
+  for(int i = m_emptyArrayLength; i<GRAYSCALELENGTH;i++) m_dataArray[i] = 0;
+  #ifdef DEBUG
+    std::cout << "Array ready" <<std::endl;
+  #endif
+  bcm2835_spi_writenb((const char*) m_dataArray, GRAYSCALELENGTH);
+  #ifdef DEBUG
+    std::cout << "Empty SPI signal sended" <<std::endl;
+  #endif
   bcm2835_spi_end();
+  #ifdef DEBUG
+    std::cout << "SPI closed" <<std::endl;
+  #endif
+  //Set BLANK to HIGH for security reasons
+  bcm2835_gpio_fsel(BLANK, BCM2835_GPIO_FSEL_OUTP);
+  bcm2835_gpio_write(BLANK, HIGH);
+  #ifdef DEBUG
+    std::cout << "BLANKETTE set to high" <<std::endl;
+  #endif
   bcm2835_close();
-  delete[] m_dataArray;
+  if(m_dataArray != nullptr) delete[] m_dataArray;
+  #ifdef DEBUG
+    std::cout << "TLCSin destructor ended" <<std::endl;
+  #endif
 }
 
 void TLCSin::send(uint8_t *data)
 {
-  //for(int i =GRAYSCALELENGTH-1; i>m_dataArrayLength-1;i--) m_dataArray[i] = data[i-m_dataArrayLength];
-  //for(int i =m_emptyArrayLength; i<GRAYSCALELENGTH;i++) m_dataArray[i] = data[i-m_emptyArrayLength];
-  if(data==NULL){
+  if(data==nullptr){
+    #ifdef DEBUG
     std::cout << "is null" << std::endl;
+    #endif
     exit(1);  
   }
 
+  //Replace end of dataArray by LEDs values
   memcpy(&m_dataArray[m_emptyArrayLength],data,m_dataLength);
-  //std::cout << "ready to be sent" << std::endl;
+
+  #ifdef DEBUG
+  std::cout << "ready to be sent" << std::endl;
+  #endif
+
   bcm2835_spi_writenb((const char*) m_dataArray, GRAYSCALELENGTH);
-  //bcm2835_spi_writenb((const char*) data, m_dataLength);
-  //std::cout << "data sent" << std::endl;
+  #ifdef DEBUG
+  std::cout << "data sent" << std::endl;
+  #endif
   xlatPulse();
 }
 

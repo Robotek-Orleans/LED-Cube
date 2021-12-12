@@ -2,10 +2,13 @@
 #include <stdio.h>
 #include <cstring>
 
+#define DEBUG
+
 #define CLK_DIVIDER BCM2835_SPI_CLOCK_DIVIDER_64
 
 // Pulse on RPi Plug P1 pin 22 (which is GPIO pin 17)
 #define XLAT_PIN RPI_V2_GPIO_P1_16
+#define BLANK  RPI_V2_GPIO_P1_24
 
 // Grayscale length (4096 / 8)
 #define GRAYSCALELENGTH 512

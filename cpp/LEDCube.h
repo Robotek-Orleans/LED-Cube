@@ -3,22 +3,9 @@
 #include <fstream>
 #include <time.h>
 
-//#include "TLCPattern.h"
-
 #define DATALENGTH 288 // Data for one layer : 8*8*3 = 192 color (int12) => * INT12_TO_INT8 = 288 octets
 
-//Z axis
-/*
-#define LAYER1 RPI_V2_GPIO_P1_29
-#define LAYER2 RPI_V2_GPIO_P1_31
-#define LAYER3 RPI_V2_GPIO_P1_33
-#define LAYER4 RPI_V2_GPIO_P1_35
-#define LAYER5 RPI_V2_GPIO_P1_37
-#define LAYER6 RPI_V2_GPIO_P1_36
-#define LAYER7 RPI_V2_GPIO_P1_38
-#define LAYER8 RPI_V2_GPIO_P1_40
-*/
-
+//Z axis definition
 /*
 31  -> layer 8
 29  -> layer 1
@@ -28,8 +15,8 @@
 36  -> layer 2
 38  -> layer 3
 40  -> layer 4
-
 */
+
 #define LAYER1 RPI_V2_GPIO_P1_29
 #define LAYER2 RPI_V2_GPIO_P1_36
 #define LAYER3 RPI_V2_GPIO_P1_38
@@ -39,16 +26,22 @@
 #define LAYER7 RPI_V2_GPIO_P1_33
 #define LAYER8 RPI_V2_GPIO_P1_31
 
+//LEDCube length
 #define XLENGTH 8
 #define YLENGTH 8
 #define ZLENGTH 8
 
+//Geometry correction
 #define LED_GROUP_ONE_COLOR 16 // 2 lines with 1 color (1 X in red)
 #define LED_GROUP_TWO_COLOR 32 // 2 lines with 2 colors (1 X in red and blue)
 #define LED_GROUP_RGB_COLOR 48 // 2 lines with 3 colors (1 full X in red, blue and green)
+
+//12*2 bits to 8*3 bits convertion
 #define INT12_TO_INT8 1.5	   // 2 int12 are splitted into 3 int8
 #define TLC_NEXT_COLOR 24	   // LED_GROUP_ONE_COLOR * INT12_TO_INT8, number of octets to store 2 lines of red
 
+//Clock definition
+#define MS_CLOCK CLOCKS_PER_SEC/1000
 
 
 class LEDCube{
@@ -57,13 +50,16 @@ class LEDCube{
     int frameTime;
     int numberFrames;
     uint8_t*** tlc_pattern;
+    void setLayer(uint8_t nLayer, bool nState);
+    void setData(int t, uint8_t ****matrice);
   public:
     LEDCube(std::string fileName);
+    bool m_isRunning = false;
     void start();
-    void setLayer(uint8_t nLayer, bool nState);
+    #ifdef DEBUG
     void sendLayer(uint8_t nLayer, uint8_t* data);
+    #endif
     void stop();
-    void setData(int t, uint8_t ****matrice);
     ~LEDCube();
 
 };

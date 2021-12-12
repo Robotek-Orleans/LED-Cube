@@ -47,7 +47,7 @@ LEDCube::LEDCube(std::string fileName)
     std::getline(flux, line);
     numberFrames = std::stoi(line);
     std::getline(flux, line);
-    frameTime = std::stoi(line);
+    frameTime = std::stoi(line) * MS_CLOCK;
 
     tlc_pattern = new uint8_t **[numberFrames];
     for (int t = 0; t < numberFrames; ++t)
@@ -62,6 +62,7 @@ LEDCube::LEDCube(std::string fileName)
 
     uint8_t ****transientData;
     transientData = new uint8_t ***[ZLENGTH];
+
     for (int z = 0; z < ZLENGTH; z++)
     {
         transientData[z] = new uint8_t **[YLENGTH];
@@ -71,6 +72,7 @@ LEDCube::LEDCube(std::string fileName)
             for (int x = 0; x < XLENGTH; x++)
             {
                 transientData[z][y][x] = new uint8_t[3];
+                std::memset(transientData[z][y][x], 0, 3);
             }
         }
     }
@@ -93,6 +95,7 @@ LEDCube::LEDCube(std::string fileName)
         }
         setData(t, transientData);
 
+        #ifdef DEBUG
         std::cout << "Premiere couche matrice d'entree (r-g-b)" << std::endl;
         for (int y = 0; y < 8; ++y)
         {
@@ -121,6 +124,7 @@ LEDCube::LEDCube(std::string fileName)
             }
             std::cout << std::endl;
         }
+        #endif
     }
 
     flux.close();
@@ -143,22 +147,19 @@ LEDCube::LEDCube(std::string fileName)
 void LEDCube::start()
 {
     int f = 0;
-    while (1)
+    m_isRunning = true;
+
+    while (m_isRunning)
     {
-        clock_t before = clock();
-        clock_t newFrameTime = clock() + frameTime*CLOCKS_PER_SEC/1000;
-        while(clock() < newFrameTime){
+        clock_t newFrameTime = clock() + frameTime;
+        while(clock() < newFrameTime && m_isRunning){
             for (int z = 0; z < 8; z++)
             {
-                // std::cout << i << std::endl;
                 setLayer(z == 0 ? 7 : z - 1, false);
                 setLayer(z, true);
-                //bcm2835_delayMicroseconds(1);
-                // std::cout << "layer set " << i << std::endl;
-                //tlc->send(tlc_pattern[0][i]);
-                /*for(int j=0;j<10;j++){
-                    tlc->send(tlc_pattern[0][i]);
-                }*/
+                #ifdef DEBUG
+                std::cout << "layer set " << z << std::endl;
+                #endif
                 tlc->send(tlc_pattern[f][(z + 1) % 8]);
             }
         }
@@ -199,18 +200,18 @@ void LEDCube::setLayer(uint8_t nLayer, bool bState)
     }
 }
 
+#ifdef DEBUG
 void LEDCube::sendLayer(uint8_t nLayer, uint8_t *data)
 {
-    for (uint8_t i = 0; i < 8; i++)
-        setLayer(i, false);
+    for (uint8_t i = 0; i < 8; i++) setLayer(i, false);
     setLayer(nLayer, true);
     tlc->send(data);
 }
+#endif
 
 void LEDCube::stop()
 {
-    for (uint8_t i = 0; i < 8; i++)
-        setLayer(i, false);
+    for (uint8_t i = 0; i < 8; i++) setLayer(i, false);
 }
 
 void LEDCube::setData(int t, uint8_t ****matrice)
@@ -391,6 +392,12 @@ void LEDCube::setData(int t, uint8_t ****matrice)
 
 LEDCube::~LEDCube()
 {
+    #ifdef DEBUG
+    std::cout << "LEDCube destructor triggered" <<std::endl;
+    #endif
+    // Eteind toutes les couches
+    stop();
+    // Delete des variables
     delete[] tlc;
     for (int t = 0; t < numberFrames; ++t)
     {
@@ -401,4 +408,7 @@ LEDCube::~LEDCube()
         delete[] tlc_pattern[t];
     }
     delete[] tlc_pattern;
+    #ifdef DEBUG
+    std::cout << "LEDCube destructor ended" <<std::endl;
+    #endif
 }
