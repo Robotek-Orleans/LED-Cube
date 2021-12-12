@@ -147,8 +147,9 @@ LEDCube::LEDCube(std::string fileName)
 void LEDCube::start()
 {
     int f = 0;
+    m_isRunning = true;
 
-    while (1)
+    while (m_isRunning)
     {
         clock_t newFrameTime = clock() + frameTime;
         while(clock() < newFrameTime){

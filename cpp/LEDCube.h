@@ -54,6 +54,7 @@ class LEDCube{
     void setData(int t, uint8_t ****matrice);
   public:
     LEDCube(std::string fileName);
+    bool m_isRunning = false;
     void start();
     #ifdef DEBUG
     void sendLayer(uint8_t nLayer, uint8_t* data);
