@@ -39,7 +39,7 @@ TLCSin::~TLCSin(){
   #ifdef DEBUG
     std::cout << "TLCSin destructor triggered" <<std::endl;
   #endif
-  memset(m_dataArray, 0, GRAYSCALELENGTH);
+  for(int i = m_emptyArrayLength; i<GRAYSCALELENGTH;i++) m_dataArray[i] = 0;
   #ifdef DEBUG
     std::cout << "Array ready" <<std::endl;
   #endif
