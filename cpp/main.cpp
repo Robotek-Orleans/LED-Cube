@@ -4,6 +4,11 @@
 
 LEDCube* cube; // pas bien
 
+void signalHandler( int signum ) {
+   cube->m_isRunning = false;
+   //exit(signum);  
+}
+
 int main(int argc, char** argv){
     signal(SIGINT, signalHandler);
     std::string file = "test";
@@ -16,7 +21,4 @@ int main(int argc, char** argv){
     return 0;
 }
 
-void signalHandler( int signum ) {
-   cube->m_isRunning = false;
-   //exit(signum);  
-}
+
