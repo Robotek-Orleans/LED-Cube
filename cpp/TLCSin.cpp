@@ -39,11 +39,13 @@ TLCSin::~TLCSin(){
   #ifdef DEBUG
     std::cout << "TLCSin destructor triggered" <<std::endl;
   #endif
-  for(int i = m_emptyArrayLength; i<GRAYSCALELENGTH;i++) m_dataArray[i] = 0;
+  uint8_t* emptyArray = new uint8_t[GRAYSCALELENGTH];
+  for(int i = 0; i<GRAYSCALELENGTH;i++) emptyArray[i] = 0;
   #ifdef DEBUG
     std::cout << "Array ready" <<std::endl;
   #endif
-  bcm2835_spi_writenb((const char*) m_dataArray, GRAYSCALELENGTH);
+  bcm2835_spi_writenb((const char*) emptyArray, GRAYSCALELENGTH);
+  delete[] emptyArray;
   #ifdef DEBUG
     std::cout << "Empty SPI signal sended" <<std::endl;
   #endif
