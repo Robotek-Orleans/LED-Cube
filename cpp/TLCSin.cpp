@@ -39,7 +39,7 @@ TLCSin::~TLCSin(){
   #ifdef DEBUG
     std::cout << "TLCSin destructor triggered" <<std::endl;
   #endif
-  std::memset(m_dataArray, 0, GRAYSCALELENGTH);
+  memset(m_dataArray, 0, GRAYSCALELENGTH);
   bcm2835_spi_writenb((const char*) m_dataArray, GRAYSCALELENGTH);
   #ifdef DEBUG
     std::cout << "Empty SPI signal sended" <<std::endl;
