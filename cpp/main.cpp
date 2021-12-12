@@ -2,9 +2,6 @@
 #include <string>
 #include <csignal>
 
-#define DEBUG
-
-
 #ifdef DEBUG
 #include <iostream>
 #endif
@@ -24,7 +21,8 @@ void signalHandler( int signum ) {
 
 int main(int argc, char** argv){
     signal(SIGINT, signalHandler);
-    std::string file = "test";
+    signal(SIGTERM, signalHandler);
+    std::string file = "growCube";
     if(argc >=2){
         file = argv[1];
     }

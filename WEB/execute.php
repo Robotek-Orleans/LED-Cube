@@ -2,7 +2,7 @@
 
     http_response_code(200);
 
-    exec('sudo pkill -15 execLEDCube');
+    exec('sudo pkill -SIGINT execLEDCube');
 
     if(isset($_GET['f'])){
        exec('sudo /var/www/html/LED-Cube/cpp/execLEDCube '.$_GET['f']. " > /dev/null &");
