@@ -22,7 +22,7 @@ void signalHandler( int signum ) {
 int main(int argc, char** argv){
     signal(SIGINT, signalHandler);
     signal(SIGTERM, signalHandler);
-    std::string file = "test";
+    std::string file = "growCube";
     if(argc >=2){
         file = argv[1];
     }
