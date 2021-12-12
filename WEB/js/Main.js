@@ -433,13 +433,24 @@ async function init() {
     document.getElementById("planNumber").value = 1
     document.getElementById("paste2D").disabled = true
     document.getElementById("paste3D").disabled = true
-    document.getElementById("frameInput").value = framecontent.length
-    document.getElementById("frameRange").value = framecontent.length
+    document.getElementById("frameInput").value = 1
+    document.getElementById("frameRange").value = 1
     document.getElementById("frameInput").max = framecontent.length
     document.getElementById("frameRange").max = framecontent.length
     document.getElementById("numframebefore").max = framecontent.length
     document.getElementById("numframeafter").max = framecontent.length
+    document.getElementById("frameNumber").innerHTML = framecontent.length.toString()
     isSavable()
+    
+    function timerRefresh3D(time) {
+        if (renderer.info.memory.textures == 2) {
+            return;
+        }
+        refresh3D()
+        setTimeout(timerRefresh3D, time, time * 2)
+    }
+    setTimeout(timerRefresh3D, 50, 50)
+
 }
 
 
@@ -464,7 +475,7 @@ function reset() {
     refresh3D()
 }
 
-function isSavable(){
+function isSavable() {
     if(document.getElementById("fileName").value.length > 0){
         document.getElementById("saveButton").disabled = false;
         document.getElementById("playAnimation").disabled = false;

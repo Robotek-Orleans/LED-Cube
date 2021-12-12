@@ -1,6 +1,35 @@
-#display_image {
-	height: 200px;
-	background-size: contain;
-	background-repeat: no-repeat;
-	image-rendering: pixelated;	
+body > * {
+	margin: 20px;
+}
+
+#div_frames {
+	overflow: hidden;
+	width: 160px;
+	height: 160px;
+	border: 1px solid;
+}
+
+canvas#display_frames {
+	width: 100%;
+	image-rendering: pixelated;
+}
+
+#frame_range {
+	width: 160px;
+}
+
+.hides {
+	transition: opacity 100ms linear;
+}
+
+.hides[hidden] {
+	opacity: 0;
+}
+
+.fakeRadioInput {
+	margin-left: 48px;
+}
+
+.fakeRadioInput input[type=number] {
+	margin-left: 16px;
 }
