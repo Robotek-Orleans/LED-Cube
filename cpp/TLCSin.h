@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <cstring>
 
+#define DEBUG
+
 #define CLK_DIVIDER BCM2835_SPI_CLOCK_DIVIDER_64
 
 // Pulse on RPi Plug P1 pin 22 (which is GPIO pin 17)

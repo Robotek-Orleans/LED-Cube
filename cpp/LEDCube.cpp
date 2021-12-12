@@ -158,7 +158,7 @@ void LEDCube::start()
                 setLayer(z == 0 ? 7 : z - 1, false);
                 setLayer(z, true);
                 #ifdef DEBUG
-                std::cout << "layer set " << i << std::endl;
+                std::cout << "layer set " << z << std::endl;
                 #endif
                 tlc->send(tlc_pattern[f][(z + 1) % 8]);
             }
