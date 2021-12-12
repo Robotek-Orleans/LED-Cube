@@ -1,6 +1,19 @@
-#display_image {
-	height: 200px;
-	background-size: contain;
-	background-repeat: no-repeat;
-	image-rendering: pixelated;	
+body > * {
+	margin: 20px;
+}
+
+#div_frames {
+	overflow: hidden;
+	width: 160px;
+	height: 160px;
+	border: 1px solid;
+}
+
+canvas#display_frames {
+	width: 100%;
+	image-rendering: pixelated;
+}
+
+#frame_range {
+	width: 160px;
 }
