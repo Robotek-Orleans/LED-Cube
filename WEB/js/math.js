@@ -2,6 +2,8 @@
 // by Jiogo18
 // for @Jig0ll
 
+var MinMax = (min, x, max) => Math.max(min, Math.min(x, max));
+
 const n = '[\\d\\.]';
 const reel = `[\\+\\-]?\\.?\\d+\\.?\\d*`;
 const op = '\\+\\-\\*\\/';
@@ -94,6 +96,7 @@ const transfoCalc = [
 		funcOperation('round', 1, (a = 0) => Math.round(a)),
 		funcOperation('floor', 1, (a = 0) => Math.floor(a)),
 		funcOperation('ceil', 1, (a = 0) => Math.ceil(a)),
+		funcOperation('rgb', 3, (r = 0, g = 0, b = 0) => (MinMax(0, r, 255) << 16) | (MinMax(0, g, 255) << 8) | MinMax(0, b, 255)),
 	],
 	[
 		// transfoAddition
