@@ -170,7 +170,7 @@ function BlobToImageDataConvertor(imageFileBlob) {
 	});
 }
 
-async function sendMatrice() {
+async function sendMatrice(options) {
 	var images8x8 = Array.from(images.values());
 
 	console.log('Images :', images8x8);
@@ -215,16 +215,17 @@ async function sendMatrice() {
 
 	if (document.location.search === '?debug_dont_submit') return;
 
-	submitPattern(frames);
+	submitPattern(frames, options);
 }
 
 /**
  * @param {number[][][][]} frames
  */
-function submitPattern(frames) {
+function submitPattern(frames, options) {
 	var f = document.createElement('form');
 	f.action = './';
 	f.method = 'POST';
+	if (options?.submit_blank) f.target = '_blank';
 
 	var inputF = document.createElement('input');
 	inputF.type = 'hidden';
@@ -347,19 +348,19 @@ function generateFramesWithFormule(formule, imgs) {
 	const tMax = parseInt(input_fill_time.value);
 	/** @type {number[][][][]} */
 	var frames = new Array(tMax);
-	const formuleS = formule.match(/=(.+)$/)[1];
+
+	const formuleS = formule.match(/=(.+)$/)?.[1] || formule;
 	for (let t = 0; t < tMax; t++) {
 		frames[t] = generateFrame();
-		var formuleS_T = formuleS.replace(/t/gi, t);
+		var formuleS_T = formuleS.replace(/(?<=[^\w]?)t(?=[^\w]?)/gi, t);
 		for (let z = 0; z < 8; z++) {
-			var formuleS_TZ = formuleS_T.replace(/z/gi, z);
+			var formuleS_TZ = formuleS_T.replace(/(?<=[^\w]?)z(?=[^\w]?)/gi, z);
 			for (let y = 0; y < 8; y++) {
-				var formuleS_TZY = formuleS_TZ.replace(/y/gi, y);
+				var formuleS_TZY = formuleS_TZ.replace(/(?<=[^\w]?)y(?=[^\w]?)/gi, y);
 				for (let x = 0; x < 8; x++) {
-					var formuleS_TZYX = formuleS_TZY.replace(/x/gi, x);
+					var formuleS_TZYX = formuleS_TZY.replace(/(?<=[^\w]?)x(?=[^\w]?)/gi, x);
 					var equaColor = MATH.parseMath(formuleS_TZYX);
 					var matchesImg = Array.from(equaColor.matchAll(/img\(.*\)/gi));
-					if (t === 6) console.log(equaColor, matchesImg);
 					matchesImg.forEach(match => {
 						const imgFunc = match[0];
 						var args = Array.from(imgFunc.matchAll(/(?<=[\(,])[^,]+(?=[,\)])/gi));
@@ -371,7 +372,8 @@ function generateFramesWithFormule(formule, imgs) {
 						if (tImg < 0 || imgs.length <= tImg) {
 							throw new Error(
 								`Vous avez dépassé le nombre d'images disponibles (${imgs.length}) avec la formule (t=${tImg}).\n` +
-									`Essayez avec '0' dans l'expression 'img(y,z,0)'.`
+									`Essayez avec '0' dans l'expression 'img(y,z,0)'.\n` +
+									`Formule: ${formuleS_TZYX}`
 							);
 						}
 						if (0 <= xImg && xImg < 8 && 0 <= yImg && yImg < 8) {
@@ -382,10 +384,8 @@ function generateFramesWithFormule(formule, imgs) {
 						equaColor = equaColor.replace(imgFunc, colorImg);
 					});
 
-					if (t === 6) console.log(`t=6 [${x}][${y}][${z}] '${formuleS_TZYX}' => '${equaColor}'`);
-
 					var color = MATH.parseMath(equaColor);
-					frames[t][x][y][z] = color;
+					frames[t][x][y][z] = parseInt(color);
 				}
 			}
 		}
@@ -416,5 +416,18 @@ window.addEventListener('load', () => {
 		div_frames.scroll(0, height * value);
 	});
 
-	document.getElementById('fill_formule').setAttribute('disabled', '');
+	updateButtonSubmit();
+
+	const submit = document.querySelector('#send_pattern');
+
+	submit.addEventListener('mousedown', e => {
+		if (e.button === 1) e.preventDefault();
+	});
+	submit.addEventListener('mouseup', e => {
+		if (e.button === 1) sendMatrice({ submit_blank: true });
+	});
+	submit.addEventListener('click', e => {
+		if (e.ctrlKey) sendMatrice({ submit_blank: true });
+		else sendMatrice();
+	});
 });

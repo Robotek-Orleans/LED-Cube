@@ -44,7 +44,7 @@
 			x : profondeur
 			y : de gauche à droite
 			z : de haut en bas
-			t : temps ou index d'image" value="f(x,y,z,t)=(x==0)*img(y,z,t)">
+			t : temps ou index d'image" oninput="onFillFormuleChanged()" value="f(x,y,z,t)=(x==0) && img(y,z,t)">
 		</div>
 		<div class="flexRow hides fakeRadioInput" id="fill_time_control" hidden>
 			<label for="fill_time">Temps maximum</label>
@@ -53,7 +53,7 @@
 
 	</div>
 
-	<button id="send_pattern" disabled onClick="javascript: sendMatrice()" title="Choisissez une image ou une formule sans img()">Envoyer au ledcube</button>
+	<button id="send_pattern" disabled title="Choisissez une image ou une formule sans img()">Envoyer au ledcube</button>
 
 </body>
 
