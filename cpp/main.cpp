@@ -1,10 +1,11 @@
 #include "LEDCube.h"
 #include <string>
+#include <csignal>
 
 LEDCube* cube; // pas bien
 
 int main(int argc, char** argv){
-    
+    signal(SIGINT, signalHandler);
     std::string file = "test";
     if(argc >=2){
         file = argv[1];
