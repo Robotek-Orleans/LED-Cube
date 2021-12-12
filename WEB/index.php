@@ -96,7 +96,7 @@ function convertArray($array)
     <script src="js/Main.js"></script>
     <script src="js/Request.js"></script>
     <script>
-        var save = false;
+        var save = <?php echo isset($_POST['frames']) ? "true" : "false" ?>;
         var selectedPlanDirection = "X"; // X , Y ou Z
         var selectedPlanNumber = 1; // entre 1 et 8
         var selectedFrame = 1; // entre 1 et N frame
