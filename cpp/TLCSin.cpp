@@ -36,6 +36,8 @@ TLCSin::TLCSin(int dataLength)
 }
 
 TLCSin::~TLCSin(){
+  std::memset(m_dataArray, 0, GRAYSCALELENGTH);
+  bcm2835_spi_writenb((const char*) m_dataArray, GRAYSCALELENGTH);
   bcm2835_spi_end();
   bcm2835_close();
   if(m_dataArray != nullptr) delete[] m_dataArray;
