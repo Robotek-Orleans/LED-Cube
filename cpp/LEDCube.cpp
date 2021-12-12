@@ -152,7 +152,7 @@ void LEDCube::start()
     while (m_isRunning)
     {
         clock_t newFrameTime = clock() + frameTime;
-        while(clock() < newFrameTime){
+        while(clock() < newFrameTime && m_isRunning){
             for (int z = 0; z < 8; z++)
             {
                 setLayer(z == 0 ? 7 : z - 1, false);

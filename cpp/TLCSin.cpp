@@ -38,7 +38,10 @@ TLCSin::TLCSin(int dataLength)
 TLCSin::~TLCSin(){
   std::memset(m_dataArray, 0, GRAYSCALELENGTH);
   bcm2835_spi_writenb((const char*) m_dataArray, GRAYSCALELENGTH);
-  bcm2835_spi_end();
+  bcm2835_spi_end(); 
+  //Set BLANK to HIGH for security reasons
+  bcm2835_gpio_fsel(BLANK, BCM2835_GPIO_FSEL_OUTP);
+  bcm2835_gpio_write(BLANK, HIGH);
   bcm2835_close();
   if(m_dataArray != nullptr) delete[] m_dataArray;
 }
