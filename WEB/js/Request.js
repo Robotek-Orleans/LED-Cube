@@ -51,6 +51,23 @@ function playAnimation() {
     xhr.send();
 }
 
+function playAnimationParam(animation) {
+    scriptstat("orange", "Demande en cours", 2000);
+
+    let xhr = new XMLHttpRequest();
+    let url = "execute.php?f=" + animation;
+    xhr.open("GET", url, true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            scriptstat("vert", "Animation envoyé avec succès", 2000);
+        } else if (xhr.readyState === 4) {
+            scriptstat("rouge", "Erreur lors de la requète: " + xhr.responseText, 0);
+        }
+    };
+    xhr.send();
+}
+
 
 function scriptstat(classes, message, temps) {
     var image = "done";

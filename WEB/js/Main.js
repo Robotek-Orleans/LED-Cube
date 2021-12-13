@@ -417,7 +417,10 @@ function addframe(index) {
             }
         }
     }
-    document.getElementById("frameNumber").innerHTML = framecontent.length.toString()
+    if( document.getElementById("frameNumber") !== null){
+        document.getElementById("frameNumber").innerHTML = framecontent.length.toString()
+    }
+    
 }
 
 async function init() {
@@ -483,6 +486,58 @@ function isSavable() {
         document.getElementById("saveButton").disabled = true;
         document.getElementById("playAnimation").disabled = true;
     }
+}
+
+
+async function initAnim() {
+    if(framecontent.length == 0)
+    addframe(0);
+    await initGL()
+    const indexframe = 0
+
+    for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
+            for (let k = 0; k < 8; k++) {
+                cube_set_color(i, j, k, framecontent[indexframe][i][j][k].replace('#', '0x'), false)
+            }
+        }
+    }
+    renderer.render(scene, camera)
+
+}
+
+var nbFrames = 0
+var frame = 0;
+
+function startShowAnim() {
+    //await initGL()
+    nbFrames = framecontent.length
+    var animStarted = true;
+
+
+    
+    //renderer.render(scene, camera)
+    //    refreshFrames();
+    setInterval(animateCube,1000);
+
+}
+
+
+
+function animateCube(){
+    frame = (frame+1)%nbFrames
+    refreshFrames(frame)
+}
+
+async function refreshFrames(showedFrame){
+    for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
+            for (let k = 0; k < 8; k++) {
+                cube_set_color(i, j, k, framecontent[showedFrame][i][j][k].replace('#', '0x'), false)
+            }
+        }
+    }
+    renderer.render(scene, camera)
 }
 
 function nextplan() {
