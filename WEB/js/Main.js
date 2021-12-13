@@ -516,15 +516,9 @@ var nbFrames = 0
 var frame = 0;
 
 function startShowAnim() {
-    //await initGL()
     clearInterval(animation);
     nbFrames = framecontent.length
-    var animStarted = true;
 
-
-    
-    //renderer.render(scene, camera)
-    //    refreshFrames();
     onWindowResize()
     animation = setInterval(animateCube,frametime);
 
@@ -576,12 +570,12 @@ function closeModal() {
 
 
 function editAnim(animation) {
-    window.location.href = "/index.php?f=" + animation
+    window.location.href = "index.php?f=" + animation
 }
 
 function deleteAnim(animation) {
     if(confirm("Voulez vous vraiment supprimer l'animation " + animation + "?")){
-        window.location.href = "/openfile.php?delete=" + animation
+        window.location.href = "openfile.php?delete=" + animation
     }
     
 }

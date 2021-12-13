@@ -92,12 +92,6 @@ if(isset($_GET['delete'])){
         <div style="top: 0px;height: 100%;" id="container"></div>
     </div>
     <table id="contentnotifs"></table>
-
-    <script>
-
-
-        
-    </script>
 </body>
 
 
