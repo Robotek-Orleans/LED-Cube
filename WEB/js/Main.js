@@ -579,6 +579,14 @@ function editAnim(animation) {
     window.location.href = "/index.php?f=" + animation
 }
 
+function deleteAnim(animation) {
+    if(confirm("Voulez vous vraiment supprimer l'animation " + animation + "?")){
+        window.location.href = "/openfile.php?delete=" + animation
+    }
+    
+}
+
+
 //FIN OPENFILE
 
 function nextplan() {

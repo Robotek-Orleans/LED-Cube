@@ -1,3 +1,16 @@
+
+<?php
+
+if(isset($_GET['delete'])){
+    $path = "./animations/";
+    unlink($path.$_GET['delete']);
+    header("Location: /openfile.php");
+    die();
+}
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -35,6 +48,7 @@
 
     <div class="header">
         <h1 style="text-align: left;">LED CUBE</h1>
+        <button class="stopButton red" onclick="playAnimationParam('')"></button>
     </div>
     <div class="content mainContentAnim">
 
@@ -57,7 +71,9 @@
                                     echo "<div class=\"animContent\">";
                                     echo "<div onClick='getAnimation(\"" . $gfg_subfolder . "\")' class=\"contentTitleAnim\"><p class=\"titleAnim\">" . $gfg_subfolder . "</p>";
                                     echo "</div>";
-                                    echo "<button  onclick=\"editAnim('" . $gfg_subfolder . "')\">Edit</button><button onclick=\"playAnimationParam('" . $gfg_subfolder . "')\" >Play</button>";
+                                    echo "<button class=\"editButton\" onclick=\"editAnim('" . $gfg_subfolder . "')\"></button>";
+                                    echo "<button class=\"playButton purple\" onclick=\"playAnimationParam('" . $gfg_subfolder . "')\" ></button>";
+                                    echo "<button class=\"deleteButton red\" onclick=\"deleteAnim('" . $gfg_subfolder . "')\"></button>";
                                     echo "</div>";
                                 }
                             }
