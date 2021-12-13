@@ -381,7 +381,7 @@ function removeframe() {
         frameinput.max = framecontent.length
         contentnumaf.max = framecontent.length
         contentnum.max = framecontent.length
-        document.getElementById("frameNumber").innerHTML = framecontent.length.toString()
+        onframeschanged();
         if (contentnum.value > framecontent.length) {
             contentnum.value = framecontent.length
         }
@@ -405,6 +405,13 @@ function previousframe() {
     gotoframe()
 }
 
+function onframeschanged()
+{
+    const framenumber = document.getElementById("frameNumber")
+    if (framenumber)
+        framenumber.innerHTML = framecontent.length.toString()
+}
+
 function addframe(index) {
     save = true;
     framecontent.splice(index, 0, [])
@@ -417,15 +424,14 @@ function addframe(index) {
             }
         }
     }
-    if( document.getElementById("frameNumber") !== null){
-        document.getElementById("frameNumber").innerHTML = framecontent.length.toString()
-    }
-    
+    onframeschanged();
 }
 
 async function init() {
     if(framecontent.length == 0)
         addframe(0);
+    else
+        onframeschanged();
     Draw2DMatrix()
     await initGL()
     refresh3D()
@@ -442,7 +448,6 @@ async function init() {
     document.getElementById("frameRange").max = framecontent.length
     document.getElementById("numframebefore").max = framecontent.length
     document.getElementById("numframeafter").max = framecontent.length
-    document.getElementById("frameNumber").innerHTML = framecontent.length.toString()
     isSavable()
     
     function timerRefresh3D(time) {

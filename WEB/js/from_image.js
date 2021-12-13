@@ -280,9 +280,9 @@ function loadImages() {
 			const frame_range_input = document.querySelector('#frame_range');
 			frame_range_input.setAttribute('max', images.size);
 			if (images.size == 1) {
-				frame_range_input.setAttribute('hidden', '');
+				frame_range_input.setAttribute('disabled', '');
 			} else {
-				frame_range_input.removeAttribute('hidden');
+				frame_range_input.removeAttribute('disabled');
 			}
 			onImagesChanged();
 		}
@@ -295,9 +295,10 @@ function updateButtonSubmit() {
 	var canSubmit = false;
 	const has_image = images.size > 0;
 	const fill_type = Array.from(document.getElementsByName('fill_type')).filter(r => r.checked)[0].value;
+	const config_formule = document.querySelector('#config_formule');
 	const fill_formule = document.querySelector('#fill_formule');
 	const fill_formule_require_img = fill_formule.value.includes('img');
-	const input_fill_time = document.querySelector('#fill_time');
+	const fill_tmax = document.querySelector('#fill_tmax');
 
 	if (has_image) {
 		canSubmit = true;
@@ -314,19 +315,21 @@ function updateButtonSubmit() {
 	}
 
 	if (fill_type === 'fill_with_formule') {
+		config_formule.removeAttribute('disabled');
 		fill_formule.removeAttribute('disabled');
-		input_fill_time.parentElement.removeAttribute('hidden');
+		fill_tmax.removeAttribute('disabled');
 	} else {
+		config_formule.setAttribute('disabled', '');
 		fill_formule.setAttribute('disabled', '');
-		input_fill_time.parentElement.setAttribute('hidden', '');
+		fill_tmax.setAttribute('disabled', '');
 	}
 }
 
 function onImagesChanged() {
 	updateButtonSubmit();
 	if (!preLoadImages) {
-		const input_fill_time = document.querySelector('#fill_time');
-		input_fill_time.value = Math.max(images.size, 1);
+		const fill_tmax = document.querySelector('#fill_tmax');
+		fill_tmax.value = Math.max(images.size, 1);
 	}
 	preLoadImages = false;
 }
@@ -339,28 +342,34 @@ function onFillFormuleChanged() {
 	updateButtonSubmit();
 }
 
+function replaceProperty(formule, property, value) {
+	return formule.replaceAll(new RegExp(`(?<=^|\\W)${property}(?=\\W|$)`, 'gi'), value);
+}
+
 /**
  * @param {string} formule
  * @param {Image8x8[]} imgs
  */
 function generateFramesWithFormule(formule, imgs) {
-	const input_fill_time = document.querySelector('#fill_time');
-	const tMax = parseInt(input_fill_time.value);
+	const fill_tmax = document.querySelector('#fill_tmax');
+	var tMax = parseInt(fill_tmax.value);
+	if (isNaN(tMax)) tMax = imgs.length;
+
 	/** @type {number[][][][]} */
 	var frames = new Array(tMax);
 
 	const formuleS = formule.match(/=(.+)$/)?.[1] || formule;
 	for (let t = 0; t < tMax; t++) {
 		frames[t] = generateFrame();
-		var formuleS_T = formuleS.replace(/(?<=[^\w]?)t(?=[^\w]?)/gi, t);
+		var formuleS_T = replaceProperty(formuleS, 't', t);
 		for (let z = 0; z < 8; z++) {
-			var formuleS_TZ = formuleS_T.replace(/(?<=[^\w]?)z(?=[^\w]?)/gi, z);
+			var formuleS_TZ = replaceProperty(formuleS_T, 'z', z);
 			for (let y = 0; y < 8; y++) {
-				var formuleS_TZY = formuleS_TZ.replace(/(?<=[^\w]?)y(?=[^\w]?)/gi, y);
+				var formuleS_TZY = replaceProperty(formuleS_TZ, 'y', y);
 				for (let x = 0; x < 8; x++) {
-					var formuleS_TZYX = formuleS_TZY.replace(/(?<=[^\w]?)x(?=[^\w]?)/gi, x);
+					var formuleS_TZYX = replaceProperty(formuleS_TZY, 'x', x);
 					var equaColor = MATH.parseMath(formuleS_TZYX);
-					var matchesImg = Array.from(equaColor.matchAll(/img\(.*\)/gi));
+					var matchesImg = Array.from(equaColor.matchAll(/img\([^\)]*\)/gi));
 					matchesImg.forEach(match => {
 						const imgFunc = match[0];
 						var args = Array.from(imgFunc.matchAll(/(?<=[\(,])[^,]+(?=[,\)])/gi));
@@ -384,8 +393,12 @@ function generateFramesWithFormule(formule, imgs) {
 						equaColor = equaColor.replace(imgFunc, colorImg);
 					});
 
-					var color = MATH.parseMath(equaColor);
-					frames[t][x][y][z] = parseInt(color);
+					var equation = MATH.parseMath(equaColor);
+					var color = parseInt(equation);
+					if (isNaN(color)) {
+						throw new Error(`L'équation n'est pas valide : ${formuleS_TZYX} => ${equation} => ${color}`);
+					}
+					frames[t][x][y][z] = color;
 				}
 			}
 		}
@@ -405,18 +418,16 @@ window.addEventListener('load', () => {
 		loadImages.call(image_input);
 	}
 
-	const div_frames = document.querySelector('#div_frames');
+	const front_view = document.querySelector('#front_view');
 	/**
 	 * @type {HTMLInputElement}
 	 */
 	const frame_range_input = document.querySelector('#frame_range');
 	frame_range_input.addEventListener('input', () => {
 		var value = frame_range_input.valueAsNumber - 1;
-		var height = div_frames.clientHeight;
-		div_frames.scroll(0, height * value);
+		var height = front_view.clientHeight;
+		front_view.scroll(0, height * value);
 	});
-
-	updateButtonSubmit();
 
 	const submit = document.querySelector('#send_pattern');
 
@@ -430,4 +441,8 @@ window.addEventListener('load', () => {
 		if (e.ctrlKey) sendMatrice({ submit_blank: true });
 		else sendMatrice();
 	});
+
+	document.getElementsByName('fill_type').forEach(element => element.addEventListener('input', onFillControlChanged));
+
+	updateButtonSubmit();
 });
