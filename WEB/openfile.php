@@ -48,7 +48,7 @@ if(isset($_GET['delete'])){
 
     <div class="header">
         <h1 style="text-align: left;">LED CUBE</h1>
-        <button class="stopButton red" onclick="playAnimationParam('')"></button>
+        <button class="stopButton red" onclick="stopAnnimation()"></button>
     </div>
     <div class="content mainContentAnim">
 
