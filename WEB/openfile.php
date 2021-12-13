@@ -4,7 +4,7 @@
 if(isset($_GET['delete'])){
     $path = "./animations/";
     unlink($path.$_GET['delete']);
-    header("Location: /openfile.php");
+    header("Location: openfile.php");
     die();
 }
 
