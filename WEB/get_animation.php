@@ -59,9 +59,11 @@ if (isset($_GET['f'])) {
     $sended['time'] = $time;
 
     echo json_encode($sended);
+}else{
+    http_response_code(400);
+    echo "Bad request";
 }
-http_response_code(400);
-echo "Bad request";
+
 
 
 ?>

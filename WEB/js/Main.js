@@ -493,6 +493,7 @@ function isSavable() {
     }
 }
 
+//PARTIE OPENFILE
 
 async function initAnim() {
     if(framecontent.length == 0)
@@ -516,6 +517,7 @@ var frame = 0;
 
 function startShowAnim() {
     //await initGL()
+    clearInterval(animation);
     nbFrames = framecontent.length
     var animStarted = true;
 
@@ -523,7 +525,8 @@ function startShowAnim() {
     
     //renderer.render(scene, camera)
     //    refreshFrames();
-    setInterval(animateCube,1000);
+    onWindowResize()
+    animation = setInterval(animateCube,frametime);
 
 }
 
@@ -544,6 +547,39 @@ async function refreshFrames(showedFrame){
     }
     renderer.render(scene, camera)
 }
+
+function getAnimation(animation) {
+    scriptstat("orange", "Demande en cours", 2000);
+
+    let xhr = new XMLHttpRequest();
+    let url = "get_animation.php?f=" + animation;
+    xhr.open("GET", url, true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            scriptstat("vert", "Animation envoyé avec succès", 2000);
+            framecontent = JSON.parse(xhr.responseText)['data'];
+            frametime = JSON.parse(xhr.responseText)['time'];
+            document.getElementById("modal").style.display = "block";
+            startShowAnim();
+        } else if (xhr.readyState === 4) {
+            scriptstat("rouge", "Erreur lors de la requète: " + xhr.responseText, 0);
+        }
+    };
+    xhr.send();
+}
+
+function closeModal() {
+    document.getElementById("modal").style.display = "none";
+    clearInterval(animation);
+}
+
+
+function editAnim(animation) {
+    window.location.href = "/index.php?f=" + animation
+}
+
+//FIN OPENFILE
 
 function nextplan() {
 
