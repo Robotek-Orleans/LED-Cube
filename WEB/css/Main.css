@@ -513,18 +513,18 @@ button:disabled {
     background-repeat: no-repeat;
     width: 50px;
     height: 50px;
-    background-image: url('images/edit.svg'), linear-gradient(45deg, #4098ac, #3aaa96);
+    background-image: url('../images/edit.svg'), linear-gradient(45deg, #4098ac, #3aaa96);
     background-size: contain;
 }
 
 .editButton:hover {
     background-position: center center;
     background-repeat: no-repeat;
-    background: url('/images/edit.svg'), linear-gradient(45deg, #62ac40, #3aaa6b);
+    background: url('../images/edit.svg'), linear-gradient(45deg, #62ac40, #3aaa6b);
 }
 
 .playButton {
-    background: url('images/play.svg'), linear-gradient(45deg, #4047ac, #a63aaa);
+    background: url('../images/play.svg'), linear-gradient(45deg, #4047ac, #a63aaa);
     background-size: contain;
     background-position: center center;
     background-repeat: no-repeat;
@@ -533,14 +533,14 @@ button:disabled {
 }
 
 .playButton:hover {
-    background: url('images/play.svg'), linear-gradient(45deg, #ac4096, #aa3a3a);
+    background: url('../images/play.svg'), linear-gradient(45deg, #ac4096, #aa3a3a);
     background-size: contain;
     background-position: center center;
     background-repeat: no-repeat;
 }
 
 .deleteButton {
-    background: url('images/delete.svg'), linear-gradient(45deg, #ac4040, #aa5a3a);
+    background: url('../images/delete.svg'), linear-gradient(45deg, #ac4040, #aa5a3a);
     background-size: contain;
     background-position: center center;
     background-repeat: no-repeat;
@@ -549,14 +549,14 @@ button:disabled {
 }
 
 .deleteButton:hover {
-    background: url('images/delete.svg'), linear-gradient(45deg, #ac4040, #d2a740);
+    background: url('../images/delete.svg'), linear-gradient(45deg, #ac4040, #d2a740);
     background-size: contain;
     background-position: center center;
     background-repeat: no-repeat;
 }
 
 .stopButton {
-    background: url('images/stop.svg'), linear-gradient(45deg, #ac4040, #aa5a3a);
+    background: url('../images/stop.svg'), linear-gradient(45deg, #ac4040, #aa5a3a);
     background-size: contain;
     background-position: center center;
     background-repeat: no-repeat;
@@ -569,7 +569,7 @@ button:disabled {
 }
 
 .stopButton:hover {
-    background: url('images/stop.svg'), linear-gradient(45deg, #ac4040, #d2a740);
+    background: url('../images/stop.svg'), linear-gradient(45deg, #ac4040, #d2a740);
     background-size: contain;
     background-position: center center;
     background-repeat: no-repeat;
