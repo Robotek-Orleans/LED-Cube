@@ -11,7 +11,7 @@ const MATH = {};
 function listCompare(strOperator, funcOperator) {
 	// 10d6 >= 3 = (n: 5 6 4 ~~1~~ ~~1~~ 3 6 3 4 6) = 8
 	return [
-		`(\\d[\\d \\.${op}]*) *${strOperator} *(${n}+)`,
+		`(\\d[\\d \\.${op}]*) *${strOperator} *(${reel})`,
 		match => {
 			return (
 				'(n: ' +
@@ -55,7 +55,7 @@ const transfoCalc = [
 		[/\- *\+/, () => '-'],
 		[/\* *\+/, () => '*'],
 		[/\/ *\+/, () => '/'],
-		[/ +/, () => ' '],
+		[/ {2}/, () => ' '],
 	],
 	[
 		[`[${op}]*~~[\\d\\. ${op}]*~~`, () => '', 'before'], //deleted number
@@ -91,12 +91,18 @@ const transfoCalc = [
 		// transfo fonctions
 		funcOperation('max', 2, (a = 0, b = 0) => Math.max(a, b)),
 		funcOperation('min', 2, (a = 0, b = 0) => Math.min(a, b)),
+		funcOperation('minmax', 3, (min = 0, x = 0, max = 0) => MinMax(min, x, max)),
 		funcOperation('abs', 1, (a = 0) => Math.abs(a)),
 		funcOperation('sqrt', 1, (a = 0) => Math.sqrt(a)),
 		funcOperation('round', 1, (a = 0) => Math.round(a)),
 		funcOperation('floor', 1, (a = 0) => Math.floor(a)),
 		funcOperation('ceil', 1, (a = 0) => Math.ceil(a)),
 		funcOperation('rgb', 3, (r = 0, g = 0, b = 0) => (MinMax(0, r, 255) << 16) | (MinMax(0, g, 255) << 8) | MinMax(0, b, 255)),
+		funcOperation('random', 0, () => Math.random()),
+		funcOperation('cos', 1, (a = 0) => Math.cos(a)),
+		funcOperation('sin', 1, (a = 0) => Math.sin(a)),
+		funcOperation('modulo', 2, (a = 0, b = 1) => a - Math.floor(a / b) * b),
+		funcOperation('triangle', 4, (x = 0, x0 = 0, y0 = 0, pente = 1) => y0 - pente * Math.abs(x - x0)),
 	],
 	[
 		// transfoAddition

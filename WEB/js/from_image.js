@@ -343,7 +343,7 @@ function onFillFormuleChanged() {
 }
 
 function replaceProperty(formule, property, value) {
-	return formule.replaceAll(new RegExp(`(?<=[^\\w]?)${property}(?=[^\\w]?)`, 'gi'), value);
+	return formule.replaceAll(new RegExp(`(?<=^|\\W)${property}(?=\\W|$)`, 'gi'), value);
 }
 
 /**
@@ -369,7 +369,7 @@ function generateFramesWithFormule(formule, imgs) {
 				for (let x = 0; x < 8; x++) {
 					var formuleS_TZYX = replaceProperty(formuleS_TZY, 'x', x);
 					var equaColor = MATH.parseMath(formuleS_TZYX);
-					var matchesImg = Array.from(equaColor.matchAll(/img\(.*\)/gi));
+					var matchesImg = Array.from(equaColor.matchAll(/img\([^\)]*\)/gi));
 					matchesImg.forEach(match => {
 						const imgFunc = match[0];
 						var args = Array.from(imgFunc.matchAll(/(?<=[\(,])[^,]+(?=[,\)])/gi));
@@ -393,8 +393,12 @@ function generateFramesWithFormule(formule, imgs) {
 						equaColor = equaColor.replace(imgFunc, colorImg);
 					});
 
-					var color = MATH.parseMath(equaColor);
-					frames[t][x][y][z] = parseInt(color);
+					var equation = MATH.parseMath(equaColor);
+					var color = parseInt(equation);
+					if (isNaN(color)) {
+						throw new Error(`L'équation n'est pas valide : ${formuleS_TZYX} => ${equation} => ${color}`);
+					}
+					frames[t][x][y][z] = color;
 				}
 			}
 		}
@@ -415,10 +419,6 @@ window.addEventListener('load', () => {
 	}
 
 	const front_view = document.querySelector('#front_view');
-	/**
-	 * @type  {HTMLCanvasElement}
-	 */
-	const canvas = document.querySelector('canvas#display_frames');
 	/**
 	 * @type {HTMLInputElement}
 	 */
