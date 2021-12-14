@@ -19,6 +19,7 @@ $futureFrameContent = "[]";
 $dataArray = array();
 
 if (isset($_GET['f'])) {
+    $_GET['f'] = preg_replace('/[^a-zA-Z0-9]/', "_", $_GET['f']);
     $file = fopen($path . $_GET['f'], "r") or die("Unable to open file!");
     $frames = intval(fgets($file));
     $time = intval(fgets($file));

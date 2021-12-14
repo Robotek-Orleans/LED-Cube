@@ -9,6 +9,7 @@ redirect_user_if_is_not_log_in();
 
 
 if(isset($_GET['delete'])){
+    $_GET['delete'] = preg_replace('/[^a-zA-Z0-9]/', "_", $_GET['delete']);
     $path = "./animations/";
     unlink($path.$_GET['delete']);
     header("Location: openfile.php");

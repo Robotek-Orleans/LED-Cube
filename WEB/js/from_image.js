@@ -223,7 +223,7 @@ async function sendMatrice(options) {
  */
 function submitPattern(frames, options) {
 	var f = document.createElement('form');
-	f.action = './';
+	f.action = './edit.php';
 	f.method = 'POST';
 	if (options?.submit_blank) f.target = '_blank';
 

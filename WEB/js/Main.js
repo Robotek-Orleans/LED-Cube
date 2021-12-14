@@ -606,7 +606,7 @@ function closeModal() {
 
 
 function editAnim(animation) {
-    window.location.href = "index.php?f=" + animation
+    window.location.href = "edit.php?f=" + animation
 }
 
 function deleteAnim(animation) {

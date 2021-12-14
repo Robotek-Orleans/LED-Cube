@@ -19,7 +19,7 @@ http_response_code(200);
 
 if(isset($data['stat']) && isset($data['fileName'])){
     if(isset($data['fileName']) && isset($data['data']) && isset($data['time']) && $data['stat'] == 'save'){
-
+        $data['fileName'] = preg_replace('/[^a-zA-Z0-9]/', "_", $data['fileName']);
         $file = fopen($path.$data['fileName'], "w") or die("Unable to open file!");
 
         fwrite($file, strval(count($data['data'])).PHP_EOL);
