@@ -111,7 +111,6 @@ function convertArray($array)
         var selectedPlanNumber = 1; // entre 1 et 8
         var selectedFrame = 1; // entre 1 et N frame
         var selected2D = []; // tableau en 2D avec des valeurs entre 0 et 7
-        var shiftpressed = false;
         var copied2D = [];
         var copied3D = [];
         var framecontent = <?php echo $futureFrameContent ?>;

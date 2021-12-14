@@ -9,6 +9,8 @@ redirect_user_if_is_not_log_in();
 
 $path = "./animations/";
 
+exec('sudo chown -R www-data ./animations');
+
 $data = json_decode(file_get_contents('php://input'), true);
 //print_r($data);
 

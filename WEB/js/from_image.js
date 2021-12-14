@@ -343,7 +343,7 @@ function onFillFormuleChanged() {
 }
 
 function replaceProperty(formule, property, value) {
-	return formule.replaceAll(new RegExp(`(?<=^|\\W)${property}(?=\\W|$)`, 'gi'), value);
+	return formule.replaceAll(new RegExp(`(?<=(^|\\W))${property}(?=(\\W|$))`, 'gi'), value);
 }
 
 /**
@@ -358,17 +358,20 @@ function generateFramesWithFormule(formule, imgs) {
 	/** @type {number[][][][]} */
 	var frames = new Array(tMax);
 
-	const formuleS = formule.match(/=(.+)$/)?.[1] || formule;
+	const formuleS = MATH.parseMath(formule.match(/=(.+)$/)?.[1] || formule);
 	for (let t = 0; t < tMax; t++) {
 		frames[t] = generateFrame();
-		var formuleS_T = replaceProperty(formuleS, 't', t);
+		var formuleS_T = MATH.parseMath(replaceProperty(formuleS, 't', t));
 		for (let z = 0; z < 8; z++) {
-			var formuleS_TZ = replaceProperty(formuleS_T, 'z', z);
+			var formuleS_TZ = MATH.parseMath(replaceProperty(formuleS_T, 'z', z));
 			for (let y = 0; y < 8; y++) {
-				var formuleS_TZY = replaceProperty(formuleS_TZ, 'y', y);
+				var formuleS_TZY = MATH.parseMath(replaceProperty(formuleS_TZ, 'y', y));
 				for (let x = 0; x < 8; x++) {
-					var formuleS_TZYX = replaceProperty(formuleS_TZY, 'x', x);
-					var equaColor = MATH.parseMath(formuleS_TZYX);
+					var formuleS_TZYX = MATH.parseMath(replaceProperty(formuleS_TZY, 'x', x));
+					if (z == 4 && y == 4 && x == 0) {
+						console.log(`t=${t}`, { formuleS, formuleS_T, formuleS_TZ, formuleS_TZY, formuleS_TZYX });
+					}
+					var equaColor = formuleS_TZYX;
 					var matchesImg = Array.from(equaColor.matchAll(/img\([^\)]*\)/gi));
 					matchesImg.forEach(match => {
 						const imgFunc = match[0];
@@ -395,7 +398,8 @@ function generateFramesWithFormule(formule, imgs) {
 
 					var equation = MATH.parseMath(equaColor);
 					var color = parseInt(equation);
-					if (isNaN(color)) {
+					if (isNaN(color) || equation.match(/[a-z\(\)&\|\*/]/i)) {
+						console.log(`t=${t} z=${z} y=${y} x=${x}`, { formuleS, formuleS_T, formuleS_TZ, formuleS_TZY, formuleS_TZYX });
 						throw new Error(`L'équation n'est pas valide : ${formuleS_TZYX} => ${equation} => ${color}`);
 					}
 					frames[t][x][y][z] = color;

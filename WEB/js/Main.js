@@ -1,5 +1,7 @@
 
-
+var lastClicked = -1;
+var controlpressed = false;
+var shiftpressed = false;
 
 function paste2D() {
     if (!copied2D.length) return;
@@ -227,16 +229,49 @@ function SelectLED(LED) {
     const LEDelements = document.getElementById("matrix").getElementsByTagName("circle")
     const LEDelement = LEDelements[LED]
     const x = LED % 8
-    const y = (LED - x) / 8
+    const y = Math.floor(LED  / 8)
     const index = ckeckIndexselected2D([x, y])
-    if (index >= 0) {
+    if (index >= 0 && !shiftpressed) {
         selected2D.splice(index, 1)
         LEDelement.setAttribute("stroke", "#3e4f51")
         return
     }
-    if (shiftpressed) {
+    if (controlpressed) {
         selected2D.push([x, y])
-    } else {
+    }else if(shiftpressed){
+        if(lastClicked >= 0){
+            for (var i = 0; i < 64; i++) {
+                LEDelements[i].setAttribute("stroke", "#3e4f51")
+            }
+            const x1 = lastClicked % 8
+            const y1 = Math.floor(lastClicked / 8)
+            console.log(lastClicked)
+            let xmax = -1;
+            let xmin = -1;
+            let ymax = -1;
+            let ymin = -1;
+            if(x1>x){
+                xmax = x1;
+                xmin = x;
+            }else{
+                xmax = x;
+                xmin = x1;
+            }
+            if(y1>y){
+                ymax = y1;
+                ymin = y;
+            }else{
+                ymax = y;
+                ymin = y1;
+            }
+            for(let i =ymin;i<=ymax;i++){
+                for(let j =xmin;j<=xmax;j++){
+                    LEDelements[i*8+j].setAttribute("stroke", "#3aaa96")
+                    selected2D.push([j, i])
+                }
+            }
+        }
+    }else {
         for (var i = 0; i < 64; i++) {
             LEDelements[i].setAttribute("stroke", "#3e4f51")
         }
@@ -246,7 +281,6 @@ function SelectLED(LED) {
     let colorPicker = document.getElementById("pickColor")
     colorPicker.value = LEDelement.getAttribute("fill")
     let actualColor = LEDelement.getAttribute("fill").replace('#', '').match(/.{1,2}/g)
-    console.log(actualColor)
     if(actualColor[0].toUpperCase() === "FF"){
         document.getElementById("redButton").className = "colorButton red"
     }else{
@@ -262,7 +296,9 @@ function SelectLED(LED) {
     }else{
         document.getElementById("blueButton").className = "colorButton grey"
     }
-
+    if(!shiftpressed){
+        lastClicked = LED
+    }
 }
 
 function SelectPlan() {
@@ -603,15 +639,25 @@ function previousaxe() {
 document.addEventListener('keydown', (e) => {
     switch (e.key) {
         case "Control":
+            controlpressed = true;
+            break;
+        case "Shift":
             shiftpressed = true;
+            console.log("shiftpressed=" + shiftpressed)
             break;
     }
     //console.log(e.key)
 });
 
 document.addEventListener('keyup', (e) => {
-    if (e.key === "Control") {
-        shiftpressed = false
+    switch (e.key) {
+        case "Control":
+            controlpressed = false;
+            break;
+        case "Shift":
+            shiftpressed = false;
+            console.log("shiftpressed=" + shiftpressed)
+            break;
     }
 });
 
