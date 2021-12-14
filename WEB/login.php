@@ -6,8 +6,8 @@ redirect_user_if_log_in();
 if (isset($_POST['sub'])) {
     header("Location: index.php");
 
-    $user = "ledcub";
-     $pass = "ledcub2021";
+    $user = "ledcube";
+     $pass = "ledcube2021";
 
 	
 	$errors = [];
@@ -18,7 +18,7 @@ if (isset($_POST['sub'])) {
 	if (empty($pass)) {
 		array_push($errors,"Champs mot de passe est vide");
 	}
-    if (($user != $username) && ($pass != $password)) {
+    if (($user != $username) || ($pass != $password)) {
         array_push($errors,"Donne incorrect");
     }
 
