@@ -45,13 +45,13 @@ if (isset($_POST['sub'])) {
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title>Animated Login Form</title>
+    <title>LED CUBE</title>
     <link rel="stylesheet" href="css/style.css">
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
   </head>
   <body>
     <div class="container">
-      <header>LED CUB</header>
+      <header>LED CUBE</header>
 
       <?php foreach ($errors as $err) { ?>
         <h5 style="color:red"><?=  $error ?></h5>
