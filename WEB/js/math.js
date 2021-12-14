@@ -126,11 +126,6 @@ const transfoCalc = [
 		listCompare('<', (a = 0, b = 0) => a < b),
 	],
 	[
-		// transfoOperator
-		pairOperation('||', (a = 0, b = 0) => a || b),
-		pairOperation('&&', (a = 0, b = 0) => a && b),
-	],
-	[
 		// transfoMult
 		pairOperation('/', (a = 0, b = 0) => a / b), // 1 / 2 * 3
 		pairOperation('*', (a = 0, b = 0) => a * b),
@@ -181,6 +176,11 @@ const transfoCalc = [
 		[`\\( *\\+? *(${reel}) *\\)`, match => match[1]],
 		[`\\( *\\- *(${reel}) *\\)`, match => -match[1]],
 		//[/\([ \+\-\*\/]*\)/, () => 0],
+	],
+	[
+		// transfoOperator
+		pairOperation('||', (a = 0, b = 0) => a || b),
+		pairOperation('&&', (a = 0, b = 0) => a && b),
 	],
 ];
 
