@@ -67,7 +67,7 @@ textarea:disabled {
 }
 
 #fill_formule {
-	width: -webkit-fill-available;
+	width: 100%;
 	height: calc(100% - 56px);
 }
 
