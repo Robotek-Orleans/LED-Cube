@@ -1,3 +1,12 @@
+<?php
+session_start();
+
+
+include('functions/function.php');
+
+redirect_user_if_is_not_log_in();
+
+?>
 <!DOCTYPE html>
 <html lang="fr">
 

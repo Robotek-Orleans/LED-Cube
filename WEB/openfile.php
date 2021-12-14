@@ -1,5 +1,12 @@
 
 <?php
+session_start();
+
+
+include('functions/function.php');
+
+redirect_user_if_is_not_log_in();
+
 
 if(isset($_GET['delete'])){
     $path = "./animations/";
@@ -49,6 +56,7 @@ if(isset($_GET['delete'])){
     <div class="header">
         <h1 style="text-align: left;">LED CUBE</h1>
         <button class="stopButton red" onclick="stopAnnimation()"></button>
+        
     </div>
     <div class="content mainContentAnim">
 

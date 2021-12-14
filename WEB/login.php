@@ -1,0 +1,97 @@
+<?php
+session_start();
+
+include('functions/function.php');
+redirect_user_if_log_in();
+if (isset($_POST['sub'])) {
+    header("Location: index.php");
+
+    $user = "ledcub";
+     $pass = "ledcub2021";
+
+	
+	$errors = [];
+	extract($_POST);
+	if (empty($username)) {
+		array_push($errors,"Champss username est vide");
+	}
+	if (empty($pass)) {
+		array_push($errors,"Champs mot de passe est vide");
+	}
+    if (($user != $username) && ($pass != $password)) {
+        array_push($errors,"Donne incorrect");
+    }
+
+	if(count($errors) == 0){
+		
+
+
+  
+			
+			$_SESSION['username'] = $username;
+
+			header("Location: index.php");
+			
+	 
+		
+	}
+	
+}
+    
+    
+?>
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Animated Login Form</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <header>LED CUB</header>
+
+      <?php foreach ($errors as $err) { ?>
+        <h5 style="color:red"><?=  $error ?></h5>
+     <?php  }  ?>
+      
+      
+
+
+      <form method="POST" >
+        <div class="input-field">
+          <input type="text" name="username" >
+          <label>Nom D'utilisateur</label>
+        </div>
+        <div class="input-field">
+          <input class="pswrd" type="password" name="password" >
+          <span class="show">SHOW</span>
+          <label>Mot de passe</label>
+        </div>
+        <div class="button">
+          <div class="inner"></div>
+          <button type="submit" name="sub">LOGIN</button>
+        </div>
+      </form>
+     
+    <script>
+      var input = document.querySelector('.pswrd');
+      var show = document.querySelector('.show');
+      show.addEventListener('click', active);
+      function active(){
+        if(input.type === "password"){
+          input.type = "text";
+          show.style.color = "#1DA1F2";
+          show.textContent = "HIDE";
+        }else{
+          input.type = "password";
+          show.textContent = "SHOW";
+          show.style.color = "#111";
+        }
+      }
+    </script>
+
+  </body>
+</html>

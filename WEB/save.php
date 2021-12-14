@@ -1,5 +1,12 @@
 <?php
 
+session_start();
+
+
+include('functions/function.php');
+
+redirect_user_if_is_not_log_in();
+
 $path = "./animations/";
 
 $data = json_decode(file_get_contents('php://input'), true);
