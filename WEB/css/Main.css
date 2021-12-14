@@ -13,7 +13,6 @@ body {
     position: relative;
     display: flex;
     flex-flow: column;
-    height: 50%;
     background-color: rgb(33, 35, 37);
     min-height: 500px;
     margin: 4px;
