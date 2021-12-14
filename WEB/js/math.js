@@ -2,11 +2,60 @@
 // by Jiogo18
 // for @Jig0ll
 
-var MinMax = (min, x, max) => Math.max(min, Math.min(x, max));
+const MinMax = (min, x, max) => Math.max(min, Math.min(x, max));
+const distance = (a, b) => Math.sqrt(a * a + b * b);
+const distancePointOrigine = p => Math.sqrt(p.re * p.re + p.im * p.im);
+const distancePoints = (p1, p2) => Math.sqrt(Math.pow(p1.re - p2.re, 2) + Math.pow(p1.im - p2.im, 2));
+const pointCart = (re, im) => new Object({ re, im });
+const pointExpo = (r, angle) => new Object({ r, angle });
+const expToCart = (angle, r) => pointCart(r * Math.cos(angle), r * Math.sin(angle));
+const cartToExp = p => pointExpo(distancePointOrigine(p), Math.atan(p.im / p.re) + (p.re < 0 && Math.PI));
+const valideOctet = v => MinMax(0, Math.round(v), 255);
+const modulo = (a, b) => a - Math.floor(a / b) * b;
+
+class Color {
+	decValue;
+	get r() {
+		return (this.decValue & 0xff0000) >> 16;
+	}
+	get g() {
+		return (this.decValue & 0x00ff00) >> 8;
+	}
+	get b() {
+		return this.decValue & 0x0000ff;
+	}
+	/**
+	 * @param {number} value
+	 */
+	constructor(value) {
+		this.decValue = value;
+	}
+	static fromRGB(r, g, b) {
+		return new Color((valideOctet(r) << 16) | (valideOctet(g) << 8) | valideOctet(b));
+	}
+	hue_rotation(angle) {
+		var cosA = Math.cos(angle);
+		var sinA = Math.sin(angle);
+		var ratio_partage = (1 / 3) * (1 - cosA);
+		var sqrt1_3 = Math.sqrt(1 / 3);
+		var m0 = ratio_partage + cosA;
+		var m1 = ratio_partage - sqrt1_3 * sinA;
+		var m2 = ratio_partage + sqrt1_3 * sinA;
+		var rx = this.r * m0 + this.g * m1 + this.b * m2;
+		var gx = this.r * m2 + this.g * m0 + this.b * m1;
+		var bx = this.r * m1 + this.g * m2 + this.b * m0;
+		return Color.fromRGB(rx, gx, bx);
+	}
+	lumiere(lumiere) {
+		return Color.fromRGB(this.r * lumiere, this.g * lumiere, this.b * lumiere);
+	}
+}
 
 const n = '[\\d\\.]';
-const reel = `[\\+\\-]?\\.?\\d+\\.?\\d*`;
+const reel = `[\\+\\-]?\\.?\\d+\\.?\\d*(?:e-\\d+)?`;
 const op = '\\+\\-\\*\\/';
+const prefix_nochar = '(?<=^|[^\\w\\d])';
+const suffix_nochar = '(?=[^\\w\\d]|$)';
 const MATH = {};
 function listCompare(strOperator, funcOperator) {
 	// 10d6 >= 3 = (n: 5 6 4 ~~1~~ ~~1~~ 3 6 3 4 6) = 8
@@ -31,9 +80,9 @@ function listCompare(strOperator, funcOperator) {
 function funcOperation(strFunction, nbArgs, funcOperator) {
 	var param = new Array(nbArgs).fill(`(${reel})`);
 	return [
-		`${strFunction}\\\( *${param.join(' *, *')} *\\\)`,
+		`${prefix_nochar}${strFunction}\\\( *${param.join(' *, *')} *\\\)`,
 		match => {
-			const args = new Array(nbArgs).fill(0).map((v, i) => parseFloat(match[1 + i]) || undefined);
+			const args = new Array(nbArgs).fill(0).map((v, i) => parseFloat(match[1 + i]) ?? undefined);
 			return funcOperator(...args);
 		},
 	];
@@ -59,6 +108,11 @@ const transfoCalc = [
 	],
 	[
 		[`[${op}]*~~[\\d\\. ${op}]*~~`, () => '', 'before'], //deleted number
+		[`#([\\dA-Fa-f]+)`, match => parseInt(match[1], 16)], //hexadecimal
+		[`0x([\\dA-Fa-f]+)`, match => parseInt(match[1], 16)], //hexadecimal
+		[`0[bB]([01]+)`, match => parseInt(match[1], 2)], //binaire
+		[`${prefix_nochar}true${suffix_nochar}`, match => 1],
+		[`${prefix_nochar}false${suffix_nochar}`, match => 0],
 	],
 	[
 		[`\\(n: [\\d \\.${op}]*\\)`, match => match[0].match(new RegExp(`${n}+`, 'g'))?.length || 0], //deleted number
@@ -89,20 +143,38 @@ const transfoCalc = [
 	],
 	[
 		// transfo fonctions
-		funcOperation('max', 2, (a = 0, b = 0) => Math.max(a, b)),
-		funcOperation('min', 2, (a = 0, b = 0) => Math.min(a, b)),
-		funcOperation('minmax', 3, (min = 0, x = 0, max = 0) => MinMax(min, x, max)),
-		funcOperation('abs', 1, (a = 0) => Math.abs(a)),
-		funcOperation('sqrt', 1, (a = 0) => Math.sqrt(a)),
-		funcOperation('round', 1, (a = 0) => Math.round(a)),
-		funcOperation('floor', 1, (a = 0) => Math.floor(a)),
-		funcOperation('ceil', 1, (a = 0) => Math.ceil(a)),
-		funcOperation('rgb', 3, (r = 0, g = 0, b = 0) => (MinMax(0, r, 255) << 16) | (MinMax(0, g, 255) << 8) | MinMax(0, b, 255)),
+		funcOperation('max', 2, (a, b) => Math.max(a, b)),
+		funcOperation('min', 2, (a, b) => Math.min(a, b)),
+		funcOperation('minmax', 3, (min, x, max) => MinMax(min, x, max)),
+		funcOperation('range', 3, (min, x, max) => (min <= x && x <= max ? 1 : 0)),
+		funcOperation('abs', 1, a => Math.abs(a)),
+		funcOperation('sqrt', 1, a => Math.sqrt(a)),
+		funcOperation('pow', 2, (a, b) => Math.pow(a, b)),
+		funcOperation('exp', 1, x => Math.exp(x)),
+		funcOperation('round', 1, a => Math.round(a)),
+		funcOperation('floor', 1, a => Math.floor(a)),
+		funcOperation('ceil', 1, a => Math.ceil(a)),
 		funcOperation('random', 0, () => Math.random()),
-		funcOperation('cos', 1, (a = 0) => Math.cos(a)),
-		funcOperation('sin', 1, (a = 0) => Math.sin(a)),
-		funcOperation('modulo', 2, (a = 0, b = 1) => a - Math.floor(a / b) * b),
-		funcOperation('triangle', 4, (x = 0, x0 = 0, y0 = 0, pente = 1) => y0 - pente * Math.abs(x - x0)),
+		funcOperation('pi', 0, () => Math.round(Math.PI * 1e6) * 1e-6),
+		funcOperation('cos', 1, a => Math.cos(a)),
+		funcOperation('sin', 1, a => Math.sin(a)),
+		funcOperation('tan', 1, a => Math.tan(a)),
+		funcOperation('acos', 1, a => Math.acos(a)),
+		funcOperation('asin', 1, a => Math.asin(a)),
+		funcOperation('atan', 1, a => Math.atan(a)),
+		funcOperation('modulo', 2, (a, b = 1) => modulo(a, b)),
+		funcOperation('angle_complexe', 2, (a, b) => modulo(Math.atan(b / a) + (a < 0 ? Math.PI : 0), 2 * Math.PI)),
+		funcOperation('triangle', 4, (x, x0, y0, pente) => y0 - pente * Math.abs(x - x0)),
+		funcOperation('distance', 2, (x1, y1) => distance(x1, y1)),
+		funcOperation('heaviside', 1, t => 0 <= t),
+		funcOperation('porte', 3, (t, t1, t2) => t1 <= t && t <= t2),
+		funcOperation('pente_cosale', 1, t => (0 <= t ? t : 0)),
+		funcOperation('rgb', 3, (r, g, b) => (MinMax(0, r, 255) << 16) | (MinMax(0, g, 255) << 8) | MinMax(0, b, 255)),
+		funcOperation('red', 1, c => (c & 0xff0000) >> 16),
+		funcOperation('green', 1, c => (c & 0x00ff00) >> 8),
+		funcOperation('blue', 1, c => c & 0x0000ff),
+		funcOperation('huerotate', 2, (c, angle) => new Color(c).hue_rotation(angle).decValue),
+		funcOperation('lumiere', 2, (c, lumiere) => new Color(c).lumiere(lumiere).decValue),
 	],
 	[
 		// transfoAddition
@@ -154,7 +226,7 @@ MATH.parseMath = (equation, equaStep) => {
 function getFirstMatch(equation, rules) {
 	return rules
 		.map(rule => {
-			return { rule, match: equation.match(new RegExp(rule[0], 'g')) };
+			return { rule, match: equation.match(new RegExp(rule[0], 'ig')) };
 		})
 		.filter(result => result.match)
 		.sort((a, b) => Math.sign(a.match.index, b.match.index))?.[0];
@@ -169,7 +241,7 @@ function applyTransfo(equation, rules) {
 	var result;
 	while ((result = getFirstMatch(equation, rules))) {
 		const rule = result.rule;
-		const regex = new RegExp(rule[0]);
+		const regex = new RegExp(rule[0], 'i');
 		const replacement = rule[1](equation.match(regex));
 		equation = equation.replace(result.match[0], replacement);
 
