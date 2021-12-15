@@ -111,8 +111,8 @@ const transfoCalc = [
 		[`#([\\dA-Fa-f]+)`, match => parseInt(match[1], 16)], //hexadecimal
 		[`0x([\\dA-Fa-f]+)`, match => parseInt(match[1], 16)], //hexadecimal
 		[`0[bB]([01]+)`, match => parseInt(match[1], 2)], //binaire
-		[`${prefix_nochar}true${suffix_nochar}`, match => 1],
-		[`${prefix_nochar}false${suffix_nochar}`, match => 0],
+		[`${prefix_nochar}true${suffix_nochar}`, () => 1],
+		[`${prefix_nochar}false${suffix_nochar}`, () => 0],
 	],
 	[
 		[`\\(n: [\\d \\.${op}]*\\)`, match => match[0].match(new RegExp(`${n}+`, 'g'))?.length || 0], //deleted number
@@ -122,6 +122,7 @@ const transfoCalc = [
 		[...listCompare('>', (a = 0, b = 0) => a > b), 'after'],
 		listCompare('>=', (a = 0, b = 0) => a >= b),
 		listCompare('==?', (a = 0, b = 0) => a == b),
+		listCompare('!=', (a = 0, b = 0) => a == b),
 		listCompare('<=', (a = 0, b = 0) => a <= b),
 		listCompare('<', (a = 0, b = 0) => a < b),
 	],
@@ -129,6 +130,7 @@ const transfoCalc = [
 		// transfoMult
 		pairOperation('/', (a = 0, b = 0) => a / b), // 1 / 2 * 3
 		pairOperation('*', (a = 0, b = 0) => a * b),
+		pairOperation('%', (a = 0, b = 0) => modulo(a, b)),
 	],
 	[
 		// transfoAddition
@@ -150,7 +152,7 @@ const transfoCalc = [
 		funcOperation('floor', 1, a => Math.floor(a)),
 		funcOperation('ceil', 1, a => Math.ceil(a)),
 		funcOperation('random', 0, () => Math.random()),
-		funcOperation('pi', 0, () => Math.round(Math.PI * 1e6) * 1e-6),
+		funcOperation('pi', 0, () => 3.141593),
 		funcOperation('cos', 1, a => Math.cos(a)),
 		funcOperation('sin', 1, a => Math.sin(a)),
 		funcOperation('tan', 1, a => Math.tan(a)),
@@ -176,6 +178,14 @@ const transfoCalc = [
 		[`\\( *\\+? *(${reel}) *\\)`, match => match[1]],
 		[`\\( *\\- *(${reel}) *\\)`, match => -match[1]],
 		//[/\([ \+\-\*\/]*\)/, () => 0],
+	],
+	[
+		// binary manipulation
+		pairOperation('<<', (a = 0, b = 0) => a << b),
+		pairOperation('>>', (a = 0, b = 0) => a >> b),
+		pairOperation('&', (a = 0, b = 0) => a & b),
+		pairOperation('|', (a = 0, b = 0) => a | b),
+		pairOperation('^', (a = 0, b = 0) => a ^ b),
 	],
 	[
 		// transfoOperator
