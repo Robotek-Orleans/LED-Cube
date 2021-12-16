@@ -1,10 +1,25 @@
 # LED-Cube
-## installation
+LED-Cube is a 8x8x8 RGB LED-Cube.
+
+The project is in different communicating parts:
+
+- /WEB : enables to run and execute animations. 
+    - select animation
+    - preview animation
+    - create and edit animations
+    - connexion interface
+- /cpp : executes and run animations
+    - converts the animation in a format readable for LED Drivers (TLC5940)
+    - runs the animation
+
+You can find PCBs and schematics in CAO and PCBs
+
+# installation
 To intall the LEDCube, you need RaspberryPi OS Lite:
 https://www.raspberrypi.com/software/operating-systems/
 
-You can enable ssh at this step.
-Also, connect the Raspberry Pi to your network.
+*You can enable ssh at this step.
+Also, connect the Raspberry Pi to your network.*
 
 Then you need to install different packages:
 ```sh
