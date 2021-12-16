@@ -358,7 +358,9 @@ function generateFramesWithFormule(formule, imgs) {
 	/** @type {number[][][][]} */
 	var frames = new Array(tMax);
 
-	const formuleS = MATH.parseMath(formule.match(/=(.+)$/)?.[1] || formule);
+	formule = formule.replace(/^f\([\w,]+\)=/, '');
+
+	const formuleS = MATH.parseMath(formule);
 	for (let t = 0; t < tMax; t++) {
 		frames[t] = generateFrame();
 		var formuleS_T = MATH.parseMath(replaceProperty(formuleS, 't', t));
