@@ -4,8 +4,7 @@ session_start();
 include('functions/function.php');
 redirect_user_if_log_in();
 if (isset($_POST['sub'])) {
-  header("Location: index.php");
-
+  
   $user = "ledcube";
   $pass = "ledcube2021";
 	
@@ -21,6 +20,7 @@ if (isset($_POST['sub'])) {
 			$_SESSION['username'] = $username;
 			header("Location: index.php");
 	}
+  header("Location: login.php");
 }   
 ?>
 
