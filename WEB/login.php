@@ -4,41 +4,28 @@ session_start();
 include('functions/function.php');
 redirect_user_if_log_in();
 if (isset($_POST['sub'])) {
-    header("Location: index.php");
+  header("Location: index.php");
 
-    $user = "ledcube";
-     $pass = "ledcube2021";
-
+  $user = "ledcube";
+  $pass = "ledcube2021";
 	
 	$errors = [];
 	extract($_POST);
 	if (empty($username)) {
-		array_push($errors,"Champss username est vide");
+		array_push($errors,"Champs utilisateur est vide");
 	}
 	if (empty($pass)) {
 		array_push($errors,"Champs mot de passe est vide");
 	}
     if (($user != $username) || ($pass != $password)) {
-        array_push($errors,"Donne incorrect");
+        array_push($errors,"Mot de passe incorrect");
     }
 
 	if(count($errors) == 0){
-		
-
-
-  
-			
 			$_SESSION['username'] = $username;
-
 			header("Location: index.php");
-			
-	 
-		
 	}
-	
-}
-    
-    
+}   
 ?>
 
 <!DOCTYPE html>
@@ -56,10 +43,6 @@ if (isset($_POST['sub'])) {
       <?php foreach ($errors as $err) { ?>
         <h5 style="color:red"><?=  $error ?></h5>
      <?php  }  ?>
-      
-      
-
-
       <form method="POST" >
         <div class="input-field">
           <input type="text" name="username" >
