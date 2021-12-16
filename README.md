@@ -74,8 +74,8 @@ sudo systemctl restart apache2
 
 ## HCI Controls
 
-| Function                          | Key         |
-| --------------------------------- | ----------- |
+| Function                          | Key                    |
+| --------------------------------- | -----------            |
 | Select all LEDs between 2 points  | <kbd>Shift</kbd>       |
 | Select more than 1 LED            | <kbd>Control</kbd>     |
 
