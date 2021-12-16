@@ -34,7 +34,6 @@ if (isset($_POST['sub'])) {
     <meta charset="utf-8">
     <title>LED CUBE</title>
     <link rel="stylesheet" href="css/style.css">
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
   </head>
   <body>
     <div class="container">
