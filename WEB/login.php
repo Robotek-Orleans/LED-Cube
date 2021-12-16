@@ -12,9 +12,11 @@ if (isset($_POST['sub'])) {
 	extract($_POST);
 	if (empty($username)) {
 		array_push($errors,"Champs utilisateur est vide");
-	} else if (empty($pass)) {
+	} 
+  if (empty($pass)) {
 		array_push($errors,"Champs mot de passe est vide");
-	}else if (($user != $username) || ($pass != $password)) {
+	}
+  if (($user != $username) || ($pass != $password)) {
         array_push($errors,"Mot de passe incorrect");
   }else if(count($errors) == 0){
 			$_SESSION['username'] = $username;
