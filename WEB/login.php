@@ -20,7 +20,6 @@ if (isset($_POST['sub'])) {
 			$_SESSION['username'] = $username;
 			header("Location: index.php");
 	}
-  header("Location: login.php");
 }   
 ?>
 
