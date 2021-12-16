@@ -72,6 +72,13 @@ sudo systemctl restart apache2
 
 # Usage
 
+## HCI Controls
+
+| Function                          | Key         |
+| --------------------------------- | ----------- |
+| Select all LEDs between 2 points  | Shift       |
+| Select more than 1 LED            | Control     |
+
 ## HCI usage
 
 All HCI is divded in 3 different pages:
@@ -108,10 +115,3 @@ edit.php as for role to create from scratch or edit an existing animation. It is
     - a colour picker to select a colour more precisely
     - 2 buttons to copy and paste a 2D matrix
 
-
-## HCI Controls
-
-| Function                          | Key         |
-| --------------------------------- | ----------- |
-| Select all LEDs between 2 points  | Shift       |
-| Select more than 1 LED            | Control     |
