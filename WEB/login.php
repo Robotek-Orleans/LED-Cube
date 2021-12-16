@@ -16,7 +16,7 @@ if (isset($_POST['sub'])) {
 		array_push($errors,"Champs mot de passe est vide");
 	}else if (($user != $username) || ($pass != $password)) {
         array_push($errors,"Mot de passe incorrect");
-    }else if(count($errors) == 0){
+  }else if(count($errors) == 0){
 			$_SESSION['username'] = $username;
 			header("Location: index.php");
 	}
@@ -35,7 +35,7 @@ if (isset($_POST['sub'])) {
       <header>LED CUBE</header>
 
       <?php foreach ($errors as $err) { ?>
-        <h5 style="color:red"><?=  $error ?></h5>
+        <h5 style="color:red"><?php echo $err ?></h5>
      <?php  }  ?>
       <form method="POST" >
         <div class="input-field">
