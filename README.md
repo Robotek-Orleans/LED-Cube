@@ -14,8 +14,8 @@ The project is in different communicating parts:
 
 You can find PCBs and schematics in CAO and PCBs
 
-# installation
-To intall the LEDCube, you need RaspberryPi OS Lite:
+# Installation
+To intall the LED-Cube, you need RaspberryPi OS Lite:
 https://www.raspberrypi.com/software/operating-systems/
 
 *You can enable ssh at this step.
@@ -68,3 +68,50 @@ Finally restart web server
 ```sh
 sudo systemctl restart apache2
 ```
+
+
+# Usage
+
+## HCI usage
+
+All HCI is divded in 3 different pages:
+ - from_image.php
+ - edit.php
+ - openfile.php
+
+from_image.php as for role to create a new animation by uploading a picture. It is composed of 3 parts: 
+ - picture manager to upload your picture to the LED-Cube
+ - 2D viewer to see the uploaded image
+ - formula to change some parameters on the image (more information about formulas at https://github.com/Robotek-Orleans/LED-Cube/blob/main/WEB/math.md)
+
+edit.php as for role to create from scratch or edit an existing animation. It is composed of 6 parts:
+ - file manager window which the following elements:
+    - a text input with the animation-name
+    - a button to send the animation to execute.php to be saved and played to the LED-Cube
+    - a button to send the animation to save.php to be saved
+    - a reset button to clear all animation
+ - frame manager window with the following elements:
+    - the number of frames on the animation
+    - a number input with the frame duration in milliseconds
+    - a button to add a frame before the number written in the input box at the right 
+    - a button to add a frame after the number written in the input box at the right
+    - a slider to select a specific frame
+    - 3 buttons to remove copy and paste a frame
+ - viewer 3D to see the 3D led matrix and the selected 2D matrix.
+ - 2D matrix choice with the following elements:
+    - 3 radio buttons to select the side/axis of the plan
+    - a slider to select the plan number
+    - a button to remove the  highlight on the 3D viewer
+ - 2D matrix to modify and view the colour of some LED's 
+ - colour choice with the following elements:
+    - 3 buttons to change colours on selected LED with a combination of red green and blue.
+    - a colour picker to select a colour more precisely
+    - 2 buttons to copy and paste a 2D matrix
+
+
+## HCI Controls
+
+| Function                          | Key         |
+| --------------------------------- | ----------- |
+| Select all LEDs between 2 points  | Shift       |
+| Select more than 1 LED            | Control     |
