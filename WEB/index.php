@@ -1,10 +1,9 @@
 <?php
-session_start();
+    session_start();
 
+    include('functions/function.php');
 
-include('functions/function.php');
-
-redirect_user_if_is_not_log_in();
+    redirect_user_if_is_not_log_in();
 ?>
 
 <!DOCTYPE html>
