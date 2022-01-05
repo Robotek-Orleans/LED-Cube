@@ -347,6 +347,16 @@ function replaceProperty(formule, property, value) {
 }
 
 /**
+ *
+ * @param {BigInt} value 
+ * @param {BigInt} max 
+ */
+ async function setSplashScreenProgressBarValue(value,max){
+	document.getElementById("send_progress").getElementsByTagName("p")[0].innerHTML = value + "/" + max;
+	document.getElementById("send_progress").getElementsByTagName("div")[0].getElementsByTagName("span")[0].style.width = 100*value/max + "%";
+}
+
+/**
  * @param {string} formule
  * @param {Image8x8[]} imgs
  */
