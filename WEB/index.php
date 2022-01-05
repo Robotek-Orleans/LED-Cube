@@ -47,9 +47,11 @@
     </div>
 
     <div class = buttons>
-        <button onclick="window.location.href = 'openfile.php'" class=" red">Ouvrir une animation existante</button>
+        <button onclick="window.location.href = 'openfile.php'" class=" purple">Ouvrir une animation existante</button>
         <button onclick="window.location.href = 'edit.php'" class=" purple">Créer une animation</button>
-        <button onclick="window.location.href = 'from_image.php'" class=" green">Créer une animation à partir d'une image</button>
+        <button onclick="window.location.href = 'from_image.php'" class=" purple">Créer une animation à partir d'une image</button>
+        <button onclick="navigator.sendBeacon('random.php')" class=" purple">Animations aléatoires</button>
+        <button onclick="navigator.sendBeacon('execute.php')" class=" red">Arrêter l'animation</button>
     </div>
 </body>
 
