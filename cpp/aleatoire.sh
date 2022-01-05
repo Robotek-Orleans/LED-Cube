@@ -1,3 +1,5 @@
+while :
+do
 cd /var/www/html/LED-Cube/WEB/animations
 ls |sort -R |tail -$N |while read file; do
     # Something involving $file, or you can leave
@@ -6,4 +8,5 @@ ls |sort -R |tail -$N |while read file; do
     echo $file
     sudo /var/www/html/LED-Cube/cpp/execLEDCube $file &
     sleep 10
+done
 done
