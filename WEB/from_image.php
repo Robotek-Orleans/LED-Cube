@@ -73,12 +73,19 @@ redirect_user_if_is_not_log_in();
 					<input type="number" class="inputnumfixedwidth" min="1" value="1" name="fill_tmax" id="fill_tmax" title="tMax">
 				</div>
 			</div>
-			<div> 
-				<a target="_blank" href="https://github.com/Robotek-Orleans/LED-Cube/blob/9f135652c2aeb47c0a9ebafa36bfe2d13e57e27b/WEB/math.md"><p>Cliquez ici pour accéder à la docummentation</p></a>
+			<div>
+				<a target="_blank" href="https://github.com/Robotek-Orleans/LED-Cube/blob/9f135652c2aeb47c0a9ebafa36bfe2d13e57e27b/WEB/math.md">
+					<p>Cliquez ici pour accéder à la docummentation</p>
+				</a>
 			</div>
 		</div>
 	</div>
-
+	<div class="splash_screen">
+		<div class="send_progress" id="send_progress">
+			<p class="chargement">15/160</p>
+			<div class="barre"><span class="barre_chargee"></span></div>
+		</div>
+	</div>
 </body>
 
 </html>
