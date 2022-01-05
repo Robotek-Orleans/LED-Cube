@@ -573,3 +573,59 @@ button:disabled {
     background-position: center center;
     background-repeat: no-repeat;
 }
+
+.barre {
+    border-radius: 25px;
+    background: #3e4f51;
+    outline: none;
+    transition: 0.1s;
+    height: 30px;
+    width: 100%;
+}
+
+.barre_chargee {
+    display: block;
+    height: 100%;
+    border-radius: 20px;
+
+}
+
+.send_progress {
+    display: flex;
+    flex-flow: row;
+    margin-bottom: 10px;
+    align-content: center;
+    align-items: center;
+    top: 50%;
+    position: relative;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: calc(100% - 20px);
+    max-width: 600px;
+}
+
+.send_progress p {
+    width: 70px;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+}
+
+.barre_chargee {
+    width: 45%;
+    border-radius: 25px;
+    background: linear-gradient(45deg, #4098ac, #3aaa96);
+    outline: none;
+    transition: 0.1s;
+    max-width: 100%;
+}
+
+.splash_screen {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    height: 100%;
+    width: 100%;
+    background-color: #000000cf;
+    display: none;
+}
