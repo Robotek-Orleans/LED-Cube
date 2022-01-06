@@ -32,7 +32,7 @@ function paste2D() {
     refresh2D()
 }
 
-function timeChanged(){
+function timeChanged() {
     save = true
 }
 
@@ -145,14 +145,14 @@ function setColor() {
     renderer.render(scene, camera);
 }
 
-function changeColor(element,color){
+function changeColor(element, color) {
     save = true;
     let colorPicker = document.getElementById("pickColor")
     let actualColor = colorPicker.value.replace('#', '').match(/.{1,2}/g)
     console.log(actualColor)
-    if(element.className === "colorButton grey"){
+    if (element.className === "colorButton grey") {
         element.className = "colorButton " + color
-        switch(color){
+        switch (color) {
             case 'red':
                 actualColor[0] = "FF"
                 break
@@ -163,9 +163,9 @@ function changeColor(element,color){
                 actualColor[2] = "FF"
                 break
         }
-    }else{
+    } else {
         element.className = "colorButton grey"
-        switch(color){
+        switch (color) {
             case 'red':
                 actualColor[0] = "00"
                 break
@@ -229,7 +229,7 @@ function SelectLED(LED) {
     const LEDelements = document.getElementById("matrix").getElementsByTagName("circle")
     const LEDelement = LEDelements[LED]
     const x = LED % 8
-    const y = Math.floor(LED  / 8)
+    const y = Math.floor(LED / 8)
     const index = ckeckIndexselected2D([x, y])
     if (index >= 0 && !shiftpressed) {
         selected2D.splice(index, 1)
@@ -238,8 +238,8 @@ function SelectLED(LED) {
     }
     if (controlpressed) {
         selected2D.push([x, y])
-    }else if(shiftpressed){
-        if(lastClicked >= 0){
+    } else if (shiftpressed) {
+        if (lastClicked >= 0) {
             for (var i = 0; i < 64; i++) {
                 LEDelements[i].setAttribute("stroke", "#3e4f51")
             }
@@ -250,28 +250,28 @@ function SelectLED(LED) {
             let xmin = -1;
             let ymax = -1;
             let ymin = -1;
-            if(x1>x){
+            if (x1 > x) {
                 xmax = x1;
                 xmin = x;
-            }else{
+            } else {
                 xmax = x;
                 xmin = x1;
             }
-            if(y1>y){
+            if (y1 > y) {
                 ymax = y1;
                 ymin = y;
-            }else{
+            } else {
                 ymax = y;
                 ymin = y1;
             }
-            for(let i =ymin;i<=ymax;i++){
-                for(let j =xmin;j<=xmax;j++){
-                    LEDelements[i*8+j].setAttribute("stroke", "#3aaa96")
+            for (let i = ymin; i <= ymax; i++) {
+                for (let j = xmin; j <= xmax; j++) {
+                    LEDelements[i * 8 + j].setAttribute("stroke", "#3aaa96")
                     selected2D.push([j, i])
                 }
             }
         }
-    }else {
+    } else {
         for (var i = 0; i < 64; i++) {
             LEDelements[i].setAttribute("stroke", "#3e4f51")
         }
@@ -281,22 +281,22 @@ function SelectLED(LED) {
     let colorPicker = document.getElementById("pickColor")
     colorPicker.value = LEDelement.getAttribute("fill")
     let actualColor = LEDelement.getAttribute("fill").replace('#', '').match(/.{1,2}/g)
-    if(actualColor[0].toUpperCase() === "FF"){
+    if (actualColor[0].toUpperCase() === "FF") {
         document.getElementById("redButton").className = "colorButton red"
-    }else{
+    } else {
         document.getElementById("redButton").className = "colorButton grey"
     }
-    if(actualColor[1].toUpperCase() === "FF"){
+    if (actualColor[1].toUpperCase() === "FF") {
         document.getElementById("greenButton").className = "colorButton green"
-    }else{
+    } else {
         document.getElementById("greenButton").className = "colorButton grey"
     }
-    if(actualColor[2].toUpperCase() === "FF"){
+    if (actualColor[2].toUpperCase() === "FF") {
         document.getElementById("blueButton").className = "colorButton blue"
-    }else{
+    } else {
         document.getElementById("blueButton").className = "colorButton grey"
     }
-    if(!shiftpressed){
+    if (!shiftpressed) {
         lastClicked = LED
     }
 }
@@ -317,6 +317,17 @@ function getRadioSelectedValue(radioName) {
         }
     }
     return null
+}
+
+function setRadioSelectedValue(radioName,value) {
+    var radios = document.getElementsByName(radioName);
+    for (var i = 0; i < radios.length; i++) {
+        if (radios[i].value === value) {
+            radios[i].checked = true;
+        }else{
+            radios[i].checked = false;
+        }
+    }
 }
 
 
@@ -395,7 +406,7 @@ function gotoframe() {
 }
 
 function removeframe() {
-    if (framecontent.length <= 1){
+    if (framecontent.length <= 1) {
         alert('Erreur: vous devez avoir au moins une frame')
         return
     }
@@ -426,7 +437,7 @@ function removeframe() {
         }
         refresh3D()
     }
-    
+
 }
 
 function nextframe() {
@@ -441,8 +452,7 @@ function previousframe() {
     gotoframe()
 }
 
-function onframeschanged()
-{
+function onframeschanged() {
     const framenumber = document.getElementById("frameNumber")
     if (framenumber)
         framenumber.innerHTML = framecontent.length.toString()
@@ -464,7 +474,7 @@ function addframe(index) {
 }
 
 async function init() {
-    if(framecontent.length == 0)
+    if (framecontent.length == 0)
         addframe(0);
     else
         onframeschanged();
@@ -485,7 +495,7 @@ async function init() {
     document.getElementById("numframebefore").max = framecontent.length
     document.getElementById("numframeafter").max = framecontent.length
     isSavable()
-    
+
     function timerRefresh3D(time) {
         if (renderer.info.memory.textures == 2) {
             return;
@@ -499,7 +509,7 @@ async function init() {
 
 
 function reset() {
-    if(!confirm('Voulez-vous vraiment tout effacer?')) return;
+    if (!confirm('Voulez-vous vraiment tout effacer?')) return;
     save = true;
     const contentnum = document.getElementById("numframebefore")
     const contentnumaf = document.getElementById("numframeafter")
@@ -507,7 +517,7 @@ function reset() {
     const frameinput = document.getElementById("frameInput")
     framecontent = []
     addframe(0)
-    selectedFrame=1;
+    selectedFrame = 1;
     framerange.value = selectedFrame
     frameinput.value = selectedFrame
     contentnumaf.value = selectedFrame
@@ -520,10 +530,10 @@ function reset() {
 }
 
 function isSavable() {
-    if(document.getElementById("fileName").value.length > 0){
+    if (document.getElementById("fileName").value.length > 0) {
         document.getElementById("saveButton").disabled = false;
         document.getElementById("playAnimation").disabled = false;
-    }else{
+    } else {
         document.getElementById("saveButton").disabled = true;
         document.getElementById("playAnimation").disabled = true;
     }
@@ -532,8 +542,8 @@ function isSavable() {
 //PARTIE OPENFILE
 
 async function initAnim() {
-    if(framecontent.length == 0)
-    addframe(0);
+    if (framecontent.length == 0)
+        addframe(0);
     await initGL()
     const indexframe = 0
 
@@ -556,18 +566,18 @@ function startShowAnim() {
     nbFrames = framecontent.length
 
     onWindowResize()
-    animation = setInterval(animateCube,frametime);
+    animation = setInterval(animateCube, frametime);
 
 }
 
 
 
-function animateCube(){
-    frame = (frame+1)%nbFrames
+function animateCube() {
+    frame = (frame + 1) % nbFrames
     refreshFrames(frame)
 }
 
-async function refreshFrames(showedFrame){
+async function refreshFrames(showedFrame) {
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
             for (let k = 0; k < 8; k++) {
@@ -585,7 +595,7 @@ function getAnimation(animation) {
     let url = "get_animation.php?f=" + animation;
     xhr.open("GET", url, true);
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    xhr.onreadystatechange = function() {
+    xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             scriptstat("vert", "Animation envoyé avec succès", 2000);
             framecontent = JSON.parse(xhr.responseText)['data'];
@@ -610,30 +620,36 @@ function editAnim(animation) {
 }
 
 function deleteAnim(animation) {
-    if(confirm("Voulez vous vraiment supprimer l'animation " + animation + "?")){
+    if (confirm("Voulez vous vraiment supprimer l'animation " + animation + "?")) {
         window.location.href = "openfile.php?delete=" + animation
     }
-    
+
 }
 
 
 //FIN OPENFILE
 
 function nextplan() {
-
+    let element = document.getElementById("planNumber");
+    let val = parseInt(element.value) + 1;
+    if (val > 8) val = 8;
+    element.value = val;
+    SelectPlan();
 }
 
 function previousplan() {
-
+    let element = document.getElementById("planNumber");
+    let val = parseInt(element.value) - 1;
+    if (val < 1) val = 1;
+    element.value = val;
+    SelectPlan();
 }
 
-function nextaxe() {
-
-}
-
-function previousaxe() {
-
-
+function switchaxe(){
+    const axises = ["X","Y","Z"];
+    let index =  (axises.indexOf(selectedPlanDirection) + 1)%3;
+    setRadioSelectedValue("axe",axises[index]);
+    SelectPlan();
 }
 
 document.addEventListener('keydown', (e) => {
@@ -644,6 +660,26 @@ document.addEventListener('keydown', (e) => {
         case "Shift":
             shiftpressed = true;
             console.log("shiftpressed=" + shiftpressed)
+            break;
+        case "ArrowRight":
+            e.preventDefault();
+            nextframe();
+            break;
+        case "ArrowLeft":
+            e.preventDefault();
+            previousframe();
+            break;
+        case "Tab":
+            e.preventDefault();
+            switchaxe();
+            break;
+        case "ArrowDown":
+            e.preventDefault();
+            previousplan();
+            break;
+        case "ArrowUp":
+            e.preventDefault();
+            nextplan();
             break;
     }
     //console.log(e.key)
@@ -659,16 +695,16 @@ document.addEventListener('keyup', (e) => {
             console.log("shiftpressed=" + shiftpressed)
             break;
     }
+    console.log(e.key)
 });
 
 /*
 
-z: plan précédent
-s: plan suivant
-q: axe précédent
-d: axe suivant
-a: frame précédente
-e: frame suivante
+ArrowDown: plan précédent
+ArrowUp: plan suivant
+Tab: change l'axe du plan
+ArrowLeft: frame précédente
+ArrowRight: frame suivante
 
 
 */

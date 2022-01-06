@@ -74,10 +74,15 @@ sudo systemctl restart apache2
 
 ## HCI Controls
 
-| Function                          | Key                    |
-| --------------------------------- | -----------            |
-| Select all LEDs between 2 points  | <kbd>Shift</kbd>       |
-| Select more than 1 LED            | <kbd>Control</kbd>     |
+| Function                          | Key                   |
+| --------------------------------- | --------------------- |
+| Select all LEDs between 2 points  | <kbd>Shift</kbd>      |
+| Select more than 1 LED            | <kbd>Control</kbd>    |
+| Previous layer                    | <kbd>ArrowDown</kbd>  |
+| Next Layer                        | <kbd>ArrowUp</kbd>    |
+| Switch axis                       | <kbd>Tab</kbd>        |
+| Previous frame                    | <kbd>ArrowLeft</kbd>  |
+| Next frame                        | <kbd>ArrowRight</kbd> |
 
 ## HCI usage
 
