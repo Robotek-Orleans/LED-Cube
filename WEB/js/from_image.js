@@ -393,16 +393,6 @@ function fillFrameWithFormule(systeme, t) {
 }
 
 /**
- *
- * @param {BigInt} value 
- * @param {BigInt} max 
- */
- async function setSplashScreenProgressBarValue(value,max){
-	document.getElementById("send_progress").getElementsByTagName("p")[0].innerHTML = value + "/" + max;
-	document.getElementById("send_progress").getElementsByTagName("div")[0].getElementsByTagName("span")[0].style.width = 100*value/max + "%";
-}
-
-/**
  * @param {string} formule
  * @param {Image8x8[]} imgs
  */
@@ -414,11 +404,18 @@ function generateFramesWithFormule(formule, imgs) {
 
 	formule = formule.replace(/^f\([\w,]+\)=/, '');
 
-	const systeme = JigMath(formule, [{ name: 'img', func: getFuncImage(imgs) }], 2);
+	const systeme = JigMath(formule, [{ name: 'img', func: getFuncImage(imgs) }], 1);
 
+	const start = Date.now();
+	var deltaLog = 0;
 	for (let t = 0; t < tMax; t++) {
 		frames[t] = fillFrameWithFormule(systeme, t);
+		if (Date.now() - deltaLog > 500) {
+			console.info(`Génération de la frame ${t}/${tMax}`);
+			deltaLog = Date.now();
+		}
 	}
+	console.info(`Frames générées en ${Date.now() - start} ms`);
 	return frames;
 }
 
