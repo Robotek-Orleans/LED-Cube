@@ -79,7 +79,7 @@ redirect_user_if_is_not_log_in();
 				</div>
 			</div>
 			<div>
-				<a target="_blank" href="https://github.com/Robotek-Orleans/LED-Cube/blob/9f135652c2aeb47c0a9ebafa36bfe2d13e57e27b/WEB/math.md">
+				<a target="_blank" href="https://github.com/Robotek-Orleans/LED-Cube/blob/main/WEB/math.md">
 					<p>Cliquez ici pour accéder à la docummentation</p>
 				</a>
 			</div>
