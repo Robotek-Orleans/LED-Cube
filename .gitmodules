@@ -1,0 +1,3 @@
+[submodule "JigMath"]
+	path = WEB/JigMath
+	url = https://github.com/Jiogo18/JigMath

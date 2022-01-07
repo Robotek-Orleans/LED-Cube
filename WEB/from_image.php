@@ -18,7 +18,7 @@ redirect_user_if_is_not_log_in();
 	<link rel='stylesheet' type='text/css' media='screen' href='css/Main.css'>
 	<link rel='stylesheet' type='text/css' media='screen' href='css/from_image.css'>
 	<script src='js/from_image.js'></script>
-	<script src='js/math.js'></script>
+	<script src='JigMath/jigmath.js'></script>
 </head>
 
 <body>

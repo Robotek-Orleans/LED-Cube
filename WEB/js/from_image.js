@@ -346,68 +346,68 @@ function replaceProperty(formule, property, value) {
 	return formule.replaceAll(new RegExp(`(?<=(^|\\W))${property}(?=(\\W|$))`, 'gi'), value);
 }
 
+function getTMax(imgCount) {
+	const fill_tmax = document.querySelector('#fill_tmax');
+	var tMax = parseInt(fill_tmax.value);
+	if (isNaN(tMax)) return imgCount;
+	return tMax;
+}
+
+
+/**
+ * @param {Image8x8[]} imgs
+ */
+function getFuncImage(imgs) {
+	return (xImg, yImg, tImg) => {
+		if (tImg < 0 || imgs.length <= tImg) {
+			throw new Error(
+				`Vous avez dépassé le nombre d'images disponibles (${imgs.length}) avec la formule (t=${tImg}).\n` +
+				`Essayez avec '0' dans l'expression 'img(y,z,0)'.\n` +
+				`Formule: ${formuleS_TZYX}`);
+		}
+		if (xImg < 0 || 8 <= xImg || yImg < 0 || 8 <= yImg) return 0;
+		return imgs[tImg].getPixel(xImg, yImg);
+	};
+}
+
+function fillFrameWithFormule(systeme, t) {
+	var frame = generateFrame();
+	systeme.setVariable('t', t);
+	for (let z = 0; z < 8; z++) {
+		systeme.setVariable('z', z);
+		for (let y = 0; y < 8; y++) {
+			systeme.setVariable('y', y);
+			for (let x = 0; x < 8; x++) {
+				systeme.setVariable('x', x);
+
+				var color = systeme.getValue();
+				if (isNaN(color) || typeof color !== 'number') {
+					console.log('Equation non valide', { x, y, z, t, color, systeme });
+					throw new Error(`L'équation n'est pas valide : ${color}`);
+				}
+				frame[x][y][z] = color;
+			}
+		}
+	}
+	return frame;
+}
+
 /**
  * @param {string} formule
  * @param {Image8x8[]} imgs
  */
 function generateFramesWithFormule(formule, imgs) {
-	const fill_tmax = document.querySelector('#fill_tmax');
-	var tMax = parseInt(fill_tmax.value);
-	if (isNaN(tMax)) tMax = imgs.length;
+	const tMax = getTMax(imgs.length);
 
 	/** @type {number[][][][]} */
 	var frames = new Array(tMax);
 
 	formule = formule.replace(/^f\([\w,]+\)=/, '');
 
-	const formuleS = MATH.parseMath(formule);
-	for (let t = 0; t < tMax; t++) {
-		frames[t] = generateFrame();
-		var formuleS_T = MATH.parseMath(replaceProperty(formuleS, 't', t));
-		for (let z = 0; z < 8; z++) {
-			var formuleS_TZ = MATH.parseMath(replaceProperty(formuleS_T, 'z', z));
-			for (let y = 0; y < 8; y++) {
-				var formuleS_TZY = MATH.parseMath(replaceProperty(formuleS_TZ, 'y', y));
-				for (let x = 0; x < 8; x++) {
-					var formuleS_TZYX = MATH.parseMath(replaceProperty(formuleS_TZY, 'x', x));
-					if (z == 4 && y == 4 && x == 0) {
-						console.log(`t=${t}`, { formuleS, formuleS_T, formuleS_TZ, formuleS_TZY, formuleS_TZYX });
-					}
-					var equaColor = formuleS_TZYX;
-					var matchesImg = Array.from(equaColor.matchAll(/img\([^\)]*\)/gi));
-					matchesImg.forEach(match => {
-						const imgFunc = match[0];
-						var args = Array.from(imgFunc.matchAll(/(?<=[\(,])[^,]+(?=[,\)])/gi));
-						var imgArgs = args.map(arg => MATH.parseMath(arg[0]));
-						const tImg = parseInt(imgArgs[2]) || 0;
-						const yImg = parseInt(imgArgs[1]) || 0;
-						const xImg = parseInt(imgArgs[0]) || 0;
-						var colorImg;
-						if (tImg < 0 || imgs.length <= tImg) {
-							throw new Error(
-								`Vous avez dépassé le nombre d'images disponibles (${imgs.length}) avec la formule (t=${tImg}).\n` +
-									`Essayez avec '0' dans l'expression 'img(y,z,0)'.\n` +
-									`Formule: ${formuleS_TZYX}`
-							);
-						}
-						if (0 <= xImg && xImg < 8 && 0 <= yImg && yImg < 8) {
-							colorImg = imgs[tImg].getPixel(xImg, yImg);
-						} else {
-							colorImg = 0;
-						}
-						equaColor = equaColor.replace(imgFunc, colorImg);
-					});
+	const systeme = JigMath(formule, [{ name: 'img', func: getFuncImage(imgs) }], 2);
 
-					var equation = MATH.parseMath(equaColor);
-					var color = parseInt(equation);
-					if (isNaN(color) || equation.match(/[a-z\(\)&\|\*/]/i)) {
-						console.log(`t=${t} z=${z} y=${y} x=${x}`, { formuleS, formuleS_T, formuleS_TZ, formuleS_TZY, formuleS_TZYX });
-						throw new Error(`L'équation n'est pas valide : ${formuleS_TZYX} => ${equation} => ${color}`);
-					}
-					frames[t][x][y][z] = color;
-				}
-			}
-		}
+	for (let t = 0; t < tMax; t++) {
+		frames[t] = fillFrameWithFormule(systeme, t);
 	}
 	return frames;
 }
