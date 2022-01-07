@@ -65,37 +65,21 @@ if (isset($_GET['f'])) {
         // error opening the file.
     }
     fclose($file);
-    $futureFrameContent = convertArray($dataArray);
+    $futureFrameContent = json_encode($dataArray);
 } else if (isset($_POST['frames'])) {
     $futureFrameContent = $_POST['frames'];
     $futureFrameContentZYX = 1;
 }
 
-function convertArray($array)
-{
-    $result = "[";
-    foreach ($array as $i) {
-        $result = $result . " [";
-        foreach ($i as $j) {
-            $result = $result . " [";
-            foreach ($j as $k) {
-                $result = $result . " [";
-                foreach ($k as $l) {
-                    $result = $result . " \"" . $l . "\" ,";
-                }
-                $result = $result . " ],";
-            }
-            $result = $result . " ],";
-        }
-        $result = $result . " ],";
-    }
-    return $result . " ]";
-}
-
 ?>
 
 <head>
-    <title>LED cube IHM</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="./favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./favicon/favicon-16x16.png">
+    <link rel="manifest" href="./favicon/site.webmanifest">
+
+    <title>LEDCube : édition</title>
     <meta http-equiv="content-type" content="text/html;charset=utf-8" />
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <link rel="stylesheet" href="css/Main.css">

@@ -23,7 +23,12 @@ if(isset($_GET['delete'])){
 <html lang="fr">
 
 <head>
-    <title>LED cube IHM</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="./favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./favicon/favicon-16x16.png">
+    <link rel="manifest" href="./favicon/site.webmanifest">
+
+    <title>LEDCube : ouvrir</title>
     <meta http-equiv="content-type" content="text/html;charset=utf-8" />
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <link rel="stylesheet" href="css/Main.css">
@@ -65,30 +70,36 @@ if(isset($_GET['delete'])){
         <div class="contentviewer">
 
             <?php
-            $gfg_folderpath = "animations/";
-            // CHECKING WHETHER PATH IS A DIRECTORY OR NOT
-            if (is_dir($gfg_folderpath)) {
-                // GETTING INTO DIRECTORY
-                $files = opendir($gfg_folderpath); {
-                    // CHECKING FOR SMOOTH OPENING OF DIRECTORY
-                    if ($files) {
-                        //READING NAMES OF EACH ELEMENT INSIDE THE DIRECTORY
-                        while (($gfg_subfolder = readdir($files)) !== FALSE) {
-                            // CHECKING FOR FILENAME ERRORS
-                            if ($gfg_subfolder != '.' && $gfg_subfolder != '..') {
-                                if ($gfg_subfolder != ".htaccess") {
-                                    echo "<div class=\"animContent\">";
-                                    echo "<div onClick='getAnimation(\"" . $gfg_subfolder . "\")' class=\"contentTitleAnim\"><p class=\"titleAnim\">" . $gfg_subfolder . "</p>";
-                                    echo "</div>";
-                                    echo "<button class=\"editButton\" onclick=\"editAnim('" . $gfg_subfolder . "')\"></button>";
-                                    echo "<button class=\"playButton purple\" onclick=\"playAnimationParam('" . $gfg_subfolder . "')\" ></button>";
-                                    echo "<button class=\"deleteButton red\" onclick=\"deleteAnim('" . $gfg_subfolder . "')\"></button>";
-                                    echo "</div>";
-                                }
+            $folder_path = "animations/";
+            if (is_dir($folder_path)) {
+                $files = opendir($folder_path); 
+                if ($files) {
+
+                    $files_names=array();
+                    while (($gfg_subfolder = readdir($files)) !== FALSE) {
+                        if ($gfg_subfolder != '.' && $gfg_subfolder != '..') {
+                            if ($gfg_subfolder != ".htaccess") {
+                                array_push($files_names,$gfg_subfolder);
                             }
                         }
                     }
-                }
+
+                    sort($files_names, SORT_NATURAL | SORT_FLAG_CASE);
+
+                    for ($i=0;$i<count($files_names);$i++) {
+                        $gfg_subfolder = $files_names[$i];
+                        echo "<div class=\"animContent\">";
+                        echo "<div onClick='getAnimation(\"" . $gfg_subfolder . "\")' class=\"contentTitleAnim\"><p class=\"titleAnim\">" . $gfg_subfolder . "</p>";
+                        echo "</div>";
+                        echo "<button class=\"editButton\" onclick=\"editAnim('" . $gfg_subfolder . "')\"></button>";
+                        echo "<button class=\"playButton purple\" onclick=\"playAnimationParam('" . $gfg_subfolder . "')\" ></button>";
+                        echo "<button class=\"deleteButton red\" onclick=\"deleteAnim('" . $gfg_subfolder . "')\"></button>";
+                        echo "</div>";
+                    }
+                           
+                        
+                    }
+                
             }
             ?>
 

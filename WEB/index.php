@@ -10,7 +10,12 @@
 <html lang="fr">
 
 <head>
-    <title>LED cube IHM</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="./favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./favicon/favicon-16x16.png">
+    <link rel="manifest" href="./favicon/site.webmanifest">
+
+    <title>LEDCube</title>
     <meta http-equiv="content-type" content="text/html;charset=utf-8" />
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <link rel="stylesheet" href="css/Main.css">
@@ -47,9 +52,11 @@
     </div>
 
     <div class = buttons>
-        <button onclick="window.location.href = 'openfile.php'" class=" red">Ouvrir une animation existante</button>
+        <button onclick="window.location.href = 'openfile.php'" class=" purple">Ouvrir une animation existante</button>
         <button onclick="window.location.href = 'edit.php'" class=" purple">Créer une animation</button>
-        <button onclick="window.location.href = 'from_image.php'" class=" green">Créer une animation à partir d'une image</button>
+        <button onclick="window.location.href = 'from_image.php'" class=" purple">Créer une animation à partir d'une image</button>
+        <button onclick="navigator.sendBeacon('random.php')" class=" purple">Animations aléatoires</button>
+        <button onclick="navigator.sendBeacon('execute.php')" class=" red">Arrêter l'animation</button>
     </div>
 </body>
 
