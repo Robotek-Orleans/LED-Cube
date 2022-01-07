@@ -65,31 +65,10 @@ if (isset($_GET['f'])) {
         // error opening the file.
     }
     fclose($file);
-    $futureFrameContent = convertArray($dataArray);
+    $futureFrameContent = json_encode($dataArray);
 } else if (isset($_POST['frames'])) {
     $futureFrameContent = $_POST['frames'];
     $futureFrameContentZYX = 1;
-}
-
-function convertArray($array)
-{
-    $result = "[";
-    foreach ($array as $i) {
-        $result = $result . " [";
-        foreach ($i as $j) {
-            $result = $result . " [";
-            foreach ($j as $k) {
-                $result = $result . " [";
-                foreach ($k as $l) {
-                    $result = $result . " \"" . $l . "\" ,";
-                }
-                $result = $result . " ],";
-            }
-            $result = $result . " ],";
-        }
-        $result = $result . " ],";
-    }
-    return $result . " ]";
 }
 
 ?>
