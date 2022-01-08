@@ -363,7 +363,7 @@ function getFuncImage(imgs) {
 			throw new Error(
 				`Vous avez dépassé le nombre d'images disponibles (${imgs.length}) avec la formule (t=${tImg}).\n` +
 				`Essayez avec '0' dans l'expression 'img(y,z,0)'.\n` +
-				`Formule: ${formuleS_TZYX}`);
+				`Position: img(${xImg}, ${yImg}, ${tImg})`);
 		}
 		if (xImg < 0 || 8 <= xImg || yImg < 0 || 8 <= yImg) return 0;
 		return imgs[tImg].getPixel(xImg, yImg);
