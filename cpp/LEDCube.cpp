@@ -161,7 +161,7 @@ void LEDCube::start()
                 #ifdef DEBUG
                 std::cout << "layer set " << z << std::endl;
                 #endif
-                tlc->send(tlc_pattern[f][(z + 1) % 8]);
+                tlc->send(tlc_pattern[f][z]);
             }
         }
         newFrameTime += frameTime;
@@ -173,28 +173,28 @@ void LEDCube::setLayer(uint8_t nLayer, bool bState)
 {
     switch (nLayer)
     {
-    case 0:
+    case 1:
         bcm2835_gpio_write(LAYER1, !bState);
         return;
-    case 1:
+    case 2:
         bcm2835_gpio_write(LAYER2, !bState);
         return;
-    case 2:
+    case 3:
         bcm2835_gpio_write(LAYER3, !bState);
         return;
-    case 3:
+    case 4:
         bcm2835_gpio_write(LAYER4, !bState);
         return;
-    case 4:
+    case 5:
         bcm2835_gpio_write(LAYER5, !bState);
         return;
-    case 5:
+    case 6:
         bcm2835_gpio_write(LAYER6, !bState);
         return;
-    case 6:
+    case 7:
         bcm2835_gpio_write(LAYER7, !bState);
         return;
-    case 7:
+    case 0:
         bcm2835_gpio_write(LAYER8, !bState);
         return;
     default:
