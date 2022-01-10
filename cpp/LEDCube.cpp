@@ -149,9 +149,10 @@ void LEDCube::start()
     int f = 0;
     m_isRunning = true;
 
+    clock_t newFrameTime = clock() + frameTime;
+
     while (m_isRunning)
     {
-        clock_t newFrameTime = clock() + frameTime;
         while(clock() < newFrameTime && m_isRunning){
             for (int z = 0; z < 8; z++)
             {
@@ -163,6 +164,7 @@ void LEDCube::start()
                 tlc->send(tlc_pattern[f][(z + 1) % 8]);
             }
         }
+        newFrameTime += frameTime;
         f = (f+1)%numberFrames;
     }
 }
@@ -284,97 +286,6 @@ void LEDCube::setData(int t, uint8_t ****matrice)
                 *(tlc_octet -= TLC_NEXT_COLOR - 2) = (b1 & 0b00001111) << 4;
                 *(--tlc_octet) = (b1 & 0b11110000) >> 4;
                 *(--tlc_octet) = b2;
-
-                // Exceptions (pb de cablages)
-                /*bool overrideRed1 = false;
-                bool overrideGreen1 = false;
-                bool overrideBlue1 = false;
-                bool overrideRed2 = false;
-                bool overrideGreen2 = false;
-                bool overrideBlue2 = false;
-                if (x == 0 && y == 2)
-                {
-                    // rouge affiche rien...
-                    // overrideRed1 = true;
-                }
-                else if (x == 6 && y == 2)
-                {
-                    // Vert affiche rien... (faux contact dans les fils)
-                    // overrideGreen1 = true;
-                }
-                else if (x == 2 && y == 4)
-                {
-                    // Rouge affiche rien... (maix un rouge clignote comme le 6,2 vert)
-                    //colors[102] = r; // Valeur pour (6,5)
-                    overrideRed1 = true;
-                    // Rouge affiche rien...
-                    //colors[103] = r; // Valeur pour (7,5)
-                    overrideRed2 = true;
-                }
-                else if (x == 6 && y == 4)
-                {
-                    // Vert affiche rien... mais un vert clignote en (5,4)
-                    overrideGreen1 = true;
-                    // Vert affiche rien... mais un vert clignote en (4,4)
-                    overrideGreen2 = true;
-                }
-                else if (x == 4 && y == 5)
-                {
-                    // Rouge affiche rien...
-                    //colors[96] = r; // Valeur pour (0,4)
-                    overrideRed1 = true;
-                    // Rouge affiche rien...
-                    //colors[97] = r; // Valeur pour (1,4)
-                    overrideRed2 = true;
-                }
-                else if (x == 6 && y == 5)
-                {
-                    // Rouge affiche le rouge en (2,4)
-                    overrideRed1 = true;
-                    // Rouge affiche le rouge en (3,4)
-                    overrideRed2 = true;
-                }
-                else if (x == 2 && y == 6)
-                {
-                    // Rouge affiche rien
-                    //overrideRed2 = true;
-                }
-
-                tlc_octet = &tlc_layer[iSplitR];
-                if (overrideRed1)
-                    --tlc_octet;
-                else
-                {
-                    *(tlc_octet) = (r1 & 0b00001111) << 4;
-                    *(--tlc_octet) = (r1 & 0b11110000) >> 4;
-                }
-                if (overrideRed2)
-                    --tlc_octet;
-                else
-                    *(--tlc_octet) = r2;
-                if (overrideGreen1)
-                    tlc_octet -= TLC_NEXT_COLOR - 1;
-                else
-                {
-                    *(tlc_octet -= TLC_NEXT_COLOR - 2) = (g1 & 0b00001111) << 4;
-                    *(--tlc_octet) = (g1 & 0b11110000) >> 4;
-                }
-                if (overrideGreen2)
-                    --tlc_octet;
-                else
-                    *(--tlc_octet) = g2;
-                if (overrideBlue1)
-                    tlc_octet -= TLC_NEXT_COLOR - 1;
-                else
-                {
-                    *(tlc_octet -= TLC_NEXT_COLOR - 2) = (b1 & 0b00001111) << 4;
-                    *(--tlc_octet) = (b1 & 0b11110000) >> 4;
-                }
-                if (overrideBlue2)
-                    --tlc_octet;
-                else
-                    *(--tlc_octet) = b2;
-                    */
 
                 /**
                  * Exemple pour une couleur :
