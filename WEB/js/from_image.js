@@ -2,6 +2,10 @@
  * @type {Map<File,Image8x8>}
  */
 var images = new Map();
+/**
+ * @type {Image8x8[]}
+ */
+var images8x8 = [];
 
 /**
  * bytesToUint32 converts the given bytes from the "start" to "count" to an unsigned 32 bit integer.
@@ -171,7 +175,7 @@ function BlobToImageDataConvertor(imageFileBlob) {
 }
 
 async function sendMatrice(options) {
-	var images8x8 = Array.from(images.values());
+	images8x8 = Array.from(images.values());
 
 	console.log('Images :', images8x8);
 
@@ -195,9 +199,8 @@ async function sendMatrice(options) {
 			return frame;
 		});
 	} else if (fill_type == 'fill_with_formule') {
-		const fill_formule = document.querySelector('#fill_formule').value;
 		try {
-			frames = generateFramesWithFormule(fill_formule, images8x8);
+			frames = generateFramesWithFormule();
 		} catch (error) {
 			alert(error);
 			console.error(error);
@@ -291,37 +294,37 @@ function loadImages() {
 	reader.readAsArrayBuffer(this.files[0]);
 }
 
-function updateButtonSubmit() {
-	var canSubmit = false;
-	const has_image = images.size > 0;
-	const fill_type = Array.from(document.getElementsByName('fill_type')).filter(r => r.checked)[0].value;
-	const config_formule = document.querySelector('#config_formule');
-	const fill_formule = document.querySelector('#fill_formule');
-	const fill_formule_require_img = fill_formule.value.includes('img');
-	const fill_tmax = document.querySelector('#fill_tmax');
+var formuleReady = false;
+var formuleNeedImage = false;
 
-	if (has_image) {
-		canSubmit = true;
-	} else {
-		if (fill_type == 'fill_with_formule' && !fill_formule_require_img) {
-			canSubmit = true;
+function updateButtonSubmit() {
+	var canSubmit;
+	const imagesLoaded = images.size > 0;
+	const fillType = Array.from(document.getElementsByName('fill_type')).filter(r => r.checked)[0].value;
+
+	if (fillType === 'fill_with_formule') {
+		allowFunctionInput(true);
+		if (formuleReady) {
+			if (formuleNeedImage)
+				canSubmit = imagesLoaded;
+			else
+				canSubmit = true;
 		}
+		else {
+			canSubmit = false;
+		}
+
 	}
+	else {
+		allowFunctionInput(false);
+		canSubmit = imagesLoaded;
+	}
+
 	const submit = document.querySelector('#send_pattern');
 	if (canSubmit) {
 		submit.removeAttribute('disabled');
 	} else {
 		submit.setAttribute('disabled', '');
-	}
-
-	if (fill_type === 'fill_with_formule') {
-		config_formule.removeAttribute('disabled');
-		fill_formule.removeAttribute('disabled');
-		fill_tmax.removeAttribute('disabled');
-	} else {
-		config_formule.setAttribute('disabled', '');
-		fill_formule.setAttribute('disabled', '');
-		fill_tmax.setAttribute('disabled', '');
 	}
 }
 
@@ -338,87 +341,302 @@ function onFillControlChanged() {
 	updateButtonSubmit();
 }
 
-function onFillFormuleChanged() {
+function allowFunctionInput(enabled) {
+	const config_formule = document.querySelector('#config_formule');
+	const fill_tmax = document.querySelector('#fill_tmax');
+
+	if (enabled) {
+		config_formule.removeAttribute('disabled');
+		formule_input.removeAttribute('disabled');
+		fill_tmax.removeAttribute('disabled');
+	}
+	else {
+		config_formule.setAttribute('disabled', '');
+		formule_input.setAttribute('disabled', '');
+		fill_tmax.setAttribute('disabled', '');
+	}
+}
+
+/**
+ * @type {HTMLTextAreaElement}
+ */
+var formule_input;
+/**
+ * @type {HTMLDivElement}
+ */
+var fill_formule;
+
+function onFormuleChanged() {
+	const formule = getFormule();
+	var systeme;
+	var error;
+	formuleNeedImage = false;
+	fill_formule.innerHTML = '';
+
+	try {
+		systeme = new JigMath.System(formule);
+		formuleReady = true;
+	}
+	catch (err) {
+		formuleReady = false;
+		if (err.constructor === JigMath.EquaError) {
+			systeme = err.system;
+			error = err;
+		}
+		else {
+			console.warn('Formule error', err, err.system);
+			fill_formule.appendChild(createSpanForItem(err.message || err));
+			updateButtonSubmit();
+			return;
+		}
+	}
+
+	if (formulePrefix) {
+		const spanPrefix = createSpanForItem(formulePrefix);
+		spanPrefix.removeAttribute('JigMath');
+		fill_formule.appendChild(spanPrefix);
+	}
+	fill_formule.appendChild(createSpanForItem(systeme));
+	if (formule.endsWith('\n')) fill_formule.appendChild(createSpanForItem(' '));
+	if (error?.item) {
+		var errorItem;
+		if (error.data?.blobEnd) {
+			const blobEndIndex = error.data.blobEnd.iS;
+			const childs = Array.from(error.item?.span?.children || []);
+			errorItem = childs[blobEndIndex];
+		}
+		if (!errorItem) {
+			errorItem = error.item?.span;
+		}
+		errorItem?.classList.add('equa_error');
+	}
+
+	onFormuleCursorMoved();
 	updateButtonSubmit();
 }
 
-function replaceProperty(formule, property, value) {
-	return formule.replaceAll(new RegExp(`(?<=(^|\\W))${property}(?=(\\W|$))`, 'gi'), value);
+/**
+ * @param {Item} item
+ */
+function createSpanForItem(item) {
+	const span = document.createElement('span');
+	if (typeof item === 'string') {
+		fillSpanWithText(span, item);
+		if (item.match(/^\s*$/)) {
+			span.setAttribute('JigMath', 'spaces');
+		}
+		else {
+			span.setAttribute('JigMath', 'string');
+		}
+		if (item === ')' || item === '(') {
+			span.classList.add('equa_error');
+		}
+	}
+	else {
+		item.span = span;
+		span.item = item;
+		span.setAttribute('JigMath', item.constructor.name);
+		const subItems = item.getSubItems();
+		if (subItems) {
+			for (const subItem of subItems) {
+				span.appendChild(createSpanForItem(subItem));
+			}
+		}
+		else {
+			fillSpanWithText(span, item.getOriginal());
+		}
+		applyEquaDecoration(item, span);
+	}
+	return span;
+}
+
+function fillSpanWithText(span, text) {
+	if (text.includes('\n')) {
+		var spanCount = 0;
+		for (const s of text.split('\n')) {
+			if (spanCount) span.appendChild(document.createElement('br'));
+			const subSpan = document.createElement('span');
+			subSpan.innerText = s;
+			span.appendChild(subSpan);
+			spanCount++;
+		}
+	}
+	else {
+		span.innerText = text;
+	}
 }
 
 /**
- *
- * @param {BigInt} value 
- * @param {BigInt} max 
+ * Colors the equation
+ * @param {Item} item
+ * @param {HTMLSpanElement} span
  */
- async function setSplashScreenProgressBarValue(value,max){
-	document.getElementById("send_progress").getElementsByTagName("p")[0].innerHTML = value + "/" + max;
-	document.getElementById("send_progress").getElementsByTagName("div")[0].getElementsByTagName("span")[0].style.width = 100*value/max + "%";
+function applyEquaDecoration(item, span) {
+	if (item.constructor === JigMath.EquaVariable) {
+		if (!['x', 'y', 'z', 't'].includes(item.name)) {
+			span.classList.add('equa_warning');
+			formuleReady = false;
+		}
+	}
+	else if (item.constructor === JigMath.EquaFunction) {
+		if (!item.function) {
+			span.classList.add('equa_warning');
+			formuleReady = false;
+		}
+		if (item.function === getPixelImgs)
+			formuleNeedImage = true;
+	}
+}
+
+function onFormuleCursorMoved() {
+	const cursorIndexStart = formule_input.selectionStart;
+	const cursorIndexEnd = formule_input.selectionEnd;
+
+	if (cursorIndexStart !== cursorIndexEnd) {
+		highlightBlob(null);
+		return;
+	}
+
+	const cursorIndex = cursorIndexStart;
+	const selectedItemBefore = getEquaItemAtOriginalIndex(fill_formule, cursorIndex - 1);
+	const selectedItemAfter = getEquaItemAtOriginalIndex(fill_formule, cursorIndex);
+
+	var blobHightlight;
+	if (selectedItemBefore) {
+		blobHightlight = getFirstBlobParent(selectedItemBefore);
+	}
+	if (selectedItemAfter && (!blobHightlight || selectedItemAfter.getAttribute('JigMath') === 'EquaBlobLimit')) {
+		blobHightlight = getFirstBlobParent(selectedItemAfter);
+	}
+
+	highlightBlob(blobHightlight);
 }
 
 /**
- * @param {string} formule
- * @param {Image8x8[]} imgs
+ * @param {HTMLSpanElement} span
+ * @param {number} index
+ * @param {number} originalOffset
+ * @return {HTMLElement}
  */
-function generateFramesWithFormule(formule, imgs) {
+function getEquaItemAtOriginalIndex(span, index, originalOffset = 0) {
+	/**
+	 * @type {HTMLSpanElement[]}
+	 */
+	const subItems = span.children && Array.from(span.children);
+	if (!subItems) return span;
+
+	for (const subItem of subItems) {
+		if (subItem.constructor !== HTMLSpanElement)
+			continue;
+		const original = subItem.innerText;
+		const originalLength = original.length;
+		if (originalOffset + originalLength > index)
+			return getEquaItemAtOriginalIndex(subItem, index, originalOffset);
+		originalOffset += originalLength;
+	}
+	return span;
+}
+
+/** @param {HTMLSpanElement} span */
+function getFirstBlobParent(span) {
+	while (span && span.getAttribute('JigMath') !== 'EquaBlob') {
+		span = span.parentElement;
+	}
+	return span;
+}
+
+/** @type {HTMLSpanElement} */
+var previousBlobHighlighed;
+/** @param {HTMLSpanElement} blob */
+function highlightBlob(blob) {
+	if (blob === previousBlobHighlighed) return;
+	if (previousBlobHighlighed) {
+		previousBlobHighlighed.removeAttribute('selected');
+	}
+	if (blob) {
+		blob.setAttribute('selected', '');
+		previousBlobHighlighed = blob;
+	}
+	else {
+		previousBlobHighlighed = undefined;
+	}
+}
+
+function getTMax(imgCount) {
 	const fill_tmax = document.querySelector('#fill_tmax');
 	var tMax = parseInt(fill_tmax.value);
-	if (isNaN(tMax)) tMax = imgs.length;
+	if (isNaN(tMax)) return imgCount;
+	return tMax;
+}
+
+function getPixelImgs(xImg, yImg, tImg) {
+	if (tImg < 0 || images8x8.length <= tImg) {
+		throw new JigMath.EquaError(
+			`Vous avez dépassé le nombre d'images disponibles (${images8x8.length}) avec la formule (t=${tImg}).\n` +
+			`Essayez avec '0' dans l'expression 'img(y,z,0)'.\n` +
+			`Position: img(${xImg}, ${yImg}, ${tImg})`, this, { xImg, yImg, tImg });
+	}
+	if (xImg < 0 || 8 <= xImg || yImg < 0 || 8 <= yImg) return 0;
+	return images8x8[tImg].getPixel(xImg, yImg);
+}
+
+function fillFrameWithFormule(systeme, t) {
+	var frame = generateFrame();
+	systeme.setVariable('t', t);
+	for (let z = 0; z < 8; z++) {
+		systeme.setVariable('z', z);
+		for (let y = 0; y < 8; y++) {
+			systeme.setVariable('y', y);
+			for (let x = 0; x < 8; x++) {
+				systeme.setVariable('x', x);
+
+				var color = systeme.getValue();
+				if (isNaN(color) || typeof color !== 'number') {
+					console.log('Equation non valide', { x, y, z, t, color, systeme });
+					throw new Error(`L'équation n'est pas valide : ${color}`);
+				}
+				frame[x][y][z] = color;
+			}
+		}
+	}
+	return frame;
+}
+
+var formulePrefix = '';
+function getFormule() {
+	/**
+	 * @type {string}
+	 */
+	var formule = formule_input.value;
+	formulePrefix = formule.match(/^f\([\w,]+\)\s*=\s*/)?.[0] || '';
+	if (formulePrefix)
+		formule = formule.replace(formulePrefix, '');
+	return formule;
+}
+
+function generateFramesWithFormule() {
+	const tMax = getTMax(images8x8.length);
 
 	/** @type {number[][][][]} */
 	var frames = new Array(tMax);
 
-	formule = formule.replace(/^f\([\w,]+\)=/, '');
+	const formule = getFormule();
 
-	const formuleS = MATH.parseMath(formule);
+	var startEqua = Date.now();
+	const systeme = JigMath.getSystem(formule);
+	var dureeEqua = Date.now() - startEqua;
+	console.log(`Système généré en ${dureeEqua} ms`, systeme);
+
+	const start = Date.now();
+	var deltaLog = 0;
 	for (let t = 0; t < tMax; t++) {
-		frames[t] = generateFrame();
-		var formuleS_T = MATH.parseMath(replaceProperty(formuleS, 't', t));
-		for (let z = 0; z < 8; z++) {
-			var formuleS_TZ = MATH.parseMath(replaceProperty(formuleS_T, 'z', z));
-			for (let y = 0; y < 8; y++) {
-				var formuleS_TZY = MATH.parseMath(replaceProperty(formuleS_TZ, 'y', y));
-				for (let x = 0; x < 8; x++) {
-					var formuleS_TZYX = MATH.parseMath(replaceProperty(formuleS_TZY, 'x', x));
-					if (z == 4 && y == 4 && x == 0) {
-						console.log(`t=${t}`, { formuleS, formuleS_T, formuleS_TZ, formuleS_TZY, formuleS_TZYX });
-					}
-					var equaColor = formuleS_TZYX;
-					var matchesImg = Array.from(equaColor.matchAll(/img\([^\)]*\)/gi));
-					matchesImg.forEach(match => {
-						const imgFunc = match[0];
-						var args = Array.from(imgFunc.matchAll(/(?<=[\(,])[^,]+(?=[,\)])/gi));
-						var imgArgs = args.map(arg => MATH.parseMath(arg[0]));
-						const tImg = parseInt(imgArgs[2]) || 0;
-						const yImg = parseInt(imgArgs[1]) || 0;
-						const xImg = parseInt(imgArgs[0]) || 0;
-						var colorImg;
-						if (tImg < 0 || imgs.length <= tImg) {
-							throw new Error(
-								`Vous avez dépassé le nombre d'images disponibles (${imgs.length}) avec la formule (t=${tImg}).\n` +
-									`Essayez avec '0' dans l'expression 'img(y,z,0)'.\n` +
-									`Formule: ${formuleS_TZYX}`
-							);
-						}
-						if (0 <= xImg && xImg < 8 && 0 <= yImg && yImg < 8) {
-							colorImg = imgs[tImg].getPixel(xImg, yImg);
-						} else {
-							colorImg = 0;
-						}
-						equaColor = equaColor.replace(imgFunc, colorImg);
-					});
-
-					var equation = MATH.parseMath(equaColor);
-					var color = parseInt(equation);
-					if (isNaN(color) || equation.match(/[a-z\(\)&\|\*/]/i)) {
-						console.log(`t=${t} z=${z} y=${y} x=${x}`, { formuleS, formuleS_T, formuleS_TZ, formuleS_TZY, formuleS_TZYX });
-						throw new Error(`L'équation n'est pas valide : ${formuleS_TZYX} => ${equation} => ${color}`);
-					}
-					frames[t][x][y][z] = color;
-				}
-			}
+		frames[t] = fillFrameWithFormule(systeme, t);
+		if (Date.now() - deltaLog > 500) {
+			console.info(`Génération de la frame ${t}/${tMax}`);
+			deltaLog = Date.now();
 		}
 	}
+	console.info(`Frames générées en ${Date.now() - start} ms`);
 	return frames;
 }
 
@@ -459,6 +677,20 @@ window.addEventListener('load', () => {
 	});
 
 	document.getElementsByName('fill_type').forEach(element => element.addEventListener('input', onFillControlChanged));
+
+	JigMath.addCustomFunction('img', getPixelImgs);
+	JigMath.setLogLevel(1);
+
+	// Colored TextArea https://stackoverflow.com/a/56087599/12908345
+	formule_input = document.getElementById('formule_input');
+	fill_formule = document.querySelector("#formule_container #fill_formule");
+	formule_input.addEventListener("scroll", () => fill_formule.scrollTop = formule_input.scrollTop);
+	formule_input.addEventListener("input", onFormuleChanged);
+	formule_input.addEventListener("mousedown", () => setTimeout(onFormuleCursorMoved, 1));
+	formule_input.addEventListener("keydown", () => setTimeout(onFormuleCursorMoved, 1));
+
+	formule_input.value = "f(x,y,z,t) = (x==0) && img(y,z,t)";
+	onFormuleChanged();
 
 	updateButtonSubmit();
 });

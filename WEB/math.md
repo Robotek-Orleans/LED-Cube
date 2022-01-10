@@ -1,7 +1,9 @@
-# Math.js
+# JigMath.js
 
 Par Jérôme Lécuyer
-Pour @Jig0ll
+Pour @Jig0ll & @Robotek
+https://github.com/Jiogo18/JigMath
+Convertit une chaîne de caractère en système d'équations.
 
 ## Utilisation
 
@@ -24,8 +26,9 @@ La formule est recalculée pour chaque point (t,z,y,x) avec
 ## Conseils
 
 Ajoutez autant d'espaces que vous souhaitez, le résultat sera le même.
-Si les résultats vous semblent étranges ajoutez des parenthèses : `x / 3 * 2` => `(x / 3) * 2`.
-Le traitement est assez peu optimisé, moins il y a d'opérations autour des variables, plus le calcul sera rapide : `3*x/2` => `x*3/2`.
+Pour accélerer le traitement priorisez les valeurs constantes : `3*x/2` => `x*(3/2)`.
+Si une variable n'est pas définie la valeur retournée est une chaîne de caractère la plus simplifiée.
+Ajoutez des fonctions personaliées par le deuxième paramètre : `JigMath('f(x)', [{name: 'f', func: (x) => x+2}])`.
 La partie `f(x,y,z,t)=` n'est pas utile et peut être retirée.
 Par défaut tMax correspond au nombre d'images, mais vous pouvez le modifier en fonction de votre animation.
 La fonction img(x,y,f) autorise les points (x,y) invalides (retourne 0=éteint) mais f doit être compris entre 0 et le nombre d'images importées.
@@ -39,9 +42,10 @@ Si vous n'utilisez pas d'images vous n'avez qu'à entrer une formule sans la fon
 ### Spéciaux
 - Hexadécimal : `#nombre`, `0xnombre`
 - Binaire : `0bnombre`
-- Remplacer par 0 : `~~nombre~~`
 
 ### Fonctions mathématiques
+
+TOUTES les fonctions de `Math` (objet JavaScript) sont disponibles (sans préciser Math).
 | Nom                  | Description                                         |
 | -------------------- | --------------------------------------------------- |
 | max(a, b)            | Maximum entre a et b                                |
