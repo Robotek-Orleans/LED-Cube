@@ -43,7 +43,7 @@ redirect_user_if_is_not_log_in();
 			<div id="remplissage" class="flexRow">
 				<p>Type de remplissage</p>
 				<div class="flexRow">
-					<input type="radio" name="fill_type" value="fill_one_layer" id="fill_one_layer" checked>
+					<input type="radio" name="fill_type" value="fill_one_layer" id="fill_one_layer" >
 					<label for="fill_one_layer">Uniquement la première couche</label>
 				</div>
 				<div class="flexRow">
@@ -51,7 +51,7 @@ redirect_user_if_is_not_log_in();
 					<label for="fill_extend">Prolonger sur toutes les couches</label>
 				</div>
 				<div class="flexRow">
-					<input type="radio" name="fill_type" value="fill_with_formule" id="fill_with_formule">
+					<input type="radio" name="fill_type" value="fill_with_formule" id="fill_with_formule" checked>
 					<label for="fill_with_formule">Utiliser une formule</label>
 				</div>
 			</div>
@@ -68,11 +68,15 @@ redirect_user_if_is_not_log_in();
 		<div class="contentviewer" id="config_formule" disabled>
 			<h1 class="title">Formule</h1>
 			<div class="flexRow">
-				<textarea class="mediummargin" name="fill_formule" id="fill_formule" title="f(x,y,z,t)=#FFFFFF
+				<div id="formule_container" class="mediummargin">
+					<div id="fill_formule" class="backdrop"></div>
+					<textarea id="formule_input" spellcheck="false" title="f(x,y,z,t)=#FFFFFF
 			x : profondeur
 			y : de gauche à droite
 			z : de haut en bas
-			t : temps ou index d'image" oninput="onFillFormuleChanged()">f(x,y,z,t)=(x==0) && img(y,z,t)</textarea>
+			t : temps ou index d'image"></textarea>
+				</div>
+
 				<div class="mediummargin">
 					<p>Temps maximum ou nombre d'images</p>
 					<input type="number" class="inputnumfixedwidth" min="1" value="1" name="fill_tmax" id="fill_tmax" title="tMax">
