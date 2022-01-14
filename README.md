@@ -69,6 +69,14 @@ Finally restart web server
 sudo systemctl restart apache2
 ```
 
+To auto start the LED-Cube, you need to add a line to /etc/rc.local :
+```sh
+sudo nano  /etc/rc.local
+```
+add at the last line BEFORE **exit 0** : 
+```sh
+sudo /var/www/html/LED-Cube/cpp/aleatoire.sh &
+```
 
 # Usage
 
