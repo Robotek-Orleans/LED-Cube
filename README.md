@@ -60,6 +60,13 @@ cd ../
 sudo make
 ```
 
+Change permissions to permit animation execution and animation edition
+
+```sh
+chmod 777 /var/www/html/LED-Cube/cpp/aleatoire.sh
+chmod -R 777 /var/www/html/LED-Cube/WEB/animations/
+```
+
 Change root directory of the web server
 ```sh
 sudo sed -i 's+/var/www/html+/var/www/html/LED-Cube/WEB+g' /etc/apache2/sites-enabled/000-default.conf
