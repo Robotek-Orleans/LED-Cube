@@ -10,6 +10,7 @@
 <html lang="fr">
 
 <head>
+    
     <link rel="apple-touch-icon" sizes="180x180" href="./favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="./favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="./favicon/favicon-16x16.png">
@@ -19,6 +20,7 @@
     <meta http-equiv="content-type" content="text/html;charset=utf-8" />
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <link rel="stylesheet" href="css/Main.css">
+    <script src="js/Request.js"></script>
     <style>
         div.buttons {
             display: flex;
@@ -55,9 +57,10 @@
         <button onclick="window.location.href = 'openfile.php'" class=" purple">Ouvrir une animation existante</button>
         <button onclick="window.location.href = 'edit.php'" class=" purple">Créer une animation</button>
         <button onclick="window.location.href = 'from_image.php'" class=" purple">Créer une animation à partir d'une image</button>
-        <button onclick="navigator.sendBeacon('random.php')" class=" purple">Animations aléatoires</button>
-        <button onclick="navigator.sendBeacon('execute.php')" class=" red">Arrêter l'animation</button>
+        <button onclick="playAnimationAleat()" class=" purple">Animations aléatoires</button>
+        <button onclick="stopAnnimation()" class=" red">Arrêter l'animation</button>
     </div>
+    <table id="contentnotifs"></table>
 </body>
 
 
