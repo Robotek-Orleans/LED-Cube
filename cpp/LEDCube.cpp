@@ -164,6 +164,7 @@ void LEDCube::start()
             }
         }
         newFrameTime += frameTime;
+        if(newFrameTime<0) newFrameTime += 2147483648;
         f = (f+1)%numberFrames;
     }
 }
