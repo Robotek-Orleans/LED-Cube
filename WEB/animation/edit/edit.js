@@ -380,7 +380,6 @@ export function toggle3DViewPlan(event) {
 }
 
 export function sendAnimation() {
-	ledCubeTools.animation.frameDuration = Number.parseInt(document.querySelector('#frameTime').value);
 	ledCubeTools.ledcubeWS.sendLedCubeWithNotification.animation.play_no_save(ledCubeTools.animation);
 }
 
@@ -398,7 +397,6 @@ function getWithoutExtension(filename) {
 }
 
 async function saveAnimationAndConfirmIfNeeded(fileName) {
-	ledCubeTools.animation.frameDuration = Number.parseInt(document.querySelector('#frameTime').value);
 	let answer = await ledCubeTools.ledcubeWS.sendLedCubeWithNotification.animation.save({ fileName, animation: ledCubeTools.animation });
 	if (!answer?.success) {
 		if (answer?.error === 'File already exists') {
@@ -439,6 +437,35 @@ export async function exportAnimation() {
 	a.href = url;
 	a.download = fileName + '.json.txt';
 	a.click();
+}
+
+export function changeFrameTime() {
+	const previousDuration = ledCubeTools.animation.frameDuration;
+	const newDuration = parseInt(document.getElementById("frameTime").value);
+	ledCubeTools.animation.frameDuration = newDuration;
+	if (previousDuration != newDuration) {
+		// Start the animation again (if it was playing)
+		const frameIndex = ledCubeTools.animation.currentFrameIndex;
+		if (ledCubeTools.cubeViewer.animInterval) {
+			ledCubeTools.cubeViewer.startAnim({ frameIndex });
+		}
+	}
+}
+
+export function playAnimationLocal() {
+	const playButton = document.getElementById("playAnimationLocal");
+	if (playButton.innerText === "Jouer en local") {
+		ledCubeTools.cubeViewer.startAnim();
+		playButton.innerText = "Arrêter l'animation en local";
+	}
+	else {
+		ledCubeTools.cubeViewer.stopAnim();
+		playButton.innerText = "Jouer en local";
+	}
+}
+
+export function stopAnimationLocal() {
+	ledCubeTools.cubeViewer.stopAnim();
 }
 
 document.addEventListener('keydown', (e) => {
@@ -512,6 +539,8 @@ export default {
 	saveAnimation,
 	saveAnimationWithoutExtension,
 	exportAnimation,
+	playAnimationLocal,
+	changeFrameTime,
 
 	ledCubeTools,
 	get copied2D() { return copied2D; },

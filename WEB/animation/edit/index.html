@@ -41,6 +41,7 @@
 		<div class="contentviewer">
 			<h1 class="title">Gestion du fichier</h1>
 			<input oninput="module.updateSaveButton()" id="fileName" class="mediummargin hugetopmargin" type="text" placeholder="Nom du fichier" value="">
+			<button class="mediummargin green" id="playAnimationLocal" onclick="module.playAnimationLocal()">Jouer en local</button>
 			<button class="mediummargin purple" id="playAnimation" onclick="module.sendAnimation()">Jouer sur le LEDCube</button>
 			<button class="mediummargin" id="saveButton" onclick="module.saveAnimation()" disabled>Enregistrer</button>
 			<button class="blue mediummargin" id="exportButton" onclick="module.exportAnimation()" disabled>Exporter</button>
@@ -54,7 +55,7 @@
 			</div>
 			<div class="flexRow">
 				<p>Temps d'une frame (en ms)</p>
-				<input id="frameTime" onchange="module.makeDirty()" min="1" max="9999" type="number" value="500">
+				<input id="frameTime" onkeyup="module.changeFrameTime()" min="1" max="9999" type="number" value="500">
 			</div>
 			<div class="flexRow">
 				<button onclick="module.addFrameBefore()">Ajouter une frame avant</button>

@@ -67,13 +67,13 @@ export class CubeViewer extends EventEmitter {
 	 * @param {{frameIndex: number}} options
 	 */
 	startAnim(options = {}) {
-		clearInterval(this.animInterval);
+		this.stopAnim();
 		onWindowResize();
 		const frameCount = this.animation.frames.length;
 		this.animation.currentFrameIndex = options.frameIndex ? Math.floor(options.frameIndex - Math.floor(options.frameIndex / frameCount) * frameCount) : 0;
 		if (frameCount > 1) {
 			this.animInterval = setInterval(() => {
-				if (!this.animation) return clearInterval(this.animInterval);
+				if (!this.animation) return this.stopAnim();
 				this.animation.nextFrame();
 				this.refresh();
 			}, this.animation.frameDuration);
@@ -84,6 +84,7 @@ export class CubeViewer extends EventEmitter {
 	}
 	stopAnim() {
 		clearInterval(this.animInterval);
+		this.animInterval = null;
 	}
 
 	////////////////////////
