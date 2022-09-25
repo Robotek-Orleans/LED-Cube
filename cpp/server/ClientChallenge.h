@@ -5,7 +5,9 @@
 #include <RapidJson/writer.h>
 #include <Mongoose/mongoose.h>
 #include <string>
-#include <Bcrypt.cpp/include/bcrypt.h> // hash password
+#define BCRYPT_FROM_BRCYPT_CPP 1
+#include <bcrypt.h> // hash password
+#undef BCRYPT_FROM_BRCYPT_CPP
 #include "JsonMessage.h"
 
 #ifndef BCRYPT_SHA384_ALG_HANDLE

@@ -7,3 +7,6 @@
 [submodule "cpp/include/zlib"]
 	path = cpp/include/zlib
 	url = https://github.com/madler/zlib/
+[submodule "cpp/include/Bcrypt.cpp"]
+	path = cpp/include/Bcrypt.cpp
+	url = https://github.com/hilch/Bcrypt.cpp

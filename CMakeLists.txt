@@ -22,8 +22,6 @@ set(SOURCE_FILES
 	cpp/server/JsonMessage.cpp
 	cpp/server/JsonReader.cpp
 	cpp/include/Mongoose/mongoose.c
-	cpp/include/Bcrypt.cpp/src/bcrypt.cpp
-	cpp/include/Bcrypt.cpp/src/blowfish.cpp
 	cpp/include/zip/base64.cpp
 	cpp/include/zip/gzip_cpp.cpp
 	cpp/include/zip/json-zip.cpp
@@ -54,7 +52,9 @@ else()
 	set(SOURCE_FILES ${SOURCE_FILES}
 		cpp/windows/Sender-w.cpp
 		cpp/windows/TLCSin-w.cpp
-		cpp/windows/ledcubewindow.cpp)
+		cpp/windows/ledcubewindow.cpp
+		cpp/include/Bcrypt.cpp/src/bcrypt.cpp
+		cpp/include/Bcrypt.cpp/src/blowfish.cpp)
 endif()
 
 # Add executable target with source files listed in SOURCE_FILES variable
@@ -82,7 +82,8 @@ else()
 endif(ZLIB_FOUND)
 
 if(WIN32)
-  target_link_libraries(${PROJECT_NAME} wsock32 ws2_32 gdi32)
+	target_link_libraries(${PROJECT_NAME} wsock32 ws2_32 gdi32 bcrypt)
 else()
-  target_link_libraries(${PROJECT_NAME} pthread)
+	add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/cpp/include/Bcrypt.cpp)
+	target_link_libraries(${PROJECT_NAME} pthread bcrypt)
 endif()
