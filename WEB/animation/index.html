@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="../favicon/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="../favicon/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="../favicon/favicon-16x16.png">
+	<link rel="manifest" href="../favicon/site.webmanifest">
+
+	<title>LEDCube</title>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<link rel="stylesheet" href="../common/css/Main.css">
+
+	<script>var webFolder = '../';</script>
+	<script src="../include/bcryptjs/dist/bcrypt.js"></script>
+	<script src="../include/zip/pako.js"></script>
+	<script src="../include/zip/base64.js"></script>
+
+	<script>var ledcube, ledcubeRequests;</script>
+	<script type="module">import { ledcubeWS, requests } from '../common/js/ws/main.js'; ledcube = ledcubeWS; ledcubeRequests = requests;</script>
+</head>
+
+<body>
+
+	<div class="header">
+		<h1><a href="../">LED CUBE</a></h1>
+		<div class="header-buttons">
+			<a id="login" class="button" href="../login"><button class="blue">Se connecter</button></a>
+			<a id="logout" class="button" href="../logout"><button class="blue">Se déconnecter</button></a>
+			<button class="stopButton red" onclick="ledcubeRequests.stopAnimation()"></button>
+		</div>
+	</div>
+
+	<div class=buttons>
+		<a href="open" class="button"><button class="purple">Ouvrir une animation existante</button></a>
+		<a href="edit" class="button"><button class="purple">Créer une animation</button></a>
+		<a href="from_image" class="button"><button class="purple">Créer une animation à partir d'une image</button></a>
+		<!--
+			playAnimationAleat(filtre) Lance les animations aléatoires sur le LEDCube en fonction du filtre.
+			Le filtre est un regex, ex : playAnimationAleat("robotek_.*") lance toutes les animations qui commencent par "robotek_"
+		-->
+		<button onclick="ledcubeRequests.playAnimationAleat()" class="purple">Animations aléatoires</button>
+		<button class="blue" onclick="importAnimation()"><input type="file" style="display: none;" id="fileInput" accept=".json.txt,.ledcube"></input>Importer une
+			animation</button>
+		<button onclick="ledcubeRequests.stopAnimation()" class="red">Arrêter l'animation</button>
+	</div>
+	<table id="contentnotifs"></table>
+
+	<script>
+		const fileInput = document.getElementById("fileInput");
+		fileInput.onchange = () => {
+			// récupérer le contenu du fichier
+			let file = fileInput.files[0];
+			let reader = new FileReader();
+			reader.readAsText(file, "UTF-8");
+			reader.onload = async function (evt) {
+				let data = evt.target.result;
+
+				// decode the animation
+				let animation = ledcube.decodeAnimation(data);
+
+				// enregistrer en local
+				let key = ledcube.storeAnimationLocal(animation);
+
+				// redirect to the edit page
+				ledcube.editAnimationLocal(key);
+			}
+		}
+
+		async function importAnimation() {
+			// ovrir une boite de dialogue pour importer un fichier .json.txt depuis l'ordinateur du client
+			fileInput.click();
+		}
+	</script>
+</body>
+
+
+</html>

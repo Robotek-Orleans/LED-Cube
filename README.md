@@ -11,6 +11,7 @@ The project is in different communicating parts:
 - /cpp : executes and run animations
     - converts the animation in a format readable for LED Drivers (TLC5940)
     - runs the animation
+    - runs the server
 
 You can find PCBs and schematics in CAO and PCBs
 
@@ -89,29 +90,29 @@ sudo /var/www/html/LED-Cube/cpp/aleatoire.sh &
 
 ## HCI Controls
 
-| Function                          | Key                   |
-| --------------------------------- | --------------------- |
-| Select all LEDs between 2 points  | <kbd>Shift</kbd>      |
-| Select more than 1 LED            | <kbd>Control</kbd>    |
-| Previous layer                    | <kbd>ArrowDown</kbd>  |
-| Next Layer                        | <kbd>ArrowUp</kbd>    |
-| Switch axis                       | <kbd>Tab</kbd>        |
-| Previous frame                    | <kbd>ArrowLeft</kbd>  |
-| Next frame                        | <kbd>ArrowRight</kbd> |
+| Function                         | Key                   |
+| -------------------------------- | --------------------- |
+| Select all LEDs between 2 points | <kbd>Shift</kbd>      |
+| Select more than 1 LED           | <kbd>Control</kbd>    |
+| Previous layer                   | <kbd>ArrowDown</kbd>  |
+| Next Layer                       | <kbd>ArrowUp</kbd>    |
+| Switch axis                      | <kbd>Tab</kbd>        |
+| Previous frame                   | <kbd>ArrowLeft</kbd>  |
+| Next frame                       | <kbd>ArrowRight</kbd> |
 
 ## HCI usage
 
-All HCI is divded in 3 different pages:
- - from_image.php
- - edit.php
- - openfile.php
+All HCI is divided in 3 different pages:
+ - animation/from_image
+ - animation/edit
+ - animation/open
 
-from_image.php as for role to create a new animation by uploading a picture. It is composed of 3 parts: 
+from_image has for role to create a new animation by uploading a picture. It is composed of 3 parts: 
  - picture manager to upload your picture to the LED-Cube
  - 2D viewer to see the uploaded image
  - formula to change some parameters on the image (more information about formulas at https://github.com/Robotek-Orleans/LED-Cube/blob/main/WEB/math.md)
 
-edit.php as for role to create from scratch or edit an existing animation. It is composed of 6 parts:
+edit has for role to create from scratch or edit an existing animation. It is composed of 6 parts:
  - file manager window which the following elements:
     - a text input with the animation-name
     - a button to send the animation to execute.php to be saved and played to the LED-Cube
@@ -135,3 +136,46 @@ edit.php as for role to create from scratch or edit an existing animation. It is
     - a colour picker to select a colour more precisely
     - 2 buttons to copy and paste a 2D matrix
 
+
+## Direction
+
+x : front-(back)
+
+y : right-(left)
+
+z : top-(bottom)
+
+## Compile
+
+The project is available on Linux and Windows.
+
+A ledcube.env file is created where you start the server. You can use it to set the configurations of the project.
+
+### Linux
+
+Create a folder "build" and initialize cmake :
+```sh
+mkdir build
+cd build
+cmake ..
+cd ..
+```
+
+If you don't have the bcm2835 library on your Linux, you can initialize cmake with NOBCM2835 set to 1: `cmake -DNOBCM2835=1 ..`
+(You won't be able to see the cube but you can still compile and run the server.)
+
+Compile the project : `cmake --build ./build` (or use the cmake extension of VSCode)
+
+### Windows
+
+On Windows, a small window will appear to show the cube.
+
+Create a folder "build" and initialize cmake :
+```sh
+mkdir build
+cd build
+cmake -G "MingGW Makefiles" ..
+cd ..
+```
+
+Compile the project : `cmake --build ./build` (or use the cmake extension of VSCode)

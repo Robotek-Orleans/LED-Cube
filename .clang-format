@@ -1,0 +1,43 @@
+# https://clang.llvm.org/docs/ClangFormatStyleOptions.html
+# https://stackoverflow.com/a/55499182/12908345
+# https://github.com/qt/qt5/blob/dev/_clang-format
+# Based on Qt, but with Tab and newer style (thx Microsoft!)
+# By Jiogo18
+# 08/08/2022
+
+BasedOnStyle: Microsoft
+
+Standard: Latest # Cpp20
+
+IndentWidth: 4
+UseTab: true
+ColumnLimit: 0
+AccessModifierOffset: -4
+NamespaceIndentation: All
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterClass: true
+  AfterControlStatement: false
+  AfterEnum: false
+  AfterExternBlock: false
+  AfterFunction: false
+  AfterNamespace: false
+  AfterObjCDeclaration: false
+  AfterStruct: true
+  AfterUnion: false
+  BeforeCatch: false
+  BeforeElse: false
+  IndentBraces: false
+  SplitEmptyFunction: false
+  SplitEmptyRecord: true
+  SplitEmptyNamespace: true
+
+SortIncludes: false
+SpaceAfterTemplateKeyword: false
+SpacesInContainerLiterals: false
+BreakBeforeBinaryOperators: NonAssignment
+
+AllowShortIfStatementsOnASingleLine: WithoutElse
+AlwaysBreakTemplateDeclarations: Yes
+
+AllowShortFunctionsOnASingleLine: InlineOnly

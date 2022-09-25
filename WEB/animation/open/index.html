@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+	<link rel="apple-touch-icon" sizes="180x180" href="../../favicon/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="../../favicon/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="../../favicon/favicon-16x16.png">
+	<link rel="manifest" href="../../favicon/site.webmanifest">
+
+	<title>LEDCube : ouvrir</title>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<link rel="stylesheet" href="../../common/css/Main.css">
+
+	<script>var webFolder = '../../';</script>
+	<script src="../../include/bcryptjs/dist/bcrypt.js"></script>
+	<script src="../../include/zip/pako.js"></script>
+	<script src="../../include/zip/base64.js"></script>
+
+	<script src="../../common/js/viewer/three.min.js"></script>
+	<script src="../../common/js/viewer/Detector.js"></script>
+	<script src="../../common/js/viewer/OrbitControls.js"></script>
+	<script src="../../common/js/viewer/Viewerscript.js"></script>
+	<script>var module = {};</script>
+	<script type="module">import open_animation from './open_animations.js'; module = open_animation;</script>
+</head>
+
+<body>
+
+	<div class="header">
+		<h1><a href="../../">LED CUBE</a></h1>
+		<div class="header-buttons">
+			<a id="login" class="button" href="../../login"><button class="blue">Se connecter</button></a>
+			<a id="logout" class="button" href="../../logout"><button class="blue">Se déconnecter</button></a>
+			<button class="stopButton red" onclick="module.ledCubeTools.stopAnimation()"></button>
+		</div>
+	</div>
+
+	<div class="content mainContentAnim">
+
+		<div id="animations" class="contentviewer">
+			<!-- Load animations -->
+		</div>
+
+	</div>
+
+	<div id="modal" class="contentviewer modal-content">
+		<button onclick="module.stopAnimationLocal()" class="close-modal">X</button>
+		<div style="top: 0px;height: 100%;" id="cube_container"></div>
+	</div>
+	<table id="contentnotifs"></table>
+</body>
+
+
+</html>

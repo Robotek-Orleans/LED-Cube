@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+	<link rel="apple-touch-icon" sizes="180x180" href="../../favicon/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="../../favicon/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="../../favicon/favicon-16x16.png">
+	<link rel="manifest" href="../../favicon/site.webmanifest">
+
+	<title>LEDCube : édition</title>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<link rel="stylesheet" href="../../common/css/Main.css">
+
+	<script>var webFolder = '../../';</script>
+	<script src="../../include/bcryptjs/dist/bcrypt.js"></script>
+	<script src="../../include/zip/pako.js"></script>
+	<script src="../../include/zip/base64.js"></script>
+
+	<script src="../../common/js/viewer/three.min.js"></script>
+	<script src="../../common/js/viewer/Detector.js"></script>
+	<script src="../../common/js/viewer/OrbitControls.js"></script>
+	<script src="../../common/js/viewer/Viewerscript.js"></script>
+	<script type="text/javascript">var module = {};</script>
+	<script type="module">import edit_import from './edit.js'; module = edit_import;</script>
+</head>
+
+<body>
+
+	<div class="header">
+		<h1><a href="../../">LED CUBE</a></h1>
+		<div class="header-buttons">
+			<a id="login" class="button" href="../../login"><button class="blue">Se connecter</button></a>
+			<a id="logout" class="button" href="../../logout"><button class="blue">Se déconnecter</button></a>
+			<button class="stopButton red" onclick="module.ledCubeTools.stopAnimation()"></button>
+		</div>
+	</div>
+	<div class="content">
+
+
+		<div class="contentviewer">
+			<h1 class="title">Gestion du fichier</h1>
+			<input oninput="module.updateSaveButton()" id="fileName" class="mediummargin hugetopmargin" type="text" placeholder="Nom du fichier" value="">
+			<button class="mediummargin purple" id="playAnimation" onclick="module.sendAnimation()">Jouer sur le LEDCube</button>
+			<button class="mediummargin" id="saveButton" onclick="module.saveAnimation()" disabled>Enregistrer</button>
+			<button class="blue mediummargin" id="exportButton" onclick="module.exportAnimation()" disabled>Exporter</button>
+		</div>
+
+		<div class="contentviewer fixedwidth">
+			<h1 class="title">Gestion des frames</h1>
+			<div class="flexRow">
+				<p>Nombre de frames:</p>
+				<p id="frameNumber">1</p>
+			</div>
+			<div class="flexRow">
+				<p>Temps d'une frame (en ms)</p>
+				<input id="frameTime" onchange="module.makeDirty()" min="1" max="9999" type="number" value="500">
+			</div>
+			<div class="flexRow">
+				<button onclick="module.addFrameBefore()">Ajouter une frame avant</button>
+				<input min="1" max="1" id="numframebefore" value="1" type="number">
+			</div>
+			<div class="flexRow">
+				<button onclick="module.addFrameAfter()">Ajouter une frame après</button>
+				<input min="1" max="1" id="numframeafter" value="1" type="number">
+			</div>
+			<p>Aller à la frame</p>
+			<div class="flexRow">
+
+				<button onclick="module.previousFrame()">&lt;</button>
+				<input id="frameRange" oninput="module.goToFrame()" type="range" min="1" max="1" value="1">
+				<button onclick="module.nextFrame()">&gt;</button>
+				<input class="inputnumfixedwidth" id="frameInput" type="number" oninput="document.getElementById('frameRange').value = Math.max(this.value, 1); module.gotoframe()"
+					min="1" max="1" value="1">
+			</div>
+			<div class="flexRow">
+				<button class="mediumtopmargin red" onclick="module.removeFrame()">Supprimer la frame</button>
+				<button class="mediumtopmargin purple" onclick="module.copy3D()">Copier</button>
+				<button class="mediumtopmargin purple" onclick="module.paste3D()" id="paste3D" disabled>Coller</button>
+			</div>
+		</div>
+		<div class="contentviewer">
+			<h1 class="title">Viewer 3D</h1>
+			<div id="cube_container"></div>
+			<button id="cube_container_axis" class="grey" onclick="module.ledCubeTools.cubeViewer.toggleAxis()">Axes</button>
+		</div>
+
+		<div class="contentviewer fixedwidth">
+			<h1 class="title">Choix de la matrice 2D</h1>
+			<p class="hugetopmargin">Axe:</p>
+			<div class="flexRow">
+				<input type="radio" id="X" name="axe" value="X" checked><label for="X">X</label>
+				<input type="radio" id="Y" name="axe" value="Y"> <label for="Y">Y</label>
+				<input type="radio" id="Z" name="axe" value="Z"><label for="Z">Z</label>
+			</div>
+			<p calss="hugetopmargin">Plan:</p>
+			<input oninput="module.selectPlan()" id="planNumber" class="legendedRange" list="tickmarks" type="range" min="1" max="8" step="1" value="1">
+			<datalist id="tickmarks">
+				<option value="1" label="1"></option>
+				<option value="2" label="2"></option>
+				<option value="3" label="3"></option>
+				<option value="4" label="4"></option>
+				<option value="5" label="5"></option>
+				<option value="6" label="6"></option>
+				<option value="7" label="7"></option>
+				<option value="8" label="8"></option>
+
+			</datalist>
+			<button id="toggleViewPlan" class="hugemargin" onclick="module.toggle3DViewPlan(event)">Afficher le marquage du plan</button>
+		</div>
+
+		<div class="contentviewer fixedwidth black">
+			<h1 class='title'>Matrice 2D</h1>
+			<div id="matrix">
+
+			</div>
+		</div>
+
+		<div class="contentviewer fixedwidth" id="color_picker">
+			<h1 class="title">Choix de la couleur</h1>
+			<div class="flexRow hugetopmargin">
+				<button id="redButton" class="colorButton grey">Rouge</button>
+				<button id="greenButton" class="colorButton grey">Vert</button>
+				<button id="blueButton" class="colorButton grey">Bleu</button>
+			</div>
+			<input class="hugemargin" type="color" id="pickColor">
+			<div class="flexRow">
+				<button class="mediummargin purple" onclick="module.copy2D()">Copier la matrice</button>
+				<button class="mediummargin purple" id="paste2D" onclick="module.paste2D()" disabled>Coller la matrice</button>
+			</div>
+		</div>
+	</div>
+	<table id="contentnotifs"></table>
+</body>
+
+
+</html>

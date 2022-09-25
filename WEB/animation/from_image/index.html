@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+	<link rel="apple-touch-icon" sizes="180x180" href="../../favicon/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="../../favicon/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="../../favicon/favicon-16x16.png">
+	<link rel="manifest" href="../../favicon/site.webmanifest">
+
+	<title>LEDCube : image / fonction</title>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<link rel="stylesheet" href="../../common/css/Main.css">
+	<link rel='stylesheet' href='../../common/css/from_image.css'>
+
+	<script>var webFolder = '../../';</script>
+	<script src="../../include/bcryptjs/dist/bcrypt.js"></script>
+	<script src="../../include/zip/pako.js"></script>
+	<script src="../../include/zip/base64.js"></script>
+
+	<script src="../../include/JigMath/jigmath.js"></script>
+	<script>var module;</script>
+	<script type="module">import module_import from './from_image.js'; module = module_import;</script>
+</head>
+
+<body>
+
+	<div class="header">
+		<h1><a href="../../">LED CUBE</a></h1>
+		<div class="header-buttons">
+			<a id="login" class="button" href="../../login"><button class="blue">Se connecter</button></a>
+			<a id="logout" class="button" href="../../logout"><button class="blue">Se déconnecter</button></a>
+			<button class="stopButton red" onclick="module.requests.stopAnimation()"></button>
+		</div>
+	</div>
+
+	<div class="content">
+
+		<div class="contentviewer">
+			<h1 class="title">Gestion des images</h1>
+			<button class="mediummargin" onclick="document.querySelector('#image_input')?.click()">Sélectionner une image</button>
+			<input type="file" name="image_input" id="image_input" multiple accept="image/*" hidden>
+			<button class="mediummargin" id="send_pattern" title="Choisissez une image ou une formule sans img()" disabled>Exporter vers LED CUBE</button>
+
+			<input type="range" class="mediummargin" min="1" max="1" value="1" id="frame_range" disabled />
+			<div id="remplissage" class="flexRow">
+				<p>Type de remplissage</p>
+				<div class="flexRow">
+					<input type="radio" name="fill_type" value="fill_one_layer" id="fill_one_layer">
+					<label for="fill_one_layer">Uniquement la première couche</label>
+				</div>
+				<div class="flexRow">
+					<input type="radio" name="fill_type" value="fill_extend" id="fill_extend">
+					<label for="fill_extend">Prolonger sur toutes les couches</label>
+				</div>
+				<div class="flexRow">
+					<input type="radio" name="fill_type" value="fill_with_formule" id="fill_with_formule" checked>
+					<label for="fill_with_formule">Utiliser une formule</label>
+				</div>
+			</div>
+		</div>
+
+		<div class="contentviewer fixedwidth">
+			<h1 class="title">Viewer des images</h1>
+			<div id="front_view" class="flexRow">
+				<canvas id="display_frames" width=8 height=8></canvas>
+			</div>
+		</div>
+
+
+		<div class="contentviewer" id="config_formule" disabled>
+			<h1 class="title">Formule</h1>
+			<div class="flexRow">
+				<div id="formule_container" class="mediummargin">
+					<div id="fill_formule" class="backdrop"></div>
+					<textarea id="formule_input" spellcheck="false" title="f(x,y,z,t)=#FFFFFF
+			x : profondeur
+			y : de gauche à droite
+			z : de haut en bas
+			t : temps ou index d'image"></textarea>
+				</div>
+
+				<div class="mediummargin">
+					<p>Temps maximum ou nombre d'images</p>
+					<input type="number" class="inputnumfixedwidth" min="1" value="1" name="fill_tmax" id="fill_tmax" title="tMax">
+				</div>
+			</div>
+
+			<script>
+				function toggleOperateursArticle() {
+					const article = document.getElementById('operateurs');
+					if (article.hasAttribute('open')) {
+						article.removeAttribute('open');
+					} else {
+						article.setAttribute('open', '');
+					}
+				}
+			</script>
+			<div id="operateurs" class="markdown-container mediummargin">
+				<h2 onclick="toggleOperateursArticle()">Documentation</h2>
+				<article class="markdown-body entry-content container-lg mediummargin" itemprop="text">
+					<a target="_blank" href="https://github.com/Robotek-Orleans/LED-Cube/blob/main/WEB/math.md">Accéder à la docummentation complète</a>
+
+					<h3>Utilisation</h3>
+					<div>L'entrée est une formule mathématique utilisant les variables x, y, z et t. La sortie est une couleur décimale.</div>
+					<div>La couleur décimale est un nombre entre 0 et 16777215 (ou #FFFFFF). Les couleurs r, g, b sont des nombres entre 0 et 255. Les angles sont en radians.</div>
+					<div>Les images importées sont automatiquement réduites à une taille de 8x8 pixels.</div>
+					<h3>Formule</h3>
+					<div>La formule doit retourner une couleur pour chaque point (x,y,z,t) avec :</div>
+					<ul>
+						<li>x : profondeur x ∈ [0;7] (x=0 devant)</li>
+						<li>y : largeur y ∈ [0;7] (y=0 à gauche)</li>
+						<li>z : hauteur z ∈ [0;7] (z=0 en haut)</li>
+						<li>t : index de la frame t ∈ [0;tMax[</li>
+						<li>img(x,y,f) : Couleur du pixel en (x,y) de la fᵉ image importée</li>
+					</ul>
+					<h3>Conseils</h3>
+					<ul>
+						<li>La partie f(x,y,z,t)= n'est pas utile et peut être retirée.</li>
+						<li>Ajoutez autant d'espaces que vous souhaitez, le résultat sera le même (retour à la ligne compris).</li>
+						<li>Pour accélerer le traitement priorisez les valeurs constantes : x*(3/2) au lieu de 3*x/2. </li>
+						<li>Par défaut tMax correspond au nombre d'images, mais vous pouvez le modifier en fonction de votre animation.</li>
+						<li>La fonction img(x,y,f) autorise les points (x,y) invalides (retourne 0). En revanche f doit être compris entre 0 et le nombre d'images importées.</li>
+						<li>Si vous n'utilisez pas d'images, une formule sans la fonction img() est valide</li>
+						<li>La couleur des vaguelettes indique si la formule est incomplette (blanc) ou erronée (orange).</li>
+						<li>Pour voir comment la commande est interprétée, naviguez à travers les éléments span générés dans l'inspecteur html.</li>
+					</ul>
+					<h3 dir="auto">Opérations élémentaires : <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>%</code></h3>
+					<h3 dir="auto">Comparaison : <code>==</code>,
+						<code>!=</code>, <code>&gt;</code>, <code>&gt;=</code>, <code>&lt;</code>, <code>&lt;=</code>,
+						<code>&amp;&amp;</code>, <code>||</code>
+					</h3>
+					<h3 dir="auto">Manipulation binaire :
+						<code>&lt;&lt;</code>, <code>&gt;&gt;</code>, <code>&amp;</code>, <code>|</code>, <code>^</code>
+					</h3>
+					<h3 dir="auto">Opérateurs spéciaux</h3>
+					<ul dir="auto">
+						<li>Hexadécimal : <code>#nombre</code>, <code>0xnombre</code></li>
+						<li>Binaire : <code>0bnombre</code></li>
+					</ul>
+					<h3 dir="auto">Fonctions mathématiques</h3>
+					<div dir="auto">Toutes les fonctions de <code>Math</code> (objet JavaScript) sont disponibles.</div>
+					<table>
+						<thead>
+							<tr>
+								<th>Nom</th>
+								<th>Description</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>max(a, b)</td>
+								<td>Maximum entre a et b</td>
+							</tr>
+							<tr>
+								<td>min(a, b)</td>
+								<td>Minimum entre a et b</td>
+							</tr>
+							<tr>
+								<td>minmax(min, x, max)</td>
+								<td>Un nombre dans l'intervalle [min;max], x ou limite</td>
+							</tr>
+							<tr>
+								<td>range(min, x, max)</td>
+								<td>Vrai si x est dans l'intervalle [min;max], Faux sinon</td>
+							</tr>
+							<tr>
+								<td>abs(x)</td>
+								<td>Valeur absolue</td>
+							</tr>
+							<tr>
+								<td>sqrt(x)</td>
+								<td>Racine carrée</td>
+							</tr>
+							<tr>
+								<td>pow(x, n)</td>
+								<td>Puissance</td>
+							</tr>
+							<tr>
+								<td>exp(x)</td>
+								<td>Exponentielle</td>
+							</tr>
+							<tr>
+								<td>round(a)</td>
+								<td>Arrondi à l'entier le plus proche</td>
+							</tr>
+							<tr>
+								<td>floor(a)</td>
+								<td>Arrondi à l'entier inférieur</td>
+							</tr>
+							<tr>
+								<td>ceil(a)</td>
+								<td>Arrondi à l'entier supérieur</td>
+							</tr>
+							<tr>
+								<td>random()</td>
+								<td>Nombre aléatoire entre 0 et 1</td>
+							</tr>
+							<tr>
+								<td>pi()</td>
+								<td>Valeur de PI à 6 décimales</td>
+							</tr>
+							<tr>
+								<td>cos(a)</td>
+								<td>Cosinus</td>
+							</tr>
+							<tr>
+								<td>sin(a)</td>
+								<td>Sinus</td>
+							</tr>
+							<tr>
+								<td>tan(a)</td>
+								<td>Tangente</td>
+							</tr>
+							<tr>
+								<td>acos(a)</td>
+								<td>Arc Cosinus</td>
+							</tr>
+							<tr>
+								<td>asin(a)</td>
+								<td>Arc Sinus</td>
+							</tr>
+							<tr>
+								<td>atan(a)</td>
+								<td>Arc Tangente</td>
+							</tr>
+							<tr>
+								<td>modulo(a,b)</td>
+								<td>Modulo différent de <code>a%b</code> car les nombres négatifs sont augmentés (i.e. <code>-1%10==-1</code> et <code>modulo(-1,10)==9</code>)</td>
+							</tr>
+							<tr>
+								<td>angle_complexe(x, y)</td>
+								<td>Angle de rotation d'un nombre complexe / d'un point par rapport à (1,0)</td>
+							</tr>
+						</tbody>
+					</table>
+					<h3 dir="auto">Fonctions de construction</h3>
+					<table>
+						<thead>
+							<tr>
+								<th>Nom</th>
+								<th>Description</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>triangle(x, x0, y0, pente))</td>
+								<td>Fonction triangle avec un sommet en (x0,y0) et un facteur de pente</td>
+							</tr>
+							<tr>
+								<td>distance(a, b))</td>
+								<td>sqrt(a²+b²)</td>
+							</tr>
+							<tr>
+								<td>heaviside(t)</td>
+								<td>Fonction Heaviside : 0 sur ]-inf;0[ et 1 sur ]0;+inf[</td>
+							</tr>
+							<tr>
+								<td>porte(t, t1, t2))</td>
+								<td>Fonction porte : identique à range(min,x,max)</td>
+							</tr>
+							<tr>
+								<td>pente_cosale(t)</td>
+								<td>Fonction f(t>=0)=t et f(t&lt;=0)=0</td>
+							</tr>
+						</tbody>
+					</table>
+					<h3 dir="auto">Fonctions de couleur</h3>
+					<table>
+						<thead>
+							<tr>
+								<th>Nom</th>
+								<th>Description</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>rgb(r, g, b))</td>
+								<td>Associe les couleurs pour former une couleur décimale</td>
+							</tr>
+							<tr>
+								<td>red(c)</td>
+								<td>Extrait la quantité de rouge (entre 0 et 255) de la couleur</td>
+							</tr>
+							<tr>
+								<td>green(c)</td>
+								<td>Extrait la quantité de vert (entre 0 et 255) de la couleur</td>
+							</tr>
+							<tr>
+								<td>blue(c)</td>
+								<td>Extrait la quantité de bleu (entre 0 et 255) de la couleur</td>
+							</tr>
+							<tr>
+								<td>huerotate(c, angle))</td>
+								<td>Rotation de la couleur décimale avec un angle de rotation (en radian)</td>
+							</tr>
+							<tr>
+								<td>lumiere(c, lumiere))</td>
+								<td>Change le taux de luminosité de la couleur (1 = ne change pas)</td>
+							</tr>
+						</tbody>
+					</table>
+				</article>
+			</div>
+		</div>
+	</div>
+	<div class="splash_screen">
+		<div class="send_progress" id="send_progress">
+			<p class="chargement">15/160</p>
+			<div class="barre"><span class="barre_chargee"></span></div>
+		</div>
+	</div>
+	<table id="contentnotifs"></table>
+</body>
+
+</html>

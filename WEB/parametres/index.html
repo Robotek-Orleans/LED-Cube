@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="../favicon/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="../favicon/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="../favicon/favicon-16x16.png">
+	<link rel="manifest" href="../favicon/site.webmanifest">
+
+	<title>LEDCube</title>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<link rel="stylesheet" href="../common/css/Main.css">
+	<link rel="stylesheet" href="parametres.css">
+
+	<script>var webFolder = '../';</script>
+	<script src="../include/bcryptjs/dist/bcrypt.js"></script>
+	<script src="../include/zip/pako.js"></script>
+	<script src="../include/zip/base64.js"></script>
+
+	<script src="../common/js/viewer/three.min.js"></script>
+	<script src="../common/js/viewer/Detector.js"></script>
+	<script src="../common/js/viewer/OrbitControls.js"></script>
+	<script src="../common/js/viewer/Viewerscript.js"></script>
+	<script>var module = {};</script>
+	<script type="module">import m from './parametres.js'; module = m;</script>
+</head>
+
+
+<body>
+
+	<div class="header">
+		<h1><a href="../">LED CUBE</a></h1>
+		<div class="header-buttons">
+			<a id="login" class="button" href="../login"><button class="blue">Se connecter</button></a>
+			<a id="logout" class="button" href="../logout"><button class="blue">Se déconnecter</button></a>
+			<button class="stopButton red" onclick="module.ledCubeTools.ledcubeWS.sendLedCubeWithNotification.animation.stop()"></button>
+		</div>
+	</div>
+
+	<div class="content">
+		<div class="contentviewer fixedwidth widget" id="raspberrypi_status">
+			<h1 class="title">État du RaspberryPi</h1>
+			<div class="widget-core">
+				<h5 class="inline-widgetinfo">Connecté :<output id="connected" type="boolean" value="false"></output></h5>
+				<h5 class="inline-widgetinfo">Température :<output id="temperature" type="number" class="celsius">0</h5>
+				<h5 class="inline-widgetinfo">Démarré depuis :<time id="boot_time">0</time></h5>
+				<div class="progress-group">
+					<h5>Utilisation du CPU</h5>
+					<div class="progress-box">
+						<output id="cpuUsage" type="number" class="progress-bar" style="width:0%;">0</output>
+					</div>
+				</div>
+				<div class="progress-group">
+					<h5>Utilisation de la RAM</h5>
+					<div class="progress-box">
+						<output id="ramUsage" type="number" class="progress-bar" style="width:0%;">0</output>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="contentviewer fixedwidth widget" id="ledcube_status">
+			<h1 class="title">État du LED Cube</h1>
+			<div class="widget-core">
+				<h5 class="inline-widgetinfo">Joue :<output id="ledcubePlaying" type="boolean" value="false"></output></h5>
+				<h5 class="inline-widgetinfo">Animation actuelle :<output id="currentAnimation" type="text">Unknown</output></h5>
+				<h5 class="inline-widgetinfo">Animation suivante :<output id="nextAnimation" type="text">Unknown</output></h5>
+				<h5 class="inline-widgetinfo">Animation lancée depuis :<time id="animationWorkingTime"></time></h5>
+			</div>
+		</div>
+		<div class="contentviewer" id="cube_contentviewer">
+			<h1 class="title">Viewer 3D</h1>
+			<div id="cube_container"></div>
+			<button id="cube_container_axis" class="grey" onclick="module.ledCubeTools.cubeViewer.toggleAxis()">Axes</button>
+		</div>
+		<div class="contentviewer fixedwidth" id="credit">
+			<h1 class="title">Crédits</h1>
+			<div>
+				<p>
+					Projet dérigé par<br />
+					Georges et Romain<br />
+					<br />
+					Serveur C++ par Jérôme<br />
+					<br />
+					Robotek Orléans<br />
+					Projet LED Cube<br />
+					2021-2022
+				</p>
+				<a href="https://github.com/Robotek-Orleans/Led-Cube">GitHub</a>
+			</div>
+		</div>
+	</div>
+
+
+	<table id="contentnotifs"></table>
+</body>
+
+
+</html>
