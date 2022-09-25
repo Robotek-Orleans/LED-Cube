@@ -26,6 +26,8 @@ set(SOURCE_FILES
 	cpp/include/zip/gzip_cpp.cpp
 	cpp/include/zip/json-zip.cpp
 	cpp/include/unistd-compat.cpp
+	cpp/include/Bcrypt.cpp/src/bcrypt.cpp
+	cpp/include/Bcrypt.cpp/src/blowfish.cpp
 	cpp/Thread.cpp
 	cpp/ledcube/LEDCube.cpp
 	cpp/ledcube/LEDCubeManager.cpp
@@ -52,9 +54,7 @@ else()
 	set(SOURCE_FILES ${SOURCE_FILES}
 		cpp/windows/Sender-w.cpp
 		cpp/windows/TLCSin-w.cpp
-		cpp/windows/ledcubewindow.cpp
-		cpp/include/Bcrypt.cpp/src/bcrypt.cpp
-		cpp/include/Bcrypt.cpp/src/blowfish.cpp)
+		cpp/windows/ledcubewindow.cpp)
 endif()
 
 # Add executable target with source files listed in SOURCE_FILES variable
@@ -84,6 +84,5 @@ endif(ZLIB_FOUND)
 if(WIN32)
 	target_link_libraries(${PROJECT_NAME} wsock32 ws2_32 gdi32 bcrypt)
 else()
-	add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/cpp/include/Bcrypt.cpp)
-	target_link_libraries(${PROJECT_NAME} pthread bcrypt)
+	target_link_libraries(${PROJECT_NAME} pthread)
 endif()
