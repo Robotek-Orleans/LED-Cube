@@ -58,8 +58,9 @@ int main(int argc, char **argv) {
 		file << "PORT=80" << std::endl;
 		file << "PASSWORD=secretLedcube" << std::endl;
 		file << "WEB_FOLDER=./WEB/" << std::endl;
-		file << "ANIMATIONS_FOLDER=./WEB/animations/" << std::endl;
+		file << "ANIMATIONS_FOLDER=./animations/" << std::endl;
 		file << "MIN_TIME_BETWEEN_RANDOM_ANIMATIONS=10000" << std::endl;
+		file << "DEBUG=false" << std::endl;
 		file.close();
 		std::cout << "ledcube.env created with default values" << std::endl;
 	}

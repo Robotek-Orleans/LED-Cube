@@ -566,7 +566,7 @@ function getPixelImgs(xImg, yImg, tImg) {
 			this, { xImg, yImg, tImg });
 	}
 	if (xImg < 0 || 8 <= xImg || yImg < 0 || 8 <= yImg) return 0;
-	return images8x8[tImg].getPixel(xImg, yImg);
+	return images8x8[tImg].getPixel(xImg, 7 - yImg);
 }
 
 function fillFrameWithFormule(systeme, t) {
@@ -684,7 +684,7 @@ window.addEventListener('load', () => {
 	formule_input.addEventListener("mousedown", () => setTimeout(onFormuleCursorMoved, 1));
 	formule_input.addEventListener("keydown", () => setTimeout(onFormuleCursorMoved, 1));
 
-	formule_input.value = "f(x,y,z,t) = (x==0) && img(y,z,t)";
+	formule_input.value = "f(x,y,z,t) = (y==0) && img(x,z,t)";
 	onFormuleChanged();
 
 	updateButtonSubmit();

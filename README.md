@@ -139,43 +139,79 @@ edit has for role to create from scratch or edit an existing animation. It is co
 
 ## Direction
 
-x : front-(back)
+x : left-right
 
-y : right-(left)
+y : front-back
 
-z : top-(bottom)
+z : bottom-top
 
-## Compile
+## Install
 
 The project is available on Linux and Windows.
 
-A ledcube.env file is created where you start the server. You can use it to set the configurations of the project.
+You can install the VSCode extension CMake Tools to build the project.
+
+A ledcube.env file is created where you start the server. You can use it to edit some configurations of the server.
 
 ### Linux
 
-Create a folder "build" and initialize cmake :
 ```sh
+# 1) Install Make and CMake
+sudo apt install git cmake make
+
+# 2) Git clone
+git clone https://github.com/Jiogo18/Led-Cube
+cd Led-Cube
+git submodule update --init --recursive
+
+# 3) Install BCM2835 library (if you are on a Raspberry Pi), required to control the LEDs
+cd cpp/include/bcm2835-1.70
+sudo ./configure
+sudo make
+sudo make install
+cd ../../..
+
+# 4) Initialize the project (for a Raspberry Pi with BCM2835)
 mkdir build
 cd build
 cmake ..
 cd ..
+# 4 bis) If you don't have a Raspberry Pi (or no BCM2835 library), you can use the following command instead of the previous one
+# You won't be able to see the cube but you can still compile and run the server.
+mkdir build
+cd build
+cmake -DNOBCM2835=1 ..
+cd ..
+
+# 5) Compile and run the project
+# sudo is required to access the GPIO pins and to create the WebSocket
+cmake --build ./build
+sudo ./build/Led-Cube
+
+# 6) Enjoy
 ```
-
-If you don't have the bcm2835 library on your Linux, you can initialize cmake with NOBCM2835 set to 1: `cmake -DNOBCM2835=1 ..`
-(You won't be able to see the cube but you can still compile and run the server.)
-
-Compile the project : `cmake --build ./build` (or use the cmake extension of VSCode)
 
 ### Windows
 
-On Windows, a small window will appear to show the cube.
+```powershell
+# 1) Install CMake and MinGW
+https://cmake.org/download/
+https://www.mingw-w64.org/downloads/ (via Cygwin, LLVM, Qt...)
 
-Create a folder "build" and initialize cmake :
-```sh
+# 2) Git clone
+git clone https://github.com/Jiogo18/Led-Cube
+cd Led-Cube
+git submodule update --init --recursive
+
+# 3) Initialize the project
 mkdir build
 cd build
-cmake -G "MingGW Makefiles" ..
+cmake -G "MinGW Makefiles" ..
 cd ..
-```
 
-Compile the project : `cmake --build ./build` (or use the cmake extension of VSCode)
+# 4) Compile and run the project
+cmake --build ./build
+./build/Led-Cube
+
+# 5) Enjoy
+```

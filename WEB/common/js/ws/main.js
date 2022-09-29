@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		tryingCookieConnect = ledcubeWS.tryCookieConnect();
 		if (!tryingCookieConnect) {
 			// If not, we ask the user to enter his credentials
-			document.location.href = '/login';
+			document.location.href = webFolder + 'login';
 		} else {
 			event.preventDefault();
 			function onLogged() {
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			function onRejected() {
 				// If the user is rejected, we redirect him to the login page
 				removeEvents();
-				document.location.href = '/login';
+				document.location.href = webFolder + 'login';
 			}
 			function removeEvents() {
 				document.removeEventListener(ledcubeWS.EVENTS.LOGGED, onLogged);

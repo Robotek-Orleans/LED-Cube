@@ -42,7 +42,7 @@
 			Le filtre est un regex, ex : playAnimationAleat("robotek_.*") lance toutes les animations qui commencent par "robotek_"
 		-->
 		<button onclick="ledcubeRequests.playAnimationAleat()" class="purple">Animations aléatoires</button>
-		<button class="blue" onclick="importAnimation()"><input type="file" style="display: none;" id="fileInput" accept=".json.txt,.ledcube"></input>Importer une
+		<button class="blue" onclick="importAnimation()"><input type="file" style="display: none;" id="fileInput" accept=".ledcube"></input>Importer une
 			animation</button>
 		<button onclick="ledcubeRequests.stopAnimation()" class="red">Arrêter l'animation</button>
 	</div>
@@ -70,7 +70,7 @@
 		}
 
 		async function importAnimation() {
-			// ovrir une boite de dialogue pour importer un fichier .json.txt depuis l'ordinateur du client
+			// ovrir une boite de dialogue pour importer un fichier .ledcube depuis l'ordinateur du client
 			fileInput.click();
 		}
 	</script>

@@ -40,7 +40,7 @@ Animation *AnimationLoaders::AnimationLoader::loadAnimationFromFile(const std::s
 	std::string fileName = path.substr(lastSlash + 1);
 	Animation *anim = nullptr;
 	int isVersion[2] = {0, 0};
-	if (stringEndsWith(fileName, ".json.txt")) {
+	if (stringEndsWith(fileName, ".json.txt") || stringEndsWith(fileName, ".ledcube")) {
 		// Special extension => try v2 first
 		try {
 			anim = AnimationLoader_v2().loadAnimationFromFile(path);

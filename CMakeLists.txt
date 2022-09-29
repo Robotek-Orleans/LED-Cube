@@ -6,8 +6,13 @@ set(CMAKE_CXX_STANDARD 17)              # Enable c++17 standard (g++ 7-8)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/cpp/include)
 
 # require at least g++ 8
-if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 8)
-	message(FATAL_ERROR "g++ version must be at least 8! " ${CMAKE_CXX_COMPILER_VERSION})
+if (CMAKE_CXX_COMPILER MATCHES "clang\\+\\+(\.exe)?$")
+elseif(CMAKE_CXX_COMPILER MATCHES "g\\+\\+(\.exe)?$")
+        if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 8)
+                message(FATAL_ERROR "g++ version must be at least 8! " ${CMAKE_CXX_COMPILER_VERSION})
+        endif()
+else()
+        message(WARNING "Unknown CMAKE_CXX_COMPILER " ${CMAKE_CXX_COMPILER})
 endif()
 
 # add the source files
@@ -84,5 +89,5 @@ endif(ZLIB_FOUND)
 if(WIN32)
 	target_link_libraries(${PROJECT_NAME} wsock32 ws2_32 gdi32 bcrypt)
 else()
-	target_link_libraries(${PROJECT_NAME} pthread)
+	target_link_libraries(${PROJECT_NAME} pthread stdc++fs)
 endif()

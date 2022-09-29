@@ -23,6 +23,22 @@ export class LedCubeWS extends EventEmitter {
 	constructor() {
 		super();
 		Object.values(this.EVENTS).forEach(event => this.registerEvent(event));
+		if (document.location.pathname.endsWith('/login/')) {
+			var comeFromLogin = localStorage.getItem('comeFromLogin');
+			if (comeFromLogin) {
+				comeFromLogin = parseInt(comeFromLogin) || 1;
+				localStorage.setItem('comeFromLogin', comeFromLogin + 1);
+				if (window.history.length <= 0 || comeFromLogin >= 3) { // no back() or in a loop
+					document.location.href = webFolder;
+				}
+				else {
+					window.history.back();
+				}
+			}
+		}
+		else {
+			localStorage.removeItem('comeFromLogin');
+		}
 	}
 
 	isConnected() {
@@ -222,8 +238,12 @@ export class LedCubeWS extends EventEmitter {
 				return response;
 			},
 
-			/** @returns {Promise<{animations: string[]}>} */
-			list: () => this.sendAndWaitAnswer('ledcube', { action: 'animation.list' }),
+			list: async () => {
+				/** @type {{success: boolean, animations: string[], timestamp: string}} */
+				const answer = await this.sendAndWaitAnswer('ledcube', { action: 'animation.list' });
+				answer.animations?.sort((a, b) => a.localeCompare(b));
+				return answer;
+			},
 
 			/** @returns {Promise<{success:boolean}>} */
 			stop: () => this.sendAndWaitAnswer('ledcube', { action: 'animation.stop' }),
@@ -463,7 +483,24 @@ export class LedCubeWS extends EventEmitter {
 	storeAnimationLocal(animation) {
 		const animationData = this.encodeAnimation(animation);
 		const key = 'animation_' + Date.now();
-		localStorage.setItem(key, animationData);
+		var added = false;
+		do {
+			try {
+				localStorage.setItem(key, animationData);
+				added = true;
+			}
+			catch (e) {
+				// Remove 5 oldest animations
+				const keys = Object.keys(localStorage).filter(k => k.startsWith('animation_'));
+				keys.sort();
+				if (keys.length == 0) {
+					throw e; // There is not enough space to store the animation
+				}
+				for (let i = 0; i < 5 && i < keys.length; i++) {
+					localStorage.removeItem(keys[i]);
+				}
+			}
+		} while (!added);
 		return key;
 	}
 

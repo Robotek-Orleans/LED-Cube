@@ -31,6 +31,11 @@ async function askLEDCubeStatus() {
 document.querySelector("#raspberrypi_status > h1").addEventListener('click', () => askSysStatus());
 document.querySelector("#ledcube_status > h1").addEventListener('click', () => askLEDCubeStatus());
 
+function round(number, precision) {
+	const factor = Math.pow(10, precision);
+	return Math.round(number * factor) / factor;
+}
+
 /**
  * @param {{
  * 	temp: number,
@@ -47,7 +52,7 @@ function fillRaspberryPiStatus(status) {
 	/** @type {HTMLOutputElement} */
 	const temperature = document.getElementById("temperature");
 	if (status.temp >= 0) { // Kelvin
-		const temp = Math.round(status.temp - 273.15);
+		const temp = round(status.temp - 273.15, 1);
 		temperature.value = temp;
 		temperature.setAttribute('color', temp > 50 ? 'red' : temp > 40 ? 'darkorange' : 'green');
 	}
@@ -63,7 +68,7 @@ function fillRaspberryPiStatus(status) {
 	/** @type {HTMLOutputElement} */
 	const cpuUsage = document.getElementById("cpuUsage");
 	if (status.cpuUsage >= 0) {
-		cpuUsage.value = status.cpuUsage;
+		cpuUsage.value = round(status.cpuUsage, 2);
 		cpuUsage.style.width = status.cpuUsage + '%';
 	}
 	else {
@@ -74,7 +79,7 @@ function fillRaspberryPiStatus(status) {
 	/** @type {HTMLOutputElement} */
 	const ramUsage = document.getElementById("ramUsage");
 	if (status.ramUsage >= 0) {
-		ramUsage.value = status.ramUsage;
+		ramUsage.value = round(status.ramUsage, 2);
 		ramUsage.style.width = status.ramUsage + '%';
 	}
 	else {

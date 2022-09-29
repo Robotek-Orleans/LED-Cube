@@ -13,11 +13,10 @@ unsigned long long getCurrentTimeMs() {
 #else // not _WIN32
 
 #include <time.h>
+#include <chrono>
 
 unsigned long long getCurrentTimeMs() {
-	struct timespec start;
-	clock_gettime(CLOCK_REALTIME, &start);
-	return start.tv_sec * 1000 + start.tv_nsec / 1000000;
+	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 }
 
 #endif // _WIN32

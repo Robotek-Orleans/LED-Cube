@@ -46,6 +46,7 @@ function animationsAndDocumentLoaded() {
 	const animationsNoExt = animations.map(getWithoutExtension);
 	const animationsNoExtDouble = animationsNoExt.filter((animation, index) => animationsNoExt.indexOf(animation) !== index);
 	// If there is animations with the same name but different extensions, we have to keep the extension for the 2 animations
+	animations.sort((a, b) => getWithoutExtension(a).localeCompare(getWithoutExtension(b)) || a.localeCompare(b));
 
 	for (let animationName of animations) {
 		// Test is without extension only if it's the only animation with this name

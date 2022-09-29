@@ -415,7 +415,7 @@ export async function saveAnimation() {
 	/** @type {string} */
 	const fileName = document.getElementById("fileName").value;
 	ledCubeTools.animation.name = fileName;
-	const fileNameWithExtension = fileName.includes('.json.txt') ? fileName : fileName + '.json.txt';
+	const fileNameWithExtension = fileName.endsWith('.ledcube') ? fileName : fileName + '.ledcube';
 	saveAnimationAndConfirmIfNeeded(fileNameWithExtension);
 }
 
@@ -435,7 +435,7 @@ export async function exportAnimation() {
 	const url = URL.createObjectURL(blob);
 	const a = document.createElement('a');
 	a.href = url;
-	a.download = fileName + '.json.txt';
+	a.download = fileName + '.ledcube';
 	a.click();
 }
 

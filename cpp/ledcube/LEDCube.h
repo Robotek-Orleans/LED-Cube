@@ -23,7 +23,7 @@ struct CurrentAnimationInfo
 class LEDCube : public Thread
 {
 public:
-	std::string ANIMATIONS_FOLDER = "./WEB/animations/";
+	std::string ANIMATIONS_FOLDER = "./animations/";
 	int MIN_TIME_BETWEEN_RANDOM_ANIMATIONS = 10000;
 	LEDCube();
 	~LEDCube();
@@ -68,8 +68,8 @@ private:
 	int animation_update_counter;
 	Sender *sender;
 	int *frame_index;
-	long long animation_start_time = 0;
-	long long next_frame_time = 0;
+	unsigned long long animation_start_time = 0;
+	unsigned long long next_frame_time = 0;
 	std::function<void()> animation_end_handler = 0;	// Called from LEDCube thread
 	std::function<void()> animation_change_handler = 0; // Called from LEDCube thread
 };

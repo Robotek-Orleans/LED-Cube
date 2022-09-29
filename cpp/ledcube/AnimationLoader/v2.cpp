@@ -96,7 +96,7 @@ Animation *AnimationLoaders::AnimationLoader_v2::jsonToAnimation(const JsonReade
 		std::cerr << "Invalid animation data (no frame duration)" << std::endl;
 		return nullptr;
 	}
-	int frameDuration = document.getInt("frameDuration", 50) * MS_CLOCK;
+	int frameDuration = document.getInt("frameDuration", 50);
 
 	// get name
 	std::string name = document.getString("name", "");
@@ -179,7 +179,7 @@ void AnimationLoaders::AnimationLoader_v2::animationToJson(const Animation *anim
 	// set version, frame count, and frame duration, contentType
 	document.AddMember("version", 2, document.GetAllocator());
 	document.AddMember("frameCount", animation->getFrameCount(), document.GetAllocator());
-	document.AddMember("frameDuration", (int)(animation->getFrameDuration() / MS_CLOCK), document.GetAllocator());
+	document.AddMember("frameDuration", (int)(animation->getFrameDuration()), document.GetAllocator());
 	document.AddMember("contentType", "animation", document.GetAllocator());
 	document.AddMember("name", rapidjson::Value(animation->getName().c_str(), animation->getName().length()), document.GetAllocator());
 

@@ -7,6 +7,12 @@
 // Output just a table or everything
 #define OUTPUT_TABLE 1
 
+#if defined(__i386__) || defined(__x86_64__) || defined(__powerpc__)
+#define USE__builtin_ia32_rdtsc true
+#else
+#define USE__builtin_ia32_rdtsc false
+#endif
+
 /**
  * Which method is the fastest on:
  * - Windows
@@ -34,10 +40,22 @@ long long getChronoSteadyNoCastMS() {
 	return std::chrono::steady_clock::now().time_since_epoch().count() / 1000000;
 }
 
+long long getChronoSystemNoCastMS() {
+#if _WIN32
+	return std::chrono::system_clock::now().time_since_epoch().count() / 10000;
+#else
+	return std::chrono::system_clock::now().time_since_epoch().count() / 1000000;
+#endif
+}
+
 int getCpuFrequencykHz() {
+#if USE__builtin_ia32_rdtsc
 	long long rdtsc_ticks = __builtin_ia32_rdtsc();
 	long long local_time = getChronoSteadyMS();
 	int freq = rdtsc_ticks / local_time;
+#else
+	int freq = 1;
+#endif
 	printf("CPU Frequency: %d kHz\r\n", freq);
 	return freq;
 }
@@ -76,23 +94,27 @@ static __inline__ unsigned long long rdtsc(void) {
 	return (result);
 }
 #else
-#error "No rdtsc() implementation for this architecture"
+#warning "No rdtsc() implementation for this architecture (or already defined)"
 #endif
 
 long long getRdtscMS() {
-	return rdtsc() / cpuFrequencykHz; // 3 GHz => 3e6 ticks per ms
+	return rdtsc() / cpuFrequencykHz;
 }
 
 long long get__rdtscMS() {
-#ifdef _WIN32
-	return __rdtsc() / cpuFrequencykHz; // 3 GHz => 3e6 ticks per ms
+#if _WIN32 // __rdtsc
+	return __rdtsc() / cpuFrequencykHz;
 #else
 	return 0;
 #endif
 }
 
-long long getBuiltinRdtscMS() {
-	return __builtin_ia32_rdtsc() / cpuFrequencykHz; // 3 GHz => 3e6 ticks per ms
+long long get__builtin_rdtscMS() {
+#if USE__builtin_ia32_rdtsc
+	return __builtin_ia32_rdtsc() / cpuFrequencykHz;
+#else
+	return 0;
+#endif
 }
 
 #if defined(_WIN32)
@@ -110,13 +132,13 @@ int clock_gettime(int, struct timespec *spec) // C-file part
 
 long long getclock_gettimeMS() {
 #ifdef _WIN32
-#define CLOCK_MONOTONIC 0
+#define CLOCK_REALTIME 0
 	struct timespec start;
-	clock_gettime(CLOCK_MONOTONIC, &start);
+	clock_gettime(CLOCK_REALTIME, &start);
 	return start.tv_sec * 1000 + start.tv_nsec / 1000000;
 #else
 	struct timespec start;
-	clock_gettime(CLOCK_MONOTONIC, &start);
+	clock_gettime(CLOCK_REALTIME, &start);
 	return start.tv_sec * 1000 + start.tv_nsec / 1000000;
 #endif
 }
@@ -168,7 +190,7 @@ void runTests(std::string functionName, long long (*getTime)()) {
 	std::cout << " - Speed: " << speedTest << " ms" << std::endl;
 	std::cout << std::endl;
 #else
-	std::cout << "| " << functionName << " | " << duration << " | " << speedTest << " |" << std::endl;
+	std::cout << "| " << functionName << " | " << duration << " | " << speedTest << " | " << getTime() << " |" << std::endl;
 #endif
 }
 
@@ -184,7 +206,7 @@ void testClock() {
 		clock_t start = clock();
 		usleep(100 * 1000);
 		clock_t end = clock();
-		difference = (end - start) / MS_CLOCK;
+		difference = (end - start);
 	}
 
 	long long speedTest;
@@ -209,22 +231,23 @@ void testClock() {
 	std::cout << " - Speed: " << speedTest << " ms" << std::endl;
 	std::cout << std::endl;
 #else
-	std::cout << "| clock() | " << difference << " | " << speedTest << " |" << std::endl;
+	std::cout << "| clock() | " << difference << " | " << speedTest << " | " << clock() << " |" << std::endl;
 #endif
 }
 
 int main(int argc, char **argv) {
 #if OUTPUT_TABLE
-	std::cout << "| Function | Difference (100 ms) | Time (ms) |" << std::endl;
-	std::cout << "|----------|---------------------|-------|" << std::endl;
+	std::cout << "| Function | Difference (100 ms) | Time (ms) | Example |" << std::endl;
+	std::cout << "|----------|---------------------|-----------|---------|" << std::endl;
 #endif
 	testClock();
-	runTests("getChronoSteadyMS()", getChronoSteadyMS);
-	runTests("getChronoSystemMS()", getChronoSystemMS);
-	runTests("getChronoSteadyNoCastMS()", getChronoSteadyNoCastMS);
-	runTests("rdtscMS()", getRdtscMS);
-	runTests("__rdtscMS()", get__rdtscMS);
-	runTests("__builtin_ia32_rdtscMS()", getBuiltinRdtscMS);
-	runTests("clock_gettimeMS()", getclock_gettimeMS);
-	runTests("getSystemTimeMS()", getSystemTimeMS);
+	runTests("std::chrono::steady_clock", getChronoSteadyMS);
+	runTests("std::chrono::system_clock", getChronoSystemMS);
+	runTests("std::chrono::steady_clock no cast", getChronoSteadyNoCastMS);
+	runTests("std::chrono::system_clock no cast", getChronoSystemNoCastMS);
+	runTests("rdtsc()", getRdtscMS);
+	runTests("__rdtsc()", get__rdtscMS);
+	runTests("__builtin_ia32_rdtsc()", get__builtin_rdtscMS);
+	runTests("clock_gettime()", getclock_gettimeMS);
+	runTests("GetSystemTimeAsFileTime()", getSystemTimeMS);
 }

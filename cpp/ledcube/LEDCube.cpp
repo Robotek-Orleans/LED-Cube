@@ -2,12 +2,8 @@
 
 LEDCube::LEDCube()
 	: Thread(), animation(new Animation(1, 100)) {
-#if true // If TLC is availbable
 	sender = new Sender();
 	sender->start();
-#else
-	std::cout << "WARNING: Sender is disabled because TLC isn't available" << std::endl;
-#endif
 	animation_change_counter = 0;
 	animation_update_counter = 0;
 	frame_index = new int(0);
@@ -257,7 +253,7 @@ void LEDCube::loadConfig() {
 	if (animationsFolderLoaded) {
 		std::cout << "    Animation folder is '" << ANIMATIONS_FOLDER << "'" << std::endl;
 	} else {
-		ANIMATIONS_FOLDER = "./WEB/animations/";
+		ANIMATIONS_FOLDER = "./animations/";
 		std::cout << "    Default animations folder is '" << ANIMATIONS_FOLDER << "'." << std::endl;
 	}
 	if (ANIMATIONS_FOLDER.back() != '/') ANIMATIONS_FOLDER += '/';

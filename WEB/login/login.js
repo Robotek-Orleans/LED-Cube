@@ -31,7 +31,6 @@ ledcubeWS.addEventListener(ledcubeWS.EVENTS.LOGIN_REJECTED, event => {
 			break;
 	}
 });
-ledcubeWS.tryCookieConnect();
 
 function inputKeyDown(e) {
 	if (e.keyCode === 13) {
@@ -78,6 +77,7 @@ function onLogged() {
 
 	// redirect
 	setTimeout(() => {
+		localStorage.setItem('comeFromLogin', '1');
 		window.history.back();
 		setTimeout(() => {
 			window.location.href = webFolder;

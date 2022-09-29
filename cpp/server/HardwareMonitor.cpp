@@ -40,14 +40,12 @@ double cpu_usage() {
 // Temperature
 double temperature() {
 	try {
-		std::string temp;
+		std::string temp_str;
 		std::ifstream ifile("/sys/class/thermal/thermal_zone0/temp");
-		ifile >> temp;
+		ifile >> temp_str;
 		ifile.close();
-		temp.insert(2, 1, '.');
-		temp.pop_back();
-		temp.pop_back();
-		return std::stod(temp);
+		int temp_milli = std::stoi(temp_str);
+		return temp_milli / 1000.0 + 273.15;
 	} catch (...) {
 		return -1;
 	}
@@ -140,10 +138,6 @@ double temperature() {
 
 // Network Usage => RX per ct
 int net_usage() {
-	return -1;
-}
-
-long long boot_time() {
 	return -1;
 }
 
