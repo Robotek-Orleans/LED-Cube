@@ -1,0 +1,13 @@
+[Unit]
+Description=Ledcube
+
+[Service]
+User=root
+WorkingDirectory=/home/pi/LED-Cube
+ExecStart=/home/pi/LED-Cube/build/Led-Cube
+Restart=on-failure
+SuccessExitStatus=3 4
+RestartForceExitStatus=3 4
+
+[Install]
+WantedBy=multi-user.target

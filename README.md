@@ -65,6 +65,14 @@ sudo ./build/Led-Cube
 
 # 6) Enjoy
 ```
+### Adding the process as a service
+```bash
+sudo cp ledcube.service /etc/systemd/system/
+sudo systemctl enable ledcube.service
+# To start the service
+sudo systemctl start ledcube.service
+```
+
 
 ### Windows
 (for tests)
