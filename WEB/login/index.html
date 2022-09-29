@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>LEDCube</title>
+  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="../favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../favicon/favicon-16x16.png">
+  <link rel="manifest" href="../favicon/site.webmanifest">
+
+  <link rel="stylesheet" href="../common/css/style.css">
+
+  <script>var webFolder = '../';</script>
+  <script src="../include/bcryptjs/dist/bcrypt.js"></script>
+  <script>var module = {};</script>
+  <script type="module">import m from './login.js'; module = m;</script>
+</head>
+
+<body>
+  <div class="container">
+    <header>LED CUBE</header>
+
+    <form id="loginForm">
+      <div class="input-field" id="field-username">
+        <input id="username" type="text" name="username" autocomplete="username">
+        <label>Nom d'utilisateur</label>
+      </div>
+      <div class="input-field" id="field-password">
+        <input id="pswrd" class="pswrd" type="password" name="password" autocomplete="current-password">
+        <label>Mot de passe</label>
+        <span class="show">SHOW</span>
+      </div>
+      <div class="button" id="button-login">
+        <div class="inner"></div>
+        <button id="login" type="button" name="sub" onclick="module.loginLedCube(); event.stopImmediatePropagation();">Se connecter</button>
+      </div>
+    </form>
+
+    <div id="loggedAnimation" style="display: none;">
+      <div class="loading-container">
+        <div class="loading-color"></div>
+        <div class="loading-mask"></div>
+      </div>
+    </div>
+
+</body>
+
+</html>

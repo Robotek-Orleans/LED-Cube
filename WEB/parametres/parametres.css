@@ -1,0 +1,95 @@
+.widget h3 {
+    margin: 0;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.widget-core > * {
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.widget h5 {
+    margin-top: 8px;
+}
+
+h5 {
+    font-size: 1em;
+    margin-bottom: 4px;
+}
+
+.progress-box {
+    margin: 0;
+    display:flex;
+}
+
+.progress-bar {
+    background-color: #3e4346;
+    text-align: center;
+    width: 0;
+    margin: 0 auto;
+    font-size: 0.8em;
+    border-radius: 6px;
+}
+
+output.celsius::after { content: " °C"; }
+output.fahrenheit::after { content: " °F"; }
+output.kelin::after { content: " K"; }
+output.percent::after, .progress-bar::after { content: "%"; margin-left: 0.2em; }
+
+.inline-widgetinfo {
+    display: flex;
+    flex-direction: row;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+
+}
+output { margin-left: 4px; }
+output[type="number"] { color: #00bcd4; }
+output[type="number"][unit="g"]::after { margin-left: 2px; content: "Gbits"; }
+output[type="number"][unit="m"]::after { margin-left: 2px; content: "Mbits"; }
+output[type="number"][unit="k"]::after { margin-left: 2px; content: "Kbits"; }
+output[type="number"][unit="b"]::after { margin-left: 2px; content: "bits"; }
+output[type="boolean"] { font-size: 0; display: flex; align-items: center; }
+output[type="boolean"]::before { font-size: initial; }
+output.actif-inactif[type="boolean"]:not([value="true"])::before { content:"INACTIF"; }
+output.actif-inactif[type="boolean"][value="true"]::before { content:"ACTIF"; }
+output:not(.actif-inactif)[type="boolean"]:not([value="true"])::before { content:"NON"; }
+output:not(.actif-inactif)[type="boolean"][value="true"]::before { content:"OUI"; }
+
+.inline-widgetinfo time { margin-left: 4px; color: #673AB7; }
+
+output[color="red"], output[type="boolean"]:not([value="true"]) {
+    color: red;
+}
+output[color="darkorange"] {
+    color: darkorange;
+}
+output[color="green"], output[type="boolean"][value="true"] {
+    color: green;
+}
+
+output.seconds::after { content: " s"; }
+
+
+
+.contentviewer {
+    min-height: 300px;
+}
+
+.contentviewer:has(#cube_container) {
+    height: 500px;
+}
+
+#credit > div {
+    margin: auto;
+}
+
+.widget-core {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 100%;
+    padding: 10px 20px;
+}

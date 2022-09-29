@@ -1,3 +1,12 @@
-[submodule "JigMath"]
-	path = WEB/JigMath
+[submodule "WEB/include/JigMath"]
+	path = WEB/include/JigMath
 	url = https://github.com/Jiogo18/JigMath
+[submodule "WEB/include/bcryptjs"]
+	path = WEB/include/bcryptjs
+	url = https://github.com/dcodeIO/bcrypt.js/
+[submodule "cpp/include/zlib"]
+	path = cpp/include/zlib
+	url = https://github.com/madler/zlib/
+[submodule "cpp/include/Bcrypt.cpp"]
+	path = cpp/include/Bcrypt.cpp
+	url = https://github.com/hilch/Bcrypt.cpp

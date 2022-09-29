@@ -11,6 +11,7 @@ The project is in different communicating parts:
 - /cpp : executes and run animations
     - converts the animation in a format readable for LED Drivers (TLC5940)
     - runs the animation
+    - runs the server
 
 You can find PCBs and schematics in CAO and PCBs
 
@@ -89,29 +90,29 @@ sudo /var/www/html/LED-Cube/cpp/aleatoire.sh &
 
 ## HCI Controls
 
-| Function                          | Key                   |
-| --------------------------------- | --------------------- |
-| Select all LEDs between 2 points  | <kbd>Shift</kbd>      |
-| Select more than 1 LED            | <kbd>Control</kbd>    |
-| Previous layer                    | <kbd>ArrowDown</kbd>  |
-| Next Layer                        | <kbd>ArrowUp</kbd>    |
-| Switch axis                       | <kbd>Tab</kbd>        |
-| Previous frame                    | <kbd>ArrowLeft</kbd>  |
-| Next frame                        | <kbd>ArrowRight</kbd> |
+| Function                         | Key                   |
+| -------------------------------- | --------------------- |
+| Select all LEDs between 2 points | <kbd>Shift</kbd>      |
+| Select more than 1 LED           | <kbd>Control</kbd>    |
+| Previous layer                   | <kbd>ArrowDown</kbd>  |
+| Next Layer                       | <kbd>ArrowUp</kbd>    |
+| Switch axis                      | <kbd>Tab</kbd>        |
+| Previous frame                   | <kbd>ArrowLeft</kbd>  |
+| Next frame                       | <kbd>ArrowRight</kbd> |
 
 ## HCI usage
 
-All HCI is divded in 3 different pages:
- - from_image.php
- - edit.php
- - openfile.php
+All HCI is divided in 3 different pages:
+ - animation/from_image
+ - animation/edit
+ - animation/open
 
-from_image.php as for role to create a new animation by uploading a picture. It is composed of 3 parts: 
+from_image has for role to create a new animation by uploading a picture. It is composed of 3 parts: 
  - picture manager to upload your picture to the LED-Cube
  - 2D viewer to see the uploaded image
  - formula to change some parameters on the image (more information about formulas at https://github.com/Robotek-Orleans/LED-Cube/blob/main/WEB/math.md)
 
-edit.php as for role to create from scratch or edit an existing animation. It is composed of 6 parts:
+edit has for role to create from scratch or edit an existing animation. It is composed of 6 parts:
  - file manager window which the following elements:
     - a text input with the animation-name
     - a button to send the animation to execute.php to be saved and played to the LED-Cube
@@ -135,3 +136,82 @@ edit.php as for role to create from scratch or edit an existing animation. It is
     - a colour picker to select a colour more precisely
     - 2 buttons to copy and paste a 2D matrix
 
+
+## Direction
+
+x : left-right
+
+y : front-back
+
+z : bottom-top
+
+## Install
+
+The project is available on Linux and Windows.
+
+You can install the VSCode extension CMake Tools to build the project.
+
+A ledcube.env file is created where you start the server. You can use it to edit some configurations of the server.
+
+### Linux
+
+```sh
+# 1) Install Make and CMake
+sudo apt install git cmake make
+
+# 2) Git clone
+git clone https://github.com/Jiogo18/Led-Cube
+cd Led-Cube
+git submodule update --init --recursive
+
+# 3) Install BCM2835 library (if you are on a Raspberry Pi), required to control the LEDs
+cd cpp/include/bcm2835-1.70
+sudo ./configure
+sudo make
+sudo make install
+cd ../../..
+
+# 4) Initialize the project (for a Raspberry Pi with BCM2835)
+mkdir build
+cd build
+cmake ..
+cd ..
+# 4 bis) If you don't have a Raspberry Pi (or no BCM2835 library), you can use the following command instead of the previous one
+# You won't be able to see the cube but you can still compile and run the server.
+mkdir build
+cd build
+cmake -DNOBCM2835=1 ..
+cd ..
+
+# 5) Compile and run the project
+# sudo is required to access the GPIO pins and to create the WebSocket
+cmake --build ./build
+sudo ./build/Led-Cube
+
+# 6) Enjoy
+```
+
+### Windows
+
+```powershell
+# 1) Install CMake and MinGW
+https://cmake.org/download/
+https://www.mingw-w64.org/downloads/ (via Cygwin, LLVM, Qt...)
+
+# 2) Git clone
+git clone https://github.com/Jiogo18/Led-Cube
+cd Led-Cube
+git submodule update --init --recursive
+
+# 3) Initialize the project
+mkdir build
+cd build
+cmake -G "MinGW Makefiles" ..
+cd ..
+
+# 4) Compile and run the project
+cmake --build ./build
+./build/Led-Cube
+
+# 5) Enjoy
+```
